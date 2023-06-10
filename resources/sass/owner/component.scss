@@ -1,0 +1,20 @@
+.image_preview {
+	img {
+		max-width:200px;
+		border:transparent 2px solid;
+	}
+}
+
+.filename_view {
+	font-size: 80%;
+}
+
+.external-event {
+	cursor: pointer;
+	// transition: all .5s;
+	
+	// &:hover {
+	// 	top:-3px;
+  // 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+	// }
+}
