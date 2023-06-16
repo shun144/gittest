@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use \GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
 use \GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\User;
 use App\Models\Schedule;
@@ -20,6 +23,21 @@ use App\Models\Template;
 
 class OwnerController extends Controller
 {
+    public function viewPostHistory()
+    {
+        $posts = DB::table('histories')
+        ->select(
+            'send_at',
+            'title',
+            'content',
+            'img_url',
+            'status',
+            'err_info'
+        )
+        ->get();
+        return view('owner.postHistory', compact('posts'));
+    }
+
 
     public function getTemplateOverview()
     {
@@ -59,8 +77,6 @@ class OwnerController extends Controller
 
         // dd( $data);
 
-
-
         $templates = DB::table('templates')
         ->whereNull('templates.deleted_at')
         ->join('messages','message_id','=','messages.id')
@@ -75,90 +91,367 @@ class OwnerController extends Controller
 
 
     
-    public function line_users()
+    public function viewLineUsers()
     {
-        $lines = Line::select('user_name', 'is_valid')->where('store_id', Auth::user()->store_id)->get();
+        $store_id = Auth::user()->store_id;
 
-        return view('owner.line_users', compact('lines'));
+        $lines = DB::table('lines')
+        ->select('user_name', 'is_valid','created_at')
+        ->where('store_id', $store_id)->get();
+
+        $url_name = DB::table('stores')->find($store_id)->url_name;
+        $reg_url = url($url_name) . '/register';
+
+        return view('owner.line_users', compact('lines', 'reg_url'));
     }
-
-    // public function message()
-    // {
-    //     $messages = DB::table('messages')
-    //     ->select('id', 'title', 'title_color')
-    //     ->where('store_id', Auth::user()->store_id)
-    //     ->where('is_fix', true)
-    //     ->whereNull('deleted_at')
-    //     ->get();
-    //     return view('owner.message', compact('messages'));
-    // }
-
-
-
-
-    // public function message()
-    // {
-    //     $messages = Message::select('id', 'title', 'title_color')
-    //     ->where('store_id', Auth::user()->store_id)
-    //     ->where('is_fix', true)
-    //     ->whereNull('deleted_at')
-    //     ->with(['images' => function ($query) {$query->select('message_id', 'id as image_id', 'save_name', 'org_name');}])
-    //     ->get();
-    //     return view('owner.message', compact('messages'));
-    // }
-
-
-
-
-
-
-    
 
 
     public function send(Request $request)
     {
-        dd($request);
 
+        $post = $request->only(['title','content']);
         $uri = 'https://notify-api.line.me/api/notify';
-        // $tokens = Line::select('token')->where('store_id', Auth::user()->store_id)->get();
-
         $store_id = Auth::user()->store_id;
-        $lines = Line::select('id', 'token')->where('store_id', $store_id)->get();
-        $title = $request->title;
-        $message = $request->content;
+        $lines = Line::select('id','token')->where('store_id', $store_id)->get();
 
+        $images = $request->file('imagefile');
+
+
+
+
+        try {
+            $uri = 'https://notify-api.line.me/api/notify';
+            $line_token = $lines[0]->token;
+            $image_path = 'C:\WebApp\work\20230430\work\login.jpg';
+            if (!(is_file($image_path)))
+            {
+                dd('画像アクセス失敗'); 
+            }
+            $message = 'test message';
+            $client = new Client();
+            $res = $client->request('POST',$uri,[
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $line_token ,
+                    'Content-Type' => 'multipart/form-data'
+                ],
+                'multipart' => [
+                    [
+                        'name' => 'message',
+                        'contents' => $message 
+                    ],
+                    [
+                        'name' => 'imageFile',
+                        'contents' => fopen($image_path, "rb")
+                    ]
+                ]
+            ]);    
+            dd($res);
+        }
+        catch (ClientException $e) {
+            dd($e);
+            // Line::where('id', $line->id)->delete();
+        }
+
+
+
+        // $curl_handle = curl_init();
+
+        //  curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN" -F "message=SLが通ります (通算$COUNT 回)" -F "imageThumbnail=https://url-to-sl/$n.jpg" -F "imageFullsize=https://url-to-sl/$n.jpg" https://notify-api.line.me/api/notify >  
+
+
+
+        // $save_path = Storage::putFile(config('app.save_storage.image'), $images[0]);
+        // $save_name = basename($save_path);
+
+
+        // $image_path = url(config('app.access_storage.image')).'/'.$save_name;
+
+        // dd(url(config('app.access_storage.image')).'/'.$save_name);
+
+        // $image_path = 'C:\WebApp\work\20230430\work\login.jpg';
+
+        // dd(fopen($image_path, "rb"));
+        // dd($image_path);
+        // $image_path = 'http://127.0.0.1:8000/storage/message/template/0vz2Mwz7D4kOcrVGXrhQkmaMXnd04tfLKRA4ktGX.jpg';
+        // dd(fopen($image_path,'rb'));
         $client = new Client();
             foreach ($lines as $line){
-
                 try {
+
+                    // // リクエストヘッダの作成
+                    // $message = '送るよ!!';
+                    
+                    // $cfile = new \CURLFile($image_path,'image/jpeg','test_name');
+                    // $query = array('imageFile'=>$cfile);
+                    // // $query = array(
+                    // //     'message' => $message, 
+                    // //     'imageFile'=>$cfile
+                    // // );
+
+                    // // $query = http_build_query([
+                    // //     ['message' => $message],
+                    // //     ['imageFile' => $cfile]
+                    // // ]);
+
+                    // $header = [
+                    //     'Content-Type: application/x-www-form-urlencoded',
+                    //     'Authorization: Bearer ' . $line->token,
+                    //     // 'Content-Length: ' . strlen($query)
+                    // ];
+
+
+                    // $ch = curl_init('https://notify-api.line.me/api/notify');
+                    // $options = [
+                    //     CURLOPT_RETURNTRANSFER  => true,
+                    //     CURLOPT_POST            => true,
+                    //     CURLOPT_HTTPHEADER      => $header,
+                    //     CURLOPT_POSTFIELDS      => $query
+                    // ];
+
+                    // curl_setopt_array($ch, $options);
+                    // $res = curl_exec($ch);
+                    // curl_close($ch);
+                    // dd($res);
+
+                    $message = $post['content'];
+                    $image_path = 'C:\WebApp\work\20230430\work\login.jpg';
+                    // $image_path = 'http://127.0.0.1:8000/storage/message/template/0vz2Mwz7D4kOcrVGXrhQkmaMXnd04tfLKRA4ktGX.jpg';
+                    // $img_b = base64_encode(file_get_contents($image_path));
+                    $img_b = fopen($image_path, 'rb');
+                    // dd($img_b);
+                                        
+                    if (!(is_file($image_path)))
+                    {
+                        dd('画像アクセス失敗');
+                    }
+                    // dd($img_b);
                     $res = $client->post($uri, 
                         [
                             'headers' => [
-                                'Content-Type'  => 'application/x-www-form-urlencoded',
+                                // 'Content-Type'  => 'application/x-www-form-urlencoded',
                                 'Authorization' => 'Bearer ' . $line->token,
                             ],
                             'form_params' => [
                                 'message' => PHP_EOL . $message,
-                            ]
-                        ]
+                                'imageFile' => $img_b
+                            ],
+                        ]   
                     );
+                    dd($res);
 
-                    \Log::debug('正常');
-                    History::insert(
-                        [
-                            'store_id' => $store_id,
-                            'title'=> $title,
-                            'content'=> $message,
-                            'send_at'=> date("Y/m/d H:i:s"),
-                        ]
-                    );
+                    // $message = '画像つきテスト送信';
+                    // // $image_path = 'C:\WebApp\work\20230430\work\login.jpg';
+                    // $image_path = 'C:\WebApp\work\20230430\work\sample\a.png';
+                    // // $image_path = 'http://127.0.0.1:8000/storage/message/template/0vz2Mwz7D4kOcrVGXrhQkmaMXnd04tfLKRA4ktGX.jpg';
+                    // if (!(is_file($image_path)))
+                    // {
+                    //     dd('画像アクセス失敗');
+                    // }
+                    // // dd('★★');
+                    // // $img_b = Psr7\Utils::tryFopen($image_path, 'rb');
+                    // // $img_b = fopen($image_path, 'rb');
+                    // // dd($test);
+                    // $res = $client->request('POST',$uri,[
+                    //     'headers' => [
+                    //         'Authorization' => 'Bearer ' . $line->token,
+                    //         'Content-Type' => 'multipart/form-data',
+                    //     ],
+                    //     'multipart' => [
+                    //         [
+                    //             'name' => 'message',
+                    //             'contents' =>  PHP_EOL . $message
+                    //         ]
+                    //     ]
+                    // ]);
+
+
+                    // dd($res);
+
+                    // $message = '画像つきテスト送信';
+                    // // $image_path = 'C:\WebApp\work\20230430\work\login.jpg';
+                    // $image_path = 'C:\WebApp\work\20230430\work\sample\a.png';
+                    // // $image_path = 'http://127.0.0.1:8000/storage/message/template/0vz2Mwz7D4kOcrVGXrhQkmaMXnd04tfLKRA4ktGX.jpg';
+                    // if (!(is_file($image_path)))
+                    // {
+                    //     dd('画像アクセス失敗');
+                    // }
+                    // // $img_b = Psr7\Utils::tryFopen($image_path, 'rb');
+                    // $img_b = fopen($image_path, 'rb');
+                    // // dd($test);
+                    // $res = $client->request('POST',$uri,[
+                    //     'headers' => [
+                    //         'Authorization' => 'Bearer ' . $line->token,
+                    //         'Content-Type' => 'multipart/form-data'
+                    //     ],
+                    //     'multipart' => [
+                    //         [
+                    //             'name' => 'message',
+                    //             'contents' =>  PHP_EOL . $message
+                    //         ],
+                    //         [
+                    //             // 'name' => 'imageFile',
+                    //             'name' => 'files',
+                    //             'contents' => ['imageFile' => $img_b]
+                    //             // 'contents' => fopen($image_path, "rb")
+                    //         ]
+                    //     ]
+                    // ]);
+                    // dd($res);
+
+
+
+
+
+
+                    // $res = $client->request('POST',$uri,[
+                    //     'headers' => [
+                    //         'Authorization' => 'Bearer ' . $line->token,
+                    //         'Content-Type' => 'multipart/form-data'
+                    //     ],
+                    //     'multipart' => [
+                    //         [
+                    //             'name' => 'message',
+                    //             'contents' =>  PHP_EOL . $post['content']
+                    //         ],
+                    //         [
+                    //             'name' => 'imageFile',
+                    //             'contents' => Psr7\Utils::tryFopen($image_path, 'rb')
+                    //             // 'contents' => fopen($image_path, "rb")
+                    //         ]
+                    //     ]
+                    // ]);
+
+
+                    // $image_path = 'http://127.0.0.1:8000/storage/message/template/0vz2Mwz7D4kOcrVGXrhQkmaMXnd04tfLKRA4ktGX.jpg';
+
+                    // $res = $client->request('POST',$uri,[
+                    //     'headers' => [
+                    //         'Authorization' => 'Bearer ' . $line->token,
+                    //         'Content-Type' => 'application/x-www-form-urlencoded'
+                    //     ],
+                    //     'form_params' => [
+                    //         [
+                    //             'message' => PHP_EOL . $post['content'],
+                    //             'imageFile' => 
+                    //         ]
+                    //     ]
+                    // ]);
+
+                    // $res = $client->post($uri, 
+                    //     [
+                    //         'headers' => [
+                    //             // 'Content-Type'  => 'application/x-www-form-urlencoded',
+                    //             'Authorization' => 'Bearer ' . $line->token,
+                    //         ],
+                    //         'form_params' => [
+                    //             'message' => PHP_EOL . $post['content'],
+                    //             'imageFile' => $image_path
+                    //         ]
+                    //     ]
+                    // );
+
+                    // $aaa = fopen($image_path, 'rb');
+                    // dd($image_path);
+                    
+
+                    // $res = $client->post($uri, 
+                    //     [
+                    //         'headers' => [
+                    //             // 'Content-Type'  => 'application/x-www-form-urlencoded',
+                    //             'Authorization' => 'Bearer ' . $line->token,
+                    //         ],
+                    //         'form_params' => [
+                    //             'message' => PHP_EOL . $post['content'],
+                    //             'imageFile' => fopen($image_path, 'rb')
+                    //         ]
+                    //     ]
+                    // );
+                    // dd($res);
                 }
                 catch (ClientException $e) {
-                    Line::where('id', $line->id)->delete();
+                    dd($e);
+                    // Line::where('id', $line->id)->delete();
                 }
             }
-        return redirect(route('owner.message'));
+
+
+
+        // $client = new Client();
+        //     foreach ($lines as $line){
+        //         try {
+        //             $res = $client->post($uri, 
+        //                 [
+        //                     'headers' => [
+        //                         'Content-Type'  => 'application/x-www-form-urlencoded',
+        //                         'Authorization' => 'Bearer ' . $line->token,
+        //                     ],
+        //                     'form_params' => [
+        //                         'message' => PHP_EOL . $post['content'],
+        //                     ]
+        //                 ]
+        //             );
+
+        //             \Log::debug('正常');
+        //             History::insert(
+        //                 [
+        //                     'store_id' => $store_id,
+        //                     'title'=> array_key_exists('title',$post) ? $post['title'] : null,
+        //                     'content'=> $post['content'],
+        //                     'send_at'=> date("Y/m/d H:i:s"),
+        //                 ]
+        //             );
+        //         }
+        //         catch (ClientException $e) {
+        //             Line::where('id', $line->id)->delete();
+        //         }
+        //     }
+        return redirect(route('owner.schedule'));
     }
+
+
+
+
+
+    // public function send(Request $request)
+    // {
+    //     $uri = 'https://notify-api.line.me/api/notify';
+
+    //     $store_id = Auth::user()->store_id;
+    //     $lines = Line::select('id','token')->where('store_id', $store_id)->get();
+    //     $title = $request->title;
+    //     $message = $request->content;
+
+    //     $client = new Client();
+    //         foreach ($lines as $line){
+    //             try {
+    //                 $res = $client->post($uri, 
+    //                     [
+    //                         'headers' => [
+    //                             'Content-Type'  => 'application/x-www-form-urlencoded',
+    //                             'Authorization' => 'Bearer ' . $line->token,
+    //                         ],
+    //                         'form_params' => [
+    //                             'message' => PHP_EOL . $message,
+    //                         ]
+    //                     ]
+    //                 );
+
+    //                 \Log::debug('正常');
+    //                 History::insert(
+    //                     [
+    //                         'store_id' => $store_id,
+    //                         'title'=> $title,
+    //                         'content'=> $message,
+    //                         'send_at'=> date("Y/m/d H:i:s"),
+    //                     ]
+    //                 );
+    //             }
+    //             catch (ClientException $e) {
+    //                 Line::where('id', $line->id)->delete();
+    //             }
+    //         }
+    //     return redirect(route('owner.message'));
+    // }
 
     // public function send(Request $request)
     // {

@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->unsignedBigInteger('id', true);
-            $table->string('name', 50);
-            $table->string('url_name', 20)->unique();
+            $table->string('name', config('field.store.name.max'));
+            $table->string('url_name', config('field.store.url_name.max'))->unique();
             $table->string('client_id');
             $table->string('client_secret');
             $table->softDeletes();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent()->nullable();
+            $table->timestamp('updated_at')->useCurrent()->nullable();
         });
     }
 

@@ -15,9 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id', true);
             $table->string('title');
             $table->string('title_color');
-            $table->longText('content');
-            // $table->dateTime('plan_at')->nullable();
-            // $table->dateTime('send_at')->nullable();
+            $table->text('content');
             $table->unsignedBigInteger('store_id');
             $table->unsignedBigInteger('user_id');
             $table->softDeletes();

@@ -8,8 +8,9 @@ export default defineConfig({
                 'resources/sass/app.scss',
                 'resources/js/app.js',
                 
-                'resources/sass/owner/component.scss',
-                'resources/js/owner/component.js',
+                'resources/sass/component.scss',
+                'resources/js/component.js',
+                // 'resources/js/schedule.js',
             ],
             refresh: true,
         }),

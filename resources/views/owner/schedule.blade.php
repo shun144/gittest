@@ -8,48 +8,54 @@
 
 @section('content')
 
-  <div class="row">
-    
-    <button class="btn btn-success" data-toggle="modal" data-target="#send_message">
+
+<div class="card">
+  <div class="card-header">
+    <button class="btn btn-success" data-toggle="modal" data-target="#post_message">
       即時配信
     </button>
   </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-3">        
+        <div class="sticky-top mb-3">
+          <div class="card">
 
+            <div class="card-header">
+              <div class="d-flex justify-content-between">
+                <h5 class="d-flex align-items-center mb-0">定型メッセージ</h5>
+                <button class="btn btn-success" data-toggle="modal" data-target="#add_template">
+                  作成
+                </button>
+              </div>
+            </div>
 
-  <div class="row">
-    <div class="col-md-3">        
-      <div class="sticky-top mb-3">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">定型メッセージ</h4>
-            
-            <button class="btn btn-success" data-toggle="modal" data-target="#add_template">
-              作成
-            </button>
-          </div>
-          <div class="card-body">
-            <div id="external-events">
-              @foreach ($templates as $item)
+            <div class="card-body">
+              <div id="external-events">
+                @foreach ($templates as $item)
                 <div class="external-event" data-msgid="{{ $item->id }}" style="color:white; background-color:{{$item->title_color}}">
                   {{$item->title}}
                 </div>
-              @endforeach
+                @endforeach
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="col-md-9">
-      <div class="card card-primary">
-        <div class="card-body p-0">
-          <div id="calendar"></div>
+  
+      <div class="col-md-9">
+        <div class="card card-primary">
+          <div class="card-body p-0">
+            <div id="calendar"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  @include('owner.modals.send_message')
+</div>
+
+  @include('owner.modals.post_message')
   @include('owner.modals.add_template')
   @include('owner.modals.edit_template')
 
@@ -60,27 +66,42 @@
 
 @section('css')
   <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.css') }}"> 
-  @vite(['resources/sass/owner/component.scss'])
+  <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
+  @vite(['resources/sass/component.scss'])
 @stop
 
 @section('js')
   <script src="{{ asset('vendor/adminlte/plugins/moment/moment.min.js') }}"></script>
   <script src="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.js') }}"></script>
-  @vite(['resources/js/owner/component.js'])
+  {{-- <script src="{{ asset('vendor/adminlte/plugins/jquery/jquery.min.js') }}"></script> --}}
+  <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
+  @vite(['resources/js/component.js'])
+  {{-- @vite(['resources/js/schedule.js']) --}}
+
+
+
 <script>
+
+
+  @if (session('edit_template_complate_flushMsg'))
+  $(function () {toastr.success('{{ session('edit_template_complate_flushMsg') }}');});
+  @endif
 
   // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
   // 定例メッセージ取得
   let templateMessages = null;
-  $.ajax({url: '{{route('template.get')}}', type:'get'})
+  $.ajax(
+    {url: '{{route('template.get')}}', type:'get'})
   .then(
   function (data) {
     templateMessages = data;
   },
-  function () {console.error("読み込み失敗");}); 
-  // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+  function () {
+    console.error("読み込み失敗");
+  }); 
 
-  jQuery(function($) {
+
+  $(function(){
 
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     //  定例メッセージクリックイベント
@@ -123,30 +144,6 @@
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 
 
-
-
-
-    // function post_send() {
-    //   $.ajax({
-    //     url:'{{ route('owner.schedule')}}',
-    //     type:'post',
-    //     headers: {'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')},
-    //     dataType:'text',
-    //     async:true,
-    //     cache:false,
-    //     data: {
-    //       id: 1,
-    //       name: 'annkw'
-    //     }
-    //   }).done(function(data) {
-    //     console.log('成功!!')
-    //   }).fail(function(jqXHR, textStatus, errorThrown){
-    //     console.log(jqXHR);
-    //     console.log(textStatus);
-    //     console.log(errorThrown);
-    //   })
-    // }
-
     function ini_events(ele) {
       ele.each(function () {
         $(this).draggable({
@@ -157,7 +154,6 @@
       })
     }
     ini_events($('#external-events div.external-event'))
-
 
     let date = new Date()
     let d = date.getDate(), m = date.getMonth(), y = date.getFullYear()

@@ -3,45 +3,43 @@
 @section('title','Dashboard')
 
 @section('content_header')
-    <h1>連携LINEユーザ一覧</h1>
+    <h1>配信履歴一覧</h1>
 @stop
 
 @section('content')
 
 
-  <div class="card mx-auto" style="width:70rem;">
-    <div class="card-header">
-      <a href="{{$reg_url}}" target="_blank" rel="noopener noreferrer">ユーザLINE連携ページ</a>
-    </div>
+  <div class="card mx-auto">
+    {{-- <div class="card-header">
+      <a href="{{route('store.add.view')}}" class="btn btn-success">店舗追加</a>
+    </div> --}}
 
     <div class="card-body">
       <table id="line_user_table" class="table table-striped table-bordered" style="table-layout:fixed;">
         <thead>
           <tr>
-            @foreach (array("操作","状態","LINE名","登録日時") as $col)
+            @foreach (["参照","配信日時","タイトル","内容","画像有無","状態","エラー"] as $col)
             <th class="text-center">{{$col}}</th>
             @endforeach
           </tr>
         </thead>
         <tbody>
-          @foreach ($lines as $line)
+          @foreach ($posts as $post)
           <tr>
-            <td>
-              <div class="row justify-content-around">
-                <form action="{{route('store.del')}}" method="post" onSubmit="return confirmDelete(event)">
-                  @csrf
-                  <button type="submit" class="btn btn_del_store">
-                    {{-- <input type="hidden" name="user_id" value={{$store->user_id}}>
-                    <input type="hidden" name="store_id" value={{$store->store_id}}>
-                    <input type="hidden" class="hid_store_name" value={{$store->name}}> --}}
-                    <i class="fas fa-trash-alt text-muted"></i>
-                  </button>
-                </form>
-              </div>
+            <td class="d-flex justify-content-center">
+              <form action="{{route('store.edit.view')}}" method="get">
+                <button type="submit" class="btn btn_show">
+                  {{-- <input type="hidden" name="store_id" value={{$store->store_id}}> --}}
+                  <i class="fas fa-eye text-muted"></i>
+                </button>
+              </form>
             </td>
-            <td style="text-align:center">{{$line->is_valid == true ? '有効':'無効'}}</td>
-            <td class="omit_td">{{$line->user_name}}</td>
-            <td class="omit_td">{{$line->created_at}}</td>
+            <td class="omit_td">{{$post->send_at}}</td>
+            <td class="omit_td">{{$post->title}}</td>
+            <td class="omit_td">{{$post->content}}</td>
+            <td class="omit_td">{{$post->img_url == Null ? '無し' : '有り'}}</td>
+            <td class="omit_td">{{$post->status}}</td>
+            <td class="omit_td">{{$post->err_info}}</td>
           </tr>
         @endforeach
         </tbody>
@@ -57,11 +55,7 @@
 <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
 
 <style>
-  .btn_del_store:hover i{
-    color: red !important;
-  }
-
-  .btn_edit_store:hover i{
+  .btn_show:hover i{
     color: blue!important;
   }
 
@@ -111,10 +105,13 @@ $(function () {
     autoWidth: false,
     responsive:false,
     columnDefs:[
-      { targets:0, width:60},
-      { targets:1, width:60},
+      { targets:0, width:40},
+      { targets:1, width:120},
+      { targets:2, width:120},
+      { targets:4, width:80},
+      { targets:5, width:80},
     ],
-  });
+  }); 
 });
 
 </script>

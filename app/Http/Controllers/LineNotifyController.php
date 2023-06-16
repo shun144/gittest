@@ -9,32 +9,33 @@ use \GuzzleHttp\Client;
 use App\Models\Line;
 use App\Models\Store;
 use Illuminate\Http\Request;
-
-
-// class Controller extends BaseController
-// {
-//     use AuthorizesRequests, ValidatesRequests;
-// }
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class LineNotifyController extends Controller
 {
     public function register(Request $request)
     {
-        $store = Store::select('name', 'url_name', 'client_id')->where('url_name', '=', $request->route('url_name'))->first();
-        if ($store === null) {
-            dd('なし!');
-           // user doesn't exist
-        }
-        return view('line_notify.register', compact('store'));
+        $url_name = $request->route('url_name');
+
+        $store = DB::table('stores')->select(['name', 'url_name', 'client_id'])
+        ->where('url_name', $url_name)
+        ->first();
+
+        return view('owner.register', compact('store'));
+        
+
+        // $store = Store::select('name', 'url_name', 'client_id')->where('url_name', '=', $request->route('url_name'))->first();
+        // if ($store === null) {
+        //     dd('なし!');
+        // }
+        // return view('line_notify.register', compact('store'));
     }
 
-    public function auth(Request $request)
+    public function viewLineAuth(Request $request)
     {
-        $post = $request->only(['url_name', 'client_id']);
-        // dd(Request::route()->getName());
-        
+        $post = $request->only(['url_name','client_id']);        
         $redirect_url = url($post['url_name'] . '/callback');
-        // $redirect_url = url('notify/callback/' . $post['url_name']);
 
         $uri = 'https://notify-bot.line.me/oauth/authorize?' .
             'response_type=code' . '&' .
@@ -43,30 +44,7 @@ class LineNotifyController extends Controller
             'scope=notify' . '&' .
             'state=' . csrf_token() . '&' .
             'response_mode=form_post';
-
-        // dd(url('notify/callback/' . $redirect_url));
-
-        // INE_NOTIFY_CLIENT_CALLBACK_URI="http://127.0.0.1:8000/notify/callback"
-
-        // $uri = 'https://notify-bot.line.me/oauth/authorize?' .
-        //     'response_type=code' . '&' .
-        //     'client_id=' . $request->client_id . '&' .
-        //     'redirect_uri=' . config('services.line_notify.redirect_uri') . '&' .
-        //     'scope=notify' . '&' .
-        //     'state=' . csrf_token() . '&' .
-        //     'response_mode=form_post';
-
-        // $client_id = Store::select('name','client_id')->where('id', '=', $request->route('id'))->first();
-
-        // $uri = 'https://notify-bot.line.me/oauth/authorize?' .
-        //     'response_type=code' . '&' .
-        //     'client_id=' . config('services.line_notify.client_id') . '&' .
-        //     'redirect_uri=' . config('services.line_notify.redirect_uri') . '&' .
-        //     'scope=notify' . '&' .
-        //     'state=' . csrf_token() . '&' .
-        //     'response_mode=form_post';
         return redirect($uri);
-        // return redirect($uri)->with('result', '完了');
     }
 
 
@@ -108,7 +86,8 @@ class LineNotifyController extends Controller
             'user_name' => $status_json->target,
             'token' => $access_token,
             'is_valid' => ($status_json->status == 200) ? true : false,
-            'store_id' => $store->id
+            'store_id' => $store->id,
+            'created_at' => Carbon::now()
         ]);
         return redirect(url($url_name . '/register'))->with('flash_message', 'LINE連携が完了しました。');
         // return redirect(url($url_name . '/register'));

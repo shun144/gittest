@@ -1,5 +1,6 @@
 jQuery(function($) {
 
+
   $(document).on('click','.btn_del_file', function(e){
     let target = e.target
     let parent = $(target).closest('.input-group');
@@ -43,7 +44,7 @@ jQuery(function($) {
 
     // プレビュー初期化
     preview.empty();
-    if (!fileList || fileList.length > 5) {
+    if (!fileList || fileList.length > 1) {
       text_form.val(null);
       return false;
     }
@@ -76,6 +77,20 @@ jQuery(function($) {
   })
 
 
+  // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+  // 即時配信
+  // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+  $(document).on('click','.btnPostImi', function(e){
+    e.preventDefault();
+    validatePostMsgInput('#post_message', "#form_post_message")
+  })
+
+  $('#post_message').on('hidden.bs.modal', function(e) {
+    const modal = $(e.target)
+    modal.find('textarea.content_form').removeClass("is-invalid");
+  })
+
+
   
   // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
   // テンプレート追加
@@ -105,8 +120,6 @@ jQuery(function($) {
     modal.find('input.title_form').removeClass("is-invalid");
     modal.find('textarea.content_form').removeClass("is-invalid");
   })
-
-
 
 
 
@@ -148,6 +161,33 @@ jQuery(function($) {
   // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
   // 関数
   // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+  function validatePostMsgInput(modalId, submitId){
+    const modal = $(modalId)
+    const inputContent = modal.find('textarea.content_form')
+    const contentFeedback = modal.find('.content_feedback')
+    let is_err = false
+
+    if (!inputContent.val()) {
+      contentFeedback.text('必須項目です');
+      inputContent.addClass("is-invalid");
+      is_err = true
+    }
+    if (inputContent.val().length > 1000)
+    {
+      contentFeedback.text('入力可能文字数は1000文字です');
+      inputContent.addClass("is-invalid");
+      is_err = true
+    }
+    if (is_err) {
+      return;
+    }
+    else {
+      $(submitId).submit();
+    }
+  };
+
+
+
   function validateTemplateInput(modalId, submitId){
     const modal = $(modalId)
     const inputTitle = modal.find('input.title_form')
@@ -185,7 +225,7 @@ jQuery(function($) {
     else {
       $(submitId).submit();
     }
-  }
+  };
 
   function validateScheduleInput(modalId, submitId){
     const modal = $(modalId)
@@ -233,7 +273,7 @@ jQuery(function($) {
     else {
       $(submitId).submit();
     }
-  }
+  };
 
 });
 

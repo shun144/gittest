@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('user_name');
             $table->string('token');
             $table->boolean('is_valid')->comment('有効フラグ');
-            $table->foreign('store_id')->references('id')->on('stores');
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent()->nullable();
             $table->timestamp('updated_at')->useCurrent()->nullable();
+            $table->foreign('store_id')->references('id')->on('stores')->onDelete('cascade');
         });
     }
 

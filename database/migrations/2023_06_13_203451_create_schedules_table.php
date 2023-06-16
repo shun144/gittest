@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->unsignedBigInteger('id', true);
             $table->dateTime('plan_at')->nullable();
             $table->dateTime('send_at')->nullable();
@@ -20,7 +20,6 @@ return new class extends Migration
             $table->timestamp('created_at')->useCurrent()->nullable();
             $table->timestamp('updated_at')->useCurrent()->nullable();
             $table->foreign('message_id')->references('id')->on('messages');
-            
         });
     }
 
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('schedules');
     }
 };

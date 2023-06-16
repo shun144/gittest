@@ -8,6 +8,7 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 use JeroenNoten\LaravelAdminLte\Events\BuildingMenu;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -28,65 +29,21 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(BuildingMenu::class, function (BuildingMenu $event) {
-            // $event->menu->remove('change_password');
-            // dd(auth()->user()['role']);
-            if (auth()->user()['role'] == 'admin'){
+
+            // 管理者メニュー
+            if (Gate::allows('isAdmin')){
                 $event->menu->add(
-                    [
-                        'text' => '店舗情報一覧',
-                        'url' => route('admin.store'),
-                        'icon' => 'fas fa-fw fa-user',
-                    ],
-                    // [
-                    // 'text' => 'チャート',
-                    // 'url' => route('admin.chart'),
-                    // 'icon' => 'fas fa-fw fa-user',
-                    // ]
+                    ['text' => '店舗情報一覧','url' => route('admin.store'), 'icon' => 'fas fa-fw fa-user',],
                 );
             }
-            // 管理者以外
+            // 管理者以外メニュー
             else {
                 $event->menu->add(
-                    [
-                        'text' => '配信',
-                        'url' => route('owner.schedule'),
-                        'icon' => 'fas fa-fw fa-user',
-                    ],
-                    [
-                        'text' => '連携LINEユーザ一覧',
-                        'url' => route('owner.line_users'),
-                        'icon' => 'fas fa-fw fa-user',
-                    ],
-
+                    ['text' => '配信', 'url' => route('owner.schedule'), 'icon' => 'fas fa-fw fa-user'],
+                    ['text' => '連携LINEユーザ一覧', 'url' => route('owner.line_users'), 'icon' => 'fas fa-fw fa-user'],
+                    ['text' => '配信履歴一覧','url' => route('owner.history'),'icon' => 'fas fa-fw fa-user']
                 ); 
             }
-            // $event->menu->add(
-            //     // [
-            //     // 'text' => 'プロフィール',
-            //     // 'url' => route('admin.profile'),
-            //     // 'icon' => 'fas fa-fw fa-user',
-            //     // ],
-            //     [
-            //     'text' => '店舗情報一覧',
-            //     'url' => route('admin.store'),
-            //     'icon' => 'fas fa-fw fa-user',
-            //     ],
-            //     // [
-            //     // 'text' => 'スタッフ情報一覧',
-            //     // 'url' => route('admin.member'),
-            //     // 'icon' => 'fas fa-fw fa-user',
-            //     // ],
-            //     [
-            //     'text' => '配信',
-            //     'url' => route('admin.message'),
-            //     'icon' => 'fas fa-fw fa-user',
-            //     ],
-            //     // [
-            //     // 'text' => 'チャート',
-            //     // 'url' => route('admin.chart'),
-            //     // 'icon' => 'fas fa-fw fa-user',
-            //     // ]
-            // );
         });
     }
 

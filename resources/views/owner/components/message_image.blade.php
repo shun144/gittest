@@ -14,6 +14,6 @@
     </div>
     <input type="text" class="filename_view form-control" readonly="">
   </div> 
-  <small id="imgFileHelp" class="mt-0 mb-2 form-text text-muted">送信可能な拡張子はpng,jpegです（上限ファイル数：5）</small>
+  <small id="imgFileHelp" class="mt-0 mb-2 form-text text-muted">送信可能な拡張子はpng,jpegです（上限ファイル数：1）</small>
   <p class="col-12 m-0 p-0 image_preview"></p>
 </div>

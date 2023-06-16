@@ -6,49 +6,253 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use App\Models\Message;
+use \GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use \GuzzleHttp\Exception\ClientException;
 // use App\Models\Template;
+use App\Models\History;
 use App\Models\Image;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
+use App\Jobs\PostMessageJob;
+use Illuminate\Support\Facades\Artisan;
 
 class ScheduleController extends Controller
 {
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 即時配信
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function postMessage(Request $request)
+    {
+        try {
+            $inputs = $request->only(['content']);
+            $inputs['title'] = $request->has('title') ? $request->only(['title']):'ー';
+            $inputs['store_id'] = Auth::user()->store_id;
+
+            $img_path = '';
+            if ($request->has('imagefile')){
+                $image = $request->file('imagefile')[0];
+                $save_path = Storage::putFile(config('app.save_storage.image'), $image);
+                $save_name = basename($save_path);        
+                $img_path = url(config('app.access_storage.image').'/'.$save_name);
+            }
+            
+            $inputs['img_path'] = $img_path;
+
+            $history_id = DB::table('histories')
+            ->insertGetId(
+                [
+                    'store_id' => $inputs['store_id'],
+                    'title'=> $inputs['title'],
+                    'content'=> $inputs['content'],
+                    'status'=> '配信待ち',
+                    'img_url' => $img_path,
+                    'created_at'=> Carbon::now()
+                ]
+            );
+            $inputs['history_id'] = $history_id;
+            PostMessageJob::dispatch($inputs);
+        }
+        catch (\Exception $e) {
+            \Log::error($e->getMessage());
+        }
+    }
+
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // スケジュール取得
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function getSchedule()
+    {   
+        try {
+            $data = Message::select(
+                'messages.id as id',
+                'messages.title as title',
+                'schedules.plan_at as start',
+                'messages.title_color as backgroundColor',
+                'messages.title_color as borderColor',
+                DB::raw("'true' as allDay"),
+                'messages.content as content',
+                'schedules.plan_at as plan_at',
+            )->where('messages.store_id', Auth::user()->store_id)
+            ->join('schedules','schedules.message_id','=','messages.id')
+            ->whereNull('schedules.deleted_at')
+            ->whereNotNull('schedules.plan_at')
+            ->with(['images' => function ($query) {
+                $query->select('message_id','images.id as image_id', 'save_name', 'org_name');
+            }])
+            ->get();
+            return $data;
+        }
+        catch (\Exception $e) {
+            \Log::error($e->getMessage());
+        }
+    }
+
 
     public function getTemplateDetail()
     {
-        $data = Message::select('messages.id', 'title', 'title_color', 'content')
-        ->join('templates','templates.message_id','=','messages.id')
-        ->where('store_id', Auth::user()->store_id)
-        ->whereNull('templates.deleted_at')
-        ->with(['images' => function ($query) {
-            $query->select('message_id','images.id as image_id', 'save_name', 'org_name');
-        }])
-        ->get();
-        return $data;
+        try {
+            $data = Message::select('messages.id', 'title', 'title_color', 'content')
+            ->join('templates','templates.message_id','=','messages.id')
+            ->where('store_id', Auth::user()->store_id)
+            ->whereNull('templates.deleted_at')
+            ->with(['images' => function ($query) {
+                $query->select('message_id','images.id as image_id', 'save_name', 'org_name');
+            }])
+            ->get();
+            return $data;
+        }
+        catch (\Exception $e) {
+            \Log::error($e->getMessage());
+        }
     }
 
-
-    public function getSchedule()
+    public function insertTemplate(Request $request)
     {
-        $data = Message::select(
-            'messages.id as id',
-            'messages.title as title',
-            'posts.plan_at as start',
-            'messages.title_color as backgroundColor',
-            'messages.title_color as borderColor',
-            DB::raw("'true' as allDay"),
-            'messages.content as content',
-            'posts.plan_at as plan_at',
-        )->where('messages.store_id', Auth::user()->store_id)
-        ->join('posts','posts.message_id','=','messages.id')
-        ->whereNull('posts.deleted_at')
-        ->whereNotNull('posts.plan_at')
-        ->with(['images' => function ($query) {
-            $query->select('message_id','images.id as image_id', 'save_name', 'org_name');
-        }])
-        ->get();
-        return $data;
+        $post = $request->only(['title','content','title_color']);
+        $images = $request->file('imagefile');
+        $para = array_merge($post,array('images'=>$images));
+        $user = Auth::user();
+        DB::transaction(function() use($para, $user)
+        {
+            $msg_id = Message::insertGetId(
+                [
+                    'user_id' => $user->id,
+                    'store_id' => $user->store_id,
+                    'title'=> $para['title'],
+                    'title_color' => strtoupper($para['title_color']),
+                    'content'=> $para['content']
+                ]
+            );
+            DB::table('templates')->insert(['message_id' => $msg_id]);
+            
+            if ($para['images'])
+            {
+                foreach ($para['images'] as $img)
+                {
+                    $save_path = Storage::putFile(config('app.save_storage.image'), $img);
+                    $save_name = basename($save_path);
+                    $org_name = $img->getClientOriginalName();                    
+                    Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
+                }
+            }
+        });
+
+        return redirect(route('owner.schedule'));
     }
+
+
+
+    // public function insertTemplate(Request $request)
+    // {
+    //     $post = $request->only(['title','content','title_color']);
+    //     $images = $request->file('imagefile');
+    //     $para = array_merge($post,array('images'=>$images));
+    //     $user = Auth::user();
+    //     DB::transaction(function() use($para, $user)
+    //     {
+    //         $msg_id = Message::insertGetId(
+    //             [
+    //                 'user_id' => $user->id,
+    //                 'store_id' => $user->store_id,
+    //                 'title'=> $para['title'],
+    //                 'title_color' => strtoupper($para['title_color']),
+    //                 'content'=> $para['content']
+    //             ]
+    //         );
+    //         DB::table('templates')->insert(['message_id' => $msg_id]);
+            
+    //         if ($para['images'])
+    //         {
+    //             foreach ($para['images'] as $img)
+    //             {
+    //                 $save_path = Storage::putFile(config('app.save_storage.image'), $img);
+    //                 $save_name = basename($save_path);
+    //                 $org_name = $img->getClientOriginalName();                    
+    //                 Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
+    //             }
+    //         }
+    //     });
+    //     return redirect(route('owner.schedule'));
+    // }
+
+
+
+
+    // public function testPost()
+    // {
+    //     $message = 'テストメッセージ';
+    //     $image_path = 'C:\WebApp\work\20230430\work\login.jpg';
+        
+    //     $API = 'https://notify-api.line.me/api/notify';
+    //     $store_id = Auth::user()->store_id;
+    //     $lines = DB::table('lines')->select('id','token')->where('store_id', $store_id)->get();
+    //     $line = $lines[0];
+    //     $img_path = 'https://img07.shop-pro.jp/PA01423/383/product/135946838.jpg';
+    //     $cfile = new \CURLFile($img_path);
+    //     $data = array(
+    //         'message' => ' ',
+    //         'imageFile' => $cfile
+    //     );
+
+    //     $chOne = curl_init();
+    //     curl_setopt($chOne, CURLOPT_URL, $API); 
+    //     // curl_setopt($chOne, CURLOPT_SSL_VERIFYHOST, 0);
+    //     // curl_setopt($chOne, CURLOPT_SSL_VERIFYPEER, 0);
+    //     curl_setopt($chOne, CURLOPT_POST, 1);
+    //     curl_setopt($chOne, CURLOPT_POSTFIELDS, $data);
+    //     $headers = array('Content-Type: multipart/form-data','Authorization: Bearer ' . $line->token);
+    //     curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
+    //     curl_setopt($chOne, CURLOPT_RETURNTRANSFER, 1);
+    //     $result = curl_exec($chOne);
+    //     // dd($result);
+
+    //     return redirect(route('owner.schedule'));
+    // }
+
+
+    // public function testPost()
+    // {
+    //     $message = 'テストメッセージ';
+    //     $image_path = 'C:\WebApp\work\20230430\work\login.jpg';
+        
+    //     $API = 'https://notify-api.line.me/api/notify';
+    //     $store_id = Auth::user()->store_id;
+    //     $lines = DB::table('lines')->select('id','token')->where('store_id', $store_id)->get();
+    //     $line = $lines[0];
+    //     $img_path = 'https://img07.shop-pro.jp/PA01423/383/product/135946838.jpg';
+    //     $cfile = new \CURLFile($img_path);
+    //     $data = array(
+    //         'message' => 'テスト送信',
+    //         'imageFile' => $cfile
+    //     );
+
+    //     $chOne = curl_init();
+    //     curl_setopt($chOne, CURLOPT_URL, $API); 
+    //     // curl_setopt($chOne, CURLOPT_SSL_VERIFYHOST, 0);
+    //     // curl_setopt($chOne, CURLOPT_SSL_VERIFYPEER, 0);
+    //     curl_setopt($chOne, CURLOPT_POST, 1);
+    //     curl_setopt($chOne, CURLOPT_POSTFIELDS, $data);
+    //     $headers = array('Content-Type: multipart/form-data','Authorization: Bearer ' . $line->token);
+    //     curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
+    //     curl_setopt($chOne, CURLOPT_RETURNTRANSFER, 1);
+    //     $result = curl_exec($chOne);
+
+    //     dd($result);
+        
+    //     return redirect(route('owner.schedule'));
+
+    // }
+
+
+
+
+
+
+
+
 
 
     public function insertSchedule(Request $request)
@@ -70,7 +274,7 @@ class ScheduleController extends Controller
                     'content'=> $post['content']
                 ]
             );
-            DB::table('posts')->insert(
+            DB::table('schedules')->insert(
                 [
                     'message_id' => $msg_id,
                     'plan_at' => $datatime
@@ -133,11 +337,9 @@ class ScheduleController extends Controller
                 'title_color' => $post['title_color'],
             ]);
 
-            DB::table('posts')
+            DB::table('schedules')
             ->where('message_id',$post['message_id'])
-            ->update([
-                'plan_at' => $datatime,
-            ]);
+            ->update(['plan_at' => $datatime, ]);
     
             $dt_images = DB::table('images')->where('message_id', $post['message_id']);
         
@@ -173,49 +375,14 @@ class ScheduleController extends Controller
 
 
 
-    public function insertTemplate(Request $request)
-    {
-        $post = $request->only(['title','content','title_color']);
-        $images = $request->file('imagefile');
-        $para = array_merge($post,array('images'=>$images));
-        $user = Auth::user();
-        DB::transaction(function() use($para, $user)
-        {
-            $msg_id = Message::insertGetId(
-                [
-                    'user_id' => $user->id,
-                    'store_id' => $user->store_id,
-                    'title'=> $para['title'],
-                    'title_color' => strtoupper($para['title_color']),
-                    'content'=> $para['content']
-                ]
-            );
-            DB::table('templates')->insert(['message_id' => $msg_id]);
-            
-            if ($para['images'])
-            {
-                foreach ($para['images'] as $img)
-                {
-                    $save_path = Storage::putFile(config('app.save_storage.image'), $img);
-                    $save_name = basename($save_path);
-                    $org_name = $img->getClientOriginalName();                    
-                    Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
-                }
-            }
-        });
-        return redirect(route('owner.schedule'));
-    }
+
 
 
 
     public function updateTemplate(Request $request)
     {  
-        
         $post = $request->only(['message_id', 'title', 'content','title_color','has_file']);           
         $images = $request->file('imagefile');
-        
-        // dd($post);
-        // \Log::info('Something happends');
 
         DB::transaction(function() use($post, $images){
             DB::table('messages')
@@ -253,9 +420,23 @@ class ScheduleController extends Controller
                 }
             }
         });
-        return redirect(route('owner.schedule'));
+        return redirect(route('owner.schedule'))->with('edit_template_complate_flushMsg','定型テンプレートの更新が完了しました');
     }
 
+    public function deleteTemplate(Request $request)
+    {
+        dd('test');
+        try {
+            $post = $request->only(['template_id']);
+
+            Template::find($post['template_id'])->delete();
+    
+            return redirect(route('owner.schedule'))->with('delete_template_complate_flushMsg','定型テンプレートの削除が完了しました');
+        }
+        catch (\Exception $e) {
+            \Log::error($e->getMessage());
+        }
+    }
 
 
 

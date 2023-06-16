@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('histories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('store_id');
-            $table->dateTime('send_at');
-            $table->string('title');
-            $table->string('content');
+            $table->dateTime('send_at')->nullable();
+            $table->string('title')->nullable();
+            $table->text('content');
             $table->string('img_url')->nullable();
+            $table->string('status');
+            $table->text('err_info')->nullable();
             $table->timestamp('created_at')->useCurrent()->nullable();
             $table->timestamp('updated_at')->useCurrent()->nullable();
             $table->foreign('store_id')->references('id')->on('stores');
