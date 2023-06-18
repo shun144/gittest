@@ -220,10 +220,11 @@ jQuery(function($) {
     }
 
     if (is_err) {
-      return;
+      return false;
     }
     else {
-      $(submitId).submit();
+      return true;
+      // $(submitId).submit();
     }
   };
 

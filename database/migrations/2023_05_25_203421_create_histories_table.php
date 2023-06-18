@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('histories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('store_id');
-            $table->dateTime('send_at')->nullable();
+            $table->dateTime('start_at')->nullable();
+            $table->dateTime('end_at')->nullable();
             $table->string('title')->nullable();
             $table->text('content');
             $table->string('img_url')->nullable();

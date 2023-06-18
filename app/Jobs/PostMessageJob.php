@@ -29,16 +29,7 @@ class PostMessageJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
-    // public function __construct()
-    // {
-    //     //
-    // }
-
     public array $inputs;
-
     public function __construct(array $inputs)
     {
         $this->inputs = $inputs;
@@ -51,7 +42,8 @@ class PostMessageJob implements ShouldQueue
     {
         try {
 
-            \Log::info('即時投稿開始');
+            // \Log::info('UserID:'. Auth::user()->id .' 即時投稿 開始');
+            
             $title = $this->inputs['title'];
             $message = PHP_EOL . $this->inputs['content'];
             $img_path = $this->inputs['img_path'];
@@ -61,7 +53,7 @@ class PostMessageJob implements ShouldQueue
             DB::table('histories') ->where('id', $history_id )
             ->update([
                 'status'=> '配信中',
-                'send_at'=> Carbon::now(),
+                'start_at'=> Carbon::now(),
                 'updated_at'=> Carbon::now()
             ]);
 
@@ -104,10 +96,11 @@ class PostMessageJob implements ShouldQueue
             ->update(
                 [
                     'status'=> $result,
+                    'end_at'=> Carbon::now(),
                     'err_info' => empty($err_list) ? 'ー' : join('/', $err_list),
                     'updated_at'=> Carbon::now()
                 ]);
-            \Log::info('即時投稿完了');
+            // \Log::info('UserID:'. Auth::user()->id .' 即時投稿 終了');
         } 
         catch (\Exception $e) {
             \Log::error($e->getMessage());

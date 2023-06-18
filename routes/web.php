@@ -34,9 +34,16 @@ Route::group(['prefix' => 'admin','middleware' => ['auth','can:isAdmin']], funct
 // オーナーページ
 Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], function () {
     Route::get('/schedule', [OwnerController::class, 'getTemplateOverview'])->name('owner.schedule');
+    
+    //★dummy
+    Route::get('/dummy', [ScheduleController::class, 'dummy'])->name('dummy');
+    
+    
     Route::get('/line-users', [OwnerController::class, 'viewLineUsers'])->name('owner.line_users');
+    Route::post('/line-users-edit', [OwnerController::class, 'updateLineUser'])->name('line_users.edit');
 
     Route::get('/history', [OwnerController::class, 'viewPostHistory'])->name('owner.history');
+    Route::get('/history-info', [OwnerController::class, 'viewPostHistoryInfo'])->name('owner.history.info');
 
     Route::get('/template-get', [ScheduleController::class, 'getTemplateDetail'])->name('template.get');
     Route::post('/message-add', [ScheduleController::class, 'insertTemplate'])->name('template.add');
@@ -46,6 +53,7 @@ Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], fu
     Route::get('/schedule-get', [ScheduleController::class, 'getSchedule'])->name('schedule.get');
     Route::post('/schedule-add', [ScheduleController::class, 'insertSchedule'])->name('schedule.add');
     Route::post('/schedule-edit', [ScheduleController::class, 'updateSchedule'])->name('schedule.edit');
+    Route::post('/schedule-del', [ScheduleController::class, 'deleteSchedule'])->name('schedule.del');
     
     Route::post('/post', [ScheduleController::class, 'postMessage'])->name('post');
 

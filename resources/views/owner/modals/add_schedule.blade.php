@@ -1,4 +1,4 @@
-<form id="form_add_schedule" action="{{ route('schedule.add') }}" method="post" enctype="multipart/form-data">
+<form id="form_add_schedule" action="{{ route('schedule.add') }}" method="post" enctype="multipart/form-data" onSubmit="return submitAddSchedule(event)">
   @csrf
   <div class="modal fade text-left" id="add_schedule" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -35,3 +35,15 @@
     </div>
   </div>
 </form>
+
+<script>
+  function submitAddSchedule(e){
+    const msg = 'スケジュールを作成してよろしいですか?'
+    if(window.confirm(msg)){
+      return true;
+    }
+    else {
+      return false;
+    }
+  };  
+  </script>

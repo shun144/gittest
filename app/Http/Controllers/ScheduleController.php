@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Message;
 use \GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
+use GuzzleHttp\Pool;
+// use GuzzleHttp\Psr7\Request;
+
 use \GuzzleHttp\Exception\ClientException;
 // use App\Models\Template;
 use App\Models\History;
@@ -60,6 +63,279 @@ class ScheduleController extends Controller
         }
     }
 
+
+    public function dummy()
+    {
+
+        $sep_time = 10;
+        $API = 'https://notify-api.line.me/api/notify';
+        $now = Carbon::now();
+
+        // 10分単位で切り捨て
+        $date_down = $now->subMinutes($now->minute % $sep_time);
+        $date_down = date('Y-m-d H:i', strtotime($date_down));
+
+        // 配信対象メッセージ抽出
+        $messages = DB::table('schedules')
+        // ->where('plan_at', $date_down)
+        ->join('messages','schedules.message_id','=','messages.id')
+        ->leftjoin('images','messages.id','=','images.message_id')
+        ->select(
+            'messages.store_id as store_id',
+            'messages.id as message_id',
+            'messages.title as title',
+            'messages.content as content',
+            'images.save_name as save_name',
+            )
+        ->get();
+
+        
+        // 非同期リクエスト用パラメータリスト作成
+        $requests_param = [];
+        foreach($messages as $msg)
+        {
+
+            $history_id = DB::table('histories')
+            ->insertGetId(
+                [
+                    'store_id' => $msg->store_id,
+                    'title'=> $msg->title,
+                    'content'=> $msg->content,
+                    'status'=> '配信中',
+                    'start_at'=> Carbon::now(),
+                    'img_url' => $msg->save_name == Null ? Null: url(config('app.access_storage.image').'/'.$msg->save_name),
+                    'created_at'=> Carbon::now()
+                ]
+            );
+            
+            $lines = DB::table('lines')
+            ->select('id','token', 'user_name')
+            ->where('is_valid', true)
+            ->where('store_id', $msg->store_id
+            )->get();
+
+            foreach($lines as $line)
+            {  
+                if($msg->save_name == null)
+                {
+                    array_push($requests_param,
+                    [
+                        // 非同期リクエストの結果を特定するためのキー
+                        'key' => $history_id. '_' . $msg->message_id . '_' . $line->id,
+                        'history_id' => $history_id,
+                        'user_name' => $line->user_name,
+                        'params' =>  [
+                            'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
+                            'http_errors' => false,
+                            'multipart' => [
+                                ['name' => 'message','contents' => $msg->content]
+                            ]
+                        ]
+                    ]
+                );
+                } else {
+
+                    array_push($requests_param,
+                    [
+                        'key' => $history_id. '_' . $msg->message_id . '_' . $line->id,
+                        'history_id' => $history_id,
+                        'user_name' => $line->user_name,
+                        'params' =>  [
+                            'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
+                            'http_errors' => false,
+                            'multipart' => [
+                                ['name' => 'message','contents' => $msg->content],
+                                ['name' => 'imageFile','contents' => Psr7\Utils::tryFopen(config('app.access_storage.image').'/'.$msg->save_name, 'r')]
+                            ]
+                        ]
+                    ]);
+                }
+            }
+        }
+
+        // dd($requests_param[0]);
+
+        ini_set("max_execution_time",0);
+        $client = new Client();
+        $requests = function ($requests_param) use ($client, $API) {
+            foreach ($requests_param as $param) {
+                yield function() use ($client, $API, $param) {
+                    return $client->requestAsync('POST', $API, $param['params']);
+                };
+            }
+        };
+
+        $contents = [];
+        $pool = new Pool($client, $requests($requests_param), [
+            'concurrency' => 10,
+            'fulfilled' => function ($response, $index) use ($requests_param, &$contents) {
+                $contents[$requests_param[$index]['key']] = [
+                  'html'             => $response->getBody()->getContents(),
+                  'status_code'      => $response->getStatusCode(),
+                  'response_header'  => $response->getHeaders()
+                ];
+
+                $contents[$requests_param[$index]['key']]['history_id'] = $requests_param[$index]['history_id'];
+                $contents[$requests_param[$index]['key']]['user_name'] = $requests_param[$index]['user_name'];
+            },
+            'rejected' => function ($reason, $index) use ($requests_param, &$contents) {
+                $contents[$requests_param[$index]['key']] = [
+                  'html'   => '',
+                  'reason' => $reason
+                ];
+                $contents[$requests_param[$index]['key']]['history_id'] = $requests_param[$index]['history_id'];
+                $contents[$requests_param[$index]['key']]['user_name'] = $requests_param[$index]['user_name'];
+            },
+        ]);
+        $promise = $pool->promise();
+        $promise->wait();
+
+        // dd($contents);   
+
+
+
+        function group_by(array $table, string $key): array
+        {
+            $groups = [];
+            foreach ($table as $row) {
+                $groups[$row[$key]][] = $row;
+            }
+            return $groups;
+        }
+
+        $history_group = group_by($contents, 'history_id');
+
+        foreach ($history_group as $key => $value)
+        {
+            $result = 'OK';
+            $err = 'ー';
+            
+            $res = array_map(function ($col) {
+                $json = json_decode($col['html']);
+                return '['.$col['user_name'].']'.$json->status.'::'.$json->message;
+            }, array_filter($value, function ($col) {
+                return $col['status_code'] != '200';
+            }));
+
+            if ($res)
+            {
+                $result = 'NG';
+                $err = join('/', $res);
+            }
+            
+            DB::table('histories')->where('id',$key)
+            ->update(
+                [
+                    'status'=> $result,
+                    'end_at'=> Carbon::now(),
+                    'err_info' => $err,
+                    'updated_at'=> Carbon::now()
+                ]);
+        }
+        return redirect(route('owner.schedule'));
+    }
+
+
+    // public function dummy()
+    // {
+    //     $sep_time = 10;
+    //     $now = Carbon::now();
+
+    //     // 10分単位で切り捨て
+    //     $date_down = $now->subMinutes($now->minute % $sep_time);
+    //     $date_down = date('Y-m-d H:i', strtotime($date_down));
+
+    //     $API = 'https://notify-api.line.me/api/notify';
+
+    //     $messages = DB::table('schedules')
+    //     ->where('plan_at', $date_down)
+    //     ->join('messages','schedules.message_id','=','messages.id')
+    //     ->leftjoin('images','messages.id','=','images.message_id')
+    //     ->select(
+    //         'messages.store_id as store_id',
+    //         'messages.id as message_id',
+    //         'messages.title as title',
+    //         'messages.content as content',
+    //         'images.save_name as save_name',
+    //         )
+    //     ->get();
+        
+    //     foreach($messages as $msg)
+    //     {
+    //         $history_id = DB::table('histories')
+    //         ->insertGetId(
+    //             [
+    //                 'store_id' => $msg->store_id,
+    //                 'title'=> $msg->title,
+    //                 'content'=> $msg->content,
+    //                 'status'=> '配信待ち',
+    //                 'img_url' => $msg->save_name == Null ? Null: url(config('app.access_storage.image').'/'.$msg->save_name),
+    //                 'created_at'=> Carbon::now()
+    //             ]
+    //         );
+
+    //         $lines = DB::table('lines')
+    //         ->select('id','token', 'user_name')
+    //         ->where('is_valid', true)
+    //         ->where('store_id', $msg->store_id
+    //         )->get();
+
+    //         ini_set("max_execution_time",0);
+    //         $result = "OK"; 
+    //         $client = new Client();
+    //         $err_list = [];
+
+
+    //         $multipart = [[ 'name' => 'message','contents' => $msg->content]];
+    //         if ($msg->save_name != null) {
+    //             array_push($multipart,[
+    //                 'name'=> 'imageFile',
+    //                 'contents' => Psr7\Utils::tryFopen(config('app.access_storage.image').'/'.$msg->save_name, 'r')
+    //             ]);
+    //         }
+
+    //         foreach($lines as $line)
+    //         {    
+    //             $multipart = [[ 'name' => 'message','contents' => $msg->content]];
+    //             if ($msg->save_name != null) {
+    //                 array_push($multipart,[
+    //                     'name'=> 'imageFile',
+    //                     'contents' => Psr7\Utils::tryFopen(config('app.access_storage.image').'/'.$msg->save_name, 'r')
+    //                 ]);
+    //             }
+
+    //             $res = $client->request('POST', $API, [
+    //                 'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
+    //                 'http_errors' => false,
+    //                 'multipart' => $multipart
+    //             ]);
+    //             // \Log::info($res);
+                
+    //             $res_body = json_decode($res->getBody());  
+    //             if ($res_body->status != 200){                    
+    //                 $result = 'NG';
+    //                 array_push($err_list, '['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);
+    //                 \Log::error('['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                      
+    //             }
+    //         }
+
+    //         DB::table('histories')->where('id',$history_id )
+    //         ->update(
+    //             [
+    //                 'status'=> $result,
+    //                 'err_info' => empty($err_list) ? 'ー' : join('/', $err_list),
+    //                 'updated_at'=> Carbon::now()
+    //             ]);
+    //     }
+    //     return redirect(route('owner.schedule'));
+    // }
+
+
+
+
+
+
+
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     // スケジュール取得
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -83,6 +359,8 @@ class ScheduleController extends Controller
                 $query->select('message_id','images.id as image_id', 'save_name', 'org_name');
             }])
             ->get();
+
+            \Log::info($data);
             return $data;
         }
         catch (\Exception $e) {
@@ -139,8 +417,6 @@ class ScheduleController extends Controller
                 }
             }
         });
-
-        return redirect(route('owner.schedule'));
     }
 
 
@@ -371,190 +647,126 @@ class ScheduleController extends Controller
         return redirect(route('owner.schedule'));
     }
 
-
-
-
-
-
-
-
-
-    public function updateTemplate(Request $request)
-    {  
-        $post = $request->only(['message_id', 'title', 'content','title_color','has_file']);           
-        $images = $request->file('imagefile');
-
-        DB::transaction(function() use($post, $images){
-            DB::table('messages')
-            ->where('id', $post['message_id'])
-            ->update([
-                'title' => $post['title'],
-                'content' => $post['content'],
-                'title_color' => $post['title_color'],
-            ]);
-    
-            $dt_images = DB::table('images')->where('message_id', $post['message_id']);
-        
-            // ファイル保持フラグあり
-            if ($post['has_file'] == '1'){
-                
-                if ($images) {
-                    $dt_images->delete();
-                    foreach ($images as $img){
-                        $save_path = Storage::putFile(config('app.save_storage.image'), $img);
-                        $save_name = basename($save_path);
-                        $org_name = $img->getClientOriginalName();
-                        DB::table('images')->insert([
-                            'message_id' => $post['message_id'],
-                            'save_name' => $save_name,
-                            'org_name' => $org_name
-                        ]);
-                    }
-                }
-            // ファイル保持フラグなし
-            } else {    
-                // 既に登録されている画像を削除
-                if ($dt_images->count())
-                {
-                    $dt_images->delete();
-                }
-            }
-        });
-        return redirect(route('owner.schedule'))->with('edit_template_complate_flushMsg','定型テンプレートの更新が完了しました');
-    }
-
-    public function deleteTemplate(Request $request)
+    public function deleteSchedule(Request $request)
     {
-        dd('test');
         try {
-            $post = $request->only(['template_id']);
+            \Log::info('UserID:'. Auth::user()->id .' スケジュール削除 開始');
 
-            Template::find($post['template_id'])->delete();
-    
-            return redirect(route('owner.schedule'))->with('delete_template_complate_flushMsg','定型テンプレートの削除が完了しました');
+            $post = $request->only(['message_id']);
+
+            DB::transaction(function () use($post){
+                DB::table('messages')
+                ->where('id', $post['message_id'])
+                ->update(
+                    [
+                        'deleted_at' => Carbon::now()
+                    ]
+                );
+                DB::table('schedules')
+                ->where('message_id', $post['message_id'])
+                ->update(
+                    [
+                        'deleted_at' => Carbon::now()
+                    ]
+                );
+            });
+
+            \Log::info('UserID:'. Auth::user()->id .' スケジュール削除 終了');
+            
+            return redirect(route('owner.schedule'))->with('delete_schedule_complate_flushMsg','スケジュールの削除が完了しました');
         }
         catch (\Exception $e) {
             \Log::error($e->getMessage());
         }
     }
 
+    public function updateTemplate(Request $request)
+    {  
+        try {
 
+            \Log::info('UserID:'. Auth::user()->id .' 定型メッセージ編集 開始');
 
+            $post = $request->only(['message_id', 'title', 'content','title_color','has_file']);           
+            $images = $request->file('imagefile');
+    
+            DB::transaction(function() use($post, $images){
+                DB::table('messages')
+                ->where('id', $post['message_id'])
+                ->update([
+                    'title' => $post['title'],
+                    'content' => $post['content'],
+                    'title_color' => $post['title_color'],
+                ]);
+        
+                $dt_images = DB::table('images')->where('message_id', $post['message_id']);
+            
+                // ファイル保持フラグあり
+                if ($post['has_file'] == '1'){
+                    
+                    if ($images) {
+                        $dt_images->delete();
+                        foreach ($images as $img){
+                            $save_path = Storage::putFile(config('app.save_storage.image'), $img);
+                            $save_name = basename($save_path);
+                            $org_name = $img->getClientOriginalName();
+                            DB::table('images')->insert([
+                                'message_id' => $post['message_id'],
+                                'save_name' => $save_name,
+                                'org_name' => $org_name
+                            ]);
+                        }
+                    }
+                // ファイル保持フラグなし
+                } else {    
+                    // 既に登録されている画像を削除
+                    if ($dt_images->count())
+                    {
+                        $dt_images->delete();
+                    }
+                }
+            });
 
+            \Log::info('UserID:'. Auth::user()->id .' 定型メッセージ編集 終了');
 
+            return redirect(route('owner.schedule'))->with('edit_template_complate_flushMsg','定型テンプレートの更新が完了しました');
+        }
+        catch (\Exception $e) {
+            \Log::error($e->getMessage());
+        }
 
-    // public function getEventInfo(Request $request)
-    // {
-    //     $messages = Message::select('id', 'title', 'content', 'title_color')
-    //     ->where('id', $request->id)
-    //     ->whereNull('deleted_at')
-    //     ->with(['images' => function ($query) {
-    //         $query->select('message_id', 'id as image_id', 'save_name', 'org_name');
-    //     }])->first();
-    //     return $messages;
-    // }
+    }
 
-
-
-    public function _getSchedule()
+    public function deleteTemplate(Request $request)
     {
-        return [
-            [
-                'title' => 'All Day Event',
-                'start' => '2023-05-31 10:00:00',
-                // 'end'   => '2023-05-20 10:10:00',
-                'backgroundColor'=> '#f56954', //red
-                'borderColor'    => '#f56954', //red
-                // 'allDay'         => true
-                'content'=>'finished'
-            ],
-            [
-                'title' => 'second Day Event',
-                'start' => '2023-05-31 10:00:00',
-                // 'end'   => '2023-05-20 10:10:00',
-                'backgroundColor'=> '#f56954', //red
-                'borderColor'    => '#f56954', //red
-                // 'allDay'         => true
-                'content'=>'finished'
-            ],
-            // [
-            //     'title'          => 'Long Event',
-            //     'start'          => '2023-05-25 10:00:00',
-            //     'end'            => '2023-05-25 10:00:00',
-            //     'backgroundColor'=> '#f39c12', //yellow
-            //     'borderColor'    => '#f39c12', //yellow
-            //     'status'=>'finished'
-            // ],  
-            // [
-            //     'title' => 'シルバーウィーク旅行',
-            //     'description' => '人気の旅館の予約が取れた',
-            //     'start' => '2021-09-20 10:00:00',
-            //     'end'   => '2021-09-22 18:00:00',
-            //     'url'   => 'https://admin.juno-blog.site',
-            //     'status'=>'finished'
-            // ],
-            // [
-            //     'title' => '給料日',
-            //     'start' => '2021-09-30',
-            //     'color' => '#ff44cc',
-            //     'status'=>'finished'
-            // ],
-        ];
+        try {
+            \Log::info('UserID:'. Auth::user()->id .' 定型メッセージ削除 開始');
 
-        // $date = [
-        //     [
-        //         title          => 'All Day Event',
-        //         start          => new Date(y, m, 2),
-        //         backgroundColor=> '#f56954', //red
-        //         borderColor    => '#f56954', //red
-        //         allDay         => true
-        //     ],
-        //     [
-        //         title          => 'Long Event',
-        //         start          => new Date(y, m, d - 5),
-        //         end            => new Date(y, m, d - 2),
-        //         backgroundColor=> '#f39c12', //yellow
-        //         borderColor    => '#f39c12' //yellow
-        //       ],
-        //       [
-        //         title          => 'shun',
-        //         start          => new Date(y, m, d, 10, 30),
-        //         allDay         => false,
-        //         backgroundColor=> '#0073b7', //Blue
-        //         borderColor    => '#0073b7' //Blue
-        //       ],
-        //       [
-        //         title          => 'Lunch',
-        //         start          => new Date(y, m, d, 12, 00),
-        //         end            => new Date(y, m, d, 14, 0),
-        //         allDay         => false,
-        //         backgroundColor=> '#00c0ef', //Info (aqua)
-        //         borderColor    => '#00c0ef' //Info (aqua)
-        //       ],
-        //       [
-        //         title          => 'Birthday Party',
-        //         start          => new Date(y, m, d + 1, 19, 0),
-        //         end            => new Date(y, m, d + 1, 22, 30),
-        //         allDay         => false,
-        //         backgroundColor=> '#00a65a', //Success (green)
-        //         borderColor    => '#00a65a' //Success (green)
-        //       ],
-        //       [
-        //         title          => 'Click for Google',
-        //         start          => new Date(y, m, 28),
-        //         end            => new Date(y, m, 29),
-        //         url            => 'https=>//www.google.com/',
-        //         backgroundColor=> '#3c8dbc', //Primary (light-blue)
-        //         borderColor    => '#3c8dbc' //Primary (light-blue)
-        //       ]
-        // ];
-        // echo json_encode($data);
+            $post = $request->only(['message_id']);
 
+            DB::transaction(function () use($post){
+                DB::table('messages')
+                ->where('id', $post['message_id'])
+                ->update(
+                    [
+                        'deleted_at' => Carbon::now()
+                    ]
+                );
+    
+                DB::table('templates')
+                ->where('message_id', $post['message_id'])
+                ->update(
+                    [
+                        'deleted_at' => Carbon::now()
+                    ]
+                );
+            });
 
-    //   $data = [];
-    //   $authUser = Auth::user()->id;
-    //   $events = Event::where("user_id", "=", $authUser)->get();
-    //   $data = $events;  
-    //   echo json_encode($data);
+            \Log::info('UserID:'. Auth::user()->id .' 定型メッセージ削除 終了');
+            
+            return redirect(route('owner.schedule'))->with('delete_template_complate_flushMsg','定型テンプレートの削除が完了しました');
+        }
+        catch (\Exception $e) {
+            \Log::error($e->getMessage());
+        }
     }
 }

@@ -10,15 +10,12 @@
 
 
   <div class="card mx-auto">
-    {{-- <div class="card-header">
-      <a href="{{route('store.add.view')}}" class="btn btn-success">店舗追加</a>
-    </div> --}}
 
     <div class="card-body">
-      <table id="line_user_table" class="table table-striped table-bordered" style="table-layout:fixed;">
+      <table id="history_table" class="table table-striped table-bordered" style="table-layout:fixed;">
         <thead>
           <tr>
-            @foreach (["参照","配信日時","タイトル","内容","画像有無","状態","エラー"] as $col)
+            @foreach (["参照","状態","配信開始","配信完了","タイトル","内容","画像","エラー"] as $col)
             <th class="text-center">{{$col}}</th>
             @endforeach
           </tr>
@@ -27,18 +24,19 @@
           @foreach ($posts as $post)
           <tr>
             <td class="d-flex justify-content-center">
-              <form action="{{route('store.edit.view')}}" method="get">
+              <form action="{{route('owner.history.info')}}" method="get">
                 <button type="submit" class="btn btn_show">
-                  {{-- <input type="hidden" name="store_id" value={{$store->store_id}}> --}}
+                  <input type="hidden" name="history_id" value={{$post->id}}>
                   <i class="fas fa-eye text-muted"></i>
                 </button>
               </form>
             </td>
-            <td class="omit_td">{{$post->send_at}}</td>
+            <td class="omit_td">{{$post->status}}</td>
+            <td class="omit_td">{{$post->start_at}}</td>
+            <td class="omit_td">{{$post->end_at}}</td>
             <td class="omit_td">{{$post->title}}</td>
             <td class="omit_td">{{$post->content}}</td>
             <td class="omit_td">{{$post->img_url == Null ? '無し' : '有り'}}</td>
-            <td class="omit_td">{{$post->status}}</td>
             <td class="omit_td">{{$post->err_info}}</td>
           </tr>
         @endforeach
@@ -96,7 +94,7 @@ $(function () {
   $.extend( $.fn.dataTable.defaults, { 
     language: {url: "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json" } 
   }); 
-  $('#line_user_table').DataTable({
+  $('#history_table').DataTable({
     paging:true,
     lengthChange:false,
     searching:true,
@@ -105,11 +103,13 @@ $(function () {
     autoWidth: false,
     responsive:false,
     columnDefs:[
-      { targets:0, width:40},
-      { targets:1, width:120},
-      { targets:2, width:120},
-      { targets:4, width:80},
-      { targets:5, width:80},
+      { targets:0, width:35},
+      { targets:1, width:40},
+      { targets:2, width:115},
+      { targets:3, width:115},
+      { targets:4, width:120},
+      { targets:6, width:40},
+      { targets:7, width:120},
     ],
   }); 
 });

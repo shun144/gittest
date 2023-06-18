@@ -8,74 +8,65 @@
 
 @section('content')
 
+  <div class="mx-auto pb-5" style="width:60rem">
 
-  <div class="card mx-auto" style="width:70rem;">
-    <div class="card-header">
-      <a href="{{$reg_url}}" target="_blank" rel="noopener noreferrer">ユーザLINE連携ページ</a>
+    <div class="mb-3 w-75">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">LINE連携URL</span>
+        </div>
+        <input id="input_reg_url" type="text" class="form-control bg-light" value="{{$reg_url}}" readonly>
+        <div class="input-group-prepend">
+          <span class="btn btn-outline-secondary" onclick="copyToClipboard()"><i class="far fa-copy"></i></span>
+        </div>
+      </div>
     </div>
 
-    <div class="card-body">
-      <table id="line_user_table" class="table table-striped table-bordered" style="table-layout:fixed;">
-        <thead>
-          <tr>
-            @foreach (array("操作","状態","LINE名","登録日時") as $col)
-            <th class="text-center">{{$col}}</th>
-            @endforeach
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($lines as $line)
-          <tr>
-            <td>
-              <div class="row justify-content-around">
-                <form action="{{route('store.del')}}" method="post" onSubmit="return confirmDelete(event)">
+
+    <div class="card">
+      <div class="card-body">
+        <table id="line_user_table" class="table table-striped table-bordered" style="table-layout:fixed;">
+          <thead>
+            <tr>
+              @foreach (["状態","登録日時","LINE名"] as $col)
+              <th class="text-center">{{$col}}</th>
+              @endforeach
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($lines as $line)
+            <tr>
+              <td class="omit_td">
+                <form action="{{route('line_users.edit')}}" method="post" onSubmit="return confirmEditLineUser(event)">
                   @csrf
-                  <button type="submit" class="btn btn_del_store">
-                    {{-- <input type="hidden" name="user_id" value={{$store->user_id}}>
-                    <input type="hidden" name="store_id" value={{$store->store_id}}>
-                    <input type="hidden" class="hid_store_name" value={{$store->name}}> --}}
-                    <i class="fas fa-trash-alt text-muted"></i>
+                  <button type="submit" class="btn btn_edit">
+                    @if ($line->is_valid == 1)
+                      <span class="text-blue">有効</span>
+                    @else
+                      <span class="text-red">無効</span>
+                    @endif
+                    <input type="hidden" name="line_user_id" value={{$line->id}}>
+                    <input type="hidden" name="new_valid" value={{$line->is_valid == 1 ? 0 : 1}}>
+                    <input type="hidden" class="hid_line_user_name" value={{$line->user_name}}>
                   </button>
                 </form>
-              </div>
-            </td>
-            <td style="text-align:center">{{$line->is_valid == true ? '有効':'無効'}}</td>
-            <td class="omit_td">{{$line->user_name}}</td>
-            <td class="omit_td">{{$line->created_at}}</td>
-          </tr>
-        @endforeach
-        </tbody>
-      </table>
+              </td>
+              <td class="omit_td">{{$line->created_at}}</td>
+              <td class="omit_td">{{$line->user_name}}</td>
+            </tr>
+          @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
+  </div>  
  @stop
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
-
-<style>
-  .btn_del_store:hover i{
-    color: red !important;
-  }
-
-  .btn_edit_store:hover i{
-    color: blue!important;
-  }
-
-  td {
-    vertical-align: middle !important;
-  }
-  .omit_td {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-  
-</style>
-
+@vite(['resources/sass/component.scss'])
 @stop
 
 @section('js')
@@ -84,16 +75,28 @@
 <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
+{{-- <script src="{{ asset('vendor/popper/popper.min.js')}}"></script> --}}
 
-<script>      
-@if (session('flash_message'))
-  $(function () {toastr.success('{{ session('flash_message') }}');});
-@endif
+<script>
 
-function confirmDelete(e){
-  const del_store_name = e.submitter.querySelector('.hid_store_name').value
-  const msg = del_store_name + ' を削除してよろしいですか？'
-  if(window.confirm(msg)){return true;return true;}
+function copyToClipboard() {
+  var copyTarget = document.getElementById("input_reg_url");
+  copyTarget.select();
+  document.execCommand("Copy");
+  // alert(copyTarget.value);
+}
+
+function confirmEditLineUser(e){
+  const name = e.submitter.querySelector('.hid_line_user_name').value
+  const new_valid = e.submitter.querySelector('input[name="new_valid"]').value
+  let msg = 'LINE名「' + name + '」'
+  if (new_valid == 1){
+    msg = msg + 'を有効化してよろしいですか？'
+  }
+  else {
+    msg = msg + 'を無効化してよろしいですか？'
+  }
+  if(window.confirm(msg)){return true;}
   else{return false;}
 };
 
@@ -111,8 +114,8 @@ $(function () {
     autoWidth: false,
     responsive:false,
     columnDefs:[
-      { targets:0, width:60},
-      { targets:1, width:60},
+      { targets:0, width:50},
+      { targets:1, width:130}, 
     ],
   });
 });
