@@ -71,6 +71,8 @@ class OwnerController extends Controller
             'messages.id as id',
             'messages.title as title',
             'messages.title_color as title_color')
+        ->latest('templates.created_at')
+        ->take(20)
         ->get();
         return view('owner.schedule', compact('templates'));
     }

@@ -43,7 +43,8 @@ class PostMessageJob implements ShouldQueue
         try {
 
             // \Log::info('UserID:'. Auth::user()->id .' 即時投稿 開始');
-            
+
+
             $title = $this->inputs['title'];
             $message = PHP_EOL . $this->inputs['content'];
             $img_path = $this->inputs['img_path'];

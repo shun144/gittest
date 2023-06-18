@@ -30,6 +30,8 @@ class ScheduleController extends Controller
     public function postMessage(Request $request)
     {
         try {
+            \Log::info('UserID:'. Auth::user()->id .' 即時投稿Job追加 開始');
+
             $inputs = $request->only(['content']);
             $inputs['title'] = $request->has('title') ? $request->only(['title']):'ー';
             $inputs['store_id'] = Auth::user()->store_id;
@@ -50,13 +52,15 @@ class ScheduleController extends Controller
                     'store_id' => $inputs['store_id'],
                     'title'=> $inputs['title'],
                     'content'=> $inputs['content'],
-                    'status'=> '配信待ち',
+                    'status'=> '配信待',
                     'img_url' => $img_path,
                     'created_at'=> Carbon::now()
                 ]
             );
             $inputs['history_id'] = $history_id;
             PostMessageJob::dispatch($inputs);
+
+            \Log::info('UserID:'. Auth::user()->id .' 即時投稿Job追加 終了');
         }
         catch (\Exception $e) {
             \Log::error($e->getMessage());
@@ -189,8 +193,6 @@ class ScheduleController extends Controller
         ]);
         $promise = $pool->promise();
         $promise->wait();
-
-        // dd($contents);   
 
 
 
@@ -387,6 +389,45 @@ class ScheduleController extends Controller
         }
     }
 
+    // public function insertTemplate(Request $request)
+    // {
+    //     try {
+    //         $post = $request->only(['title','content','title_color']);
+    //         $images = $request->file('imagefile');
+    //         $para = array_merge($post,array('images'=>$images));
+    //         $user = Auth::user();
+    //         DB::transaction(function() use($para, $user)
+    //         {
+    //             $msg_id = Message::insertGetId(
+    //                 [
+    //                     'user_id' => $user->id,
+    //                     'store_id' => $user->store_id,
+    //                     'title'=> $para['title'],
+    //                     'title_color' => strtoupper($para['title_color']),
+    //                     'content'=> $para['content']
+    //                 ]
+    //             );
+    //             DB::table('templates')->insert(['message_id' => $msg_id]);
+                
+    //             if ($para['images'])
+    //             {
+    //                 foreach ($para['images'] as $img)
+    //                 {
+    //                     $save_path = Storage::putFile(config('app.save_storage.image'), $img);
+    //                     $save_name = basename($save_path);
+    //                     $org_name = $img->getClientOriginalName();                    
+    //                     Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
+    //                 }
+    //             }
+    //         });
+    //     }
+    //     catch (\Exception $e) {
+    //         \Log::error($e->getMessage());
+    //     }
+    // }
+
+
+
     public function insertTemplate(Request $request)
     {
         $post = $request->only(['title','content','title_color']);
@@ -417,42 +458,8 @@ class ScheduleController extends Controller
                 }
             }
         });
+        return redirect(route('owner.schedule'));
     }
-
-
-
-    // public function insertTemplate(Request $request)
-    // {
-    //     $post = $request->only(['title','content','title_color']);
-    //     $images = $request->file('imagefile');
-    //     $para = array_merge($post,array('images'=>$images));
-    //     $user = Auth::user();
-    //     DB::transaction(function() use($para, $user)
-    //     {
-    //         $msg_id = Message::insertGetId(
-    //             [
-    //                 'user_id' => $user->id,
-    //                 'store_id' => $user->store_id,
-    //                 'title'=> $para['title'],
-    //                 'title_color' => strtoupper($para['title_color']),
-    //                 'content'=> $para['content']
-    //             ]
-    //         );
-    //         DB::table('templates')->insert(['message_id' => $msg_id]);
-            
-    //         if ($para['images'])
-    //         {
-    //             foreach ($para['images'] as $img)
-    //             {
-    //                 $save_path = Storage::putFile(config('app.save_storage.image'), $img);
-    //                 $save_name = basename($save_path);
-    //                 $org_name = $img->getClientOriginalName();                    
-    //                 Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
-    //             }
-    //         }
-    //     });
-    //     return redirect(route('owner.schedule'));
-    // }
 
 
 
@@ -728,7 +735,7 @@ class ScheduleController extends Controller
 
             \Log::info('UserID:'. Auth::user()->id .' 定型メッセージ編集 終了');
 
-            return redirect(route('owner.schedule'))->with('edit_template_complate_flushMsg','定型テンプレートの更新が完了しました');
+            return redirect(route('owner.schedule'))->with('edit_template_complate_flushMsg','定型メッセージの更新が完了しました');
         }
         catch (\Exception $e) {
             \Log::error($e->getMessage());

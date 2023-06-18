@@ -11,6 +11,9 @@
 
 .external-event {
 	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 	// transition: all .5s;
 	
 	// &:hover {
@@ -27,7 +30,7 @@
 	color: blue!important;
 }
 
-.omit_td {
+.omit_text {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -36,3 +39,4 @@
 td {
 	vertical-align: middle !important;
 }
+

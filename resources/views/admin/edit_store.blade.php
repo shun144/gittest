@@ -9,17 +9,17 @@
 
 @section('content')
 
-  <div class="card card-primary mx-auto" style="width:60rem;">
+
+<div class="mx-auto pb-5" style="width:60rem">
+  <div class="card card-info">
     <div class="card-header">
       <h3 class="card-title">店舗情報編集フォーム</h3>
     </div>
-
-    <form action="{{ route('store.edit') }}" method="post" enctype="multipart/form-data" onSubmit="return confirmEdit(event)">
-      @csrf
-      <div class="card-body">
+    <div class="card-body">
+      <form id="formEditStore" action="{{ route('store.edit') }}" method="post" enctype="multipart/form-data" onSubmit="return confirmEdit(event)">
+        @csrf
         <input type="hidden" name='user_id' value="{{$store->user_id}}">
         <input type="hidden" name='store_id' value="{{$store->store_id}}">
-
 
         <div class="form-group mb-5">
           <label for="store_name">店舗名</label>
@@ -69,7 +69,7 @@
           <small class="form-text text-muted">LINE連携サービス登録時に発行されたClient IDを入力してください</small>
         </div>
 
-        <div class="form-group mb-5">
+        <div class="form-group mb-3">
           <label for="client_secret">LINEサービスパスワード</label>
           <input type="text" class="form-control @error('client_secret') is-invalid @enderror" id="client_secret" 
           name="client_secret" value="{{ old('client_secret',$store->client_secret) }}">
@@ -78,25 +78,38 @@
           
         </div>
 
-      <div class="card-footer bg-transparent">
-        <button type="submit" class="btn btn-primary">更新</button>
-      </div>
-
-    </form>
+      </form>
+    </div>
+    <div class="card-footer bg-transparent">
+      <button form="formEditStore" type="submit" class="btn btn-primary">更新</button>
+    </div>
   </div>
+  <div class="text-right">
+    <a href="{{route('admin.store')}}" class="h5">
+        <i class="fas fa-arrow-left"></i>
+        <span>店舗情報一覧に戻る</span>
+    </a>
+  </div>
+</div>
 
 
-</form>
+
+
 
 @stop
 
 @section('css')
+<link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
 @stop
 
 @section('js')
+<script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
 <script>
+@if (session('flash_message'))
+  $(function () {toastr.success('{{ session('flash_message') }}');});
+@endif
+
 function confirmEdit(){
-  // const del_store_name = e.submitter.querySelector('.hid_store_name').value
   const msg = '店舗情報を更新してよろしいですか？'
   if(window.confirm(msg))
   {

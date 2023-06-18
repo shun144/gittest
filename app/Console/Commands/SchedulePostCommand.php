@@ -38,6 +38,7 @@ class SchedulePostCommand extends Command
             $API = 'https://notify-api.line.me/api/notify';
             $now = Carbon::now();
 
+
             // 10分単位で切り捨て
             $date_down = $now->subMinutes($now->minute % $sep_time);
             $date_down = date('Y-m-d H:i', strtotime($date_down));
@@ -126,10 +127,11 @@ class SchedulePostCommand extends Command
                     }
                 }
             }
-
-            // dd($requests_param[0]);
-
             ini_set("max_execution_time",0);
+
+            sleep(600);
+            Log::info('★★★【要削除】スケジュール配信時の処理時間チェックタイムアウト設定してるよ!!【要削除】');
+
             $client = new Client();
             $requests = function ($requests_param) use ($client, $API) {
                 foreach ($requests_param as $param) {
@@ -163,8 +165,6 @@ class SchedulePostCommand extends Command
             ]);
             $promise = $pool->promise();
             $promise->wait();
-
-
 
             // history_idでグルーピング
             function group_by(array $table, string $key): array

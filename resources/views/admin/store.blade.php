@@ -57,11 +57,11 @@
                 </form>
               </div>
             </td>
-            <td class="omit_td">{{$store->name}}</td>
-            <td class="omit_td">{{$store->url_name}}</td>
+            <td class="omit_text">{{$store->name}}</td>
+            <td class="omit_text">{{$store->url_name}}</td>
             <td>{{$store->login_id}}</td>
-            <td class="omit_td">{{$store->client_id}}</td>
-            <td class="omit_td">{{$store->client_secret}}</td>
+            <td class="omit_text">{{$store->client_id}}</td>
+            <td class="omit_text">{{$store->client_secret}}</td>
           </tr>
         @endforeach
         </tbody>
@@ -120,6 +120,7 @@ $(function () {
     responsive:false,
     columnDefs:[
       { targets:0, width:55},
+      { targets:1, width:90},
       { targets:3, width:120},
     ],
   });

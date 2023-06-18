@@ -31,13 +31,13 @@
                 </button>
               </form>
             </td>
-            <td class="omit_td">{{$post->status}}</td>
-            <td class="omit_td">{{$post->start_at}}</td>
-            <td class="omit_td">{{$post->end_at}}</td>
-            <td class="omit_td">{{$post->title}}</td>
-            <td class="omit_td">{{$post->content}}</td>
-            <td class="omit_td">{{$post->img_url == Null ? '無し' : '有り'}}</td>
-            <td class="omit_td">{{$post->err_info}}</td>
+            <td class="omit_text">{{$post->status}}</td>
+            <td class="omit_text">{{$post->start_at}}</td>
+            <td class="omit_text">{{$post->end_at}}</td>
+            <td class="omit_text">{{$post->title}}</td>
+            <td class="omit_text">{{$post->content}}</td>
+            <td class="omit_text">{{$post->img_url == Null ? '無し' : '有り'}}</td>
+            <td class="omit_text">{{$post->err_info}}</td>
           </tr>
         @endforeach
         </tbody>
@@ -52,7 +52,7 @@
 <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
 
-<style>
+{{-- <style>
   .btn_show:hover i{
     color: blue!important;
   }
@@ -66,7 +66,7 @@
     text-overflow: ellipsis;
   }
   
-</style>
+</style> --}}
 
 @stop
 

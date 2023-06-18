@@ -34,6 +34,7 @@ class AdminController extends Controller
         ->join('users','users.store_id','=','stores.id')
         ->where('users.role','owner')
         ->whereNull('stores.deleted_at')
+        ->latest('stores.created_at')
         ->get();
         return view('admin.store', compact('stores'));
     }
@@ -132,7 +133,8 @@ class AdminController extends Controller
             }
         });
 
-        return redirect(route('admin.store'))->with('flash_message','店舗情報更新が完了しました');
+        return redirect(route('store.edit.view', ['store_id' => $post['store_id']]))
+        ->with('flash_message','店舗情報更新が完了しました');
     }
 
 

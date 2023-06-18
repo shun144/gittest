@@ -24,8 +24,6 @@
     <form action="{{ $login_url }}" method="post">
         @csrf
 
-        <h1>ここ見てる??</h1>
-
         {{-- LoginID field --}}
         <div class="input-group mb-3">
             <input type="text" name="login_id" class="form-control @error('login_id') is-invalid @enderror"

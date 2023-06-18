@@ -22,9 +22,6 @@
         <div class="sticky-top mb-3">
           <div class="card">
 
-            {{-- <div id="add-new-event" class="btn btn-info">追加テスト</div> --}}
-
-
             <div class="card-header">
               <div class="d-flex justify-content-between">
                 <h5 class="d-flex align-items-center mb-0">定型メッセージ</h5>
@@ -34,7 +31,6 @@
               </div>
             </div>
 
-            
             <div class="card-body">
               <div id="external-events">
                 @foreach ($templates as $item)
@@ -44,6 +40,8 @@
                 @endforeach
               </div>
             </div>
+
+
           </div>
         </div>
       </div>
@@ -72,7 +70,7 @@
 @section('css')
   <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.css') }}"> 
   <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
-  <link rel="stylesheet" href="{{ asset('build/assets/component-21c92745.css')}}">
+  <link rel="stylesheet" href="{{ asset('build/assets/component-ccd5ae91.css')}}">
   {{-- @vite(['resources/sass/component.scss']) --}}
 @stop
 
@@ -81,48 +79,42 @@
   <script src="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.js') }}"></script>
   {{-- <script src="{{ asset('vendor/adminlte/plugins/jquery/jquery.min.js') }}"></script> --}}
   <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
-  <script src="{{ asset('build/assets/component-20342fa4.js')}}"></script>
+  <script src="{{ asset('build/assets/component-8509f447.js')}}"></script>
   {{-- @vite(['resources/js/component.js']) --}}
 
 
 <script>
-  $('#add-new-event').click(function (e) {
-    e.preventDefault()
-    const csrf_token = document.getElementById('addTemplateCsrfToken').value;
-    let $form = $('#form_add_template');
-    let fd = new FormData($form.get(0));
-    // console.log(fd.get('title_color'))
 
-    $.ajax({
-      headers: {'X-CSRF-TOKEN': csrf_token},
-      url: '{{route('template.add')}}',
-      method: 'POST',
-      contentType: false,
-      processData: false,
-      data: fd
+  let Calendar = FullCalendar.Calendar;
+  let Draggable = FullCalendar.Draggable;
+  let containerEl = document.getElementById('external-events');
+  let checkbox = document.getElementById('drop-remove');
+  let calendarEl = document.getElementById('calendar');
+
+  new Draggable(containerEl, {
+    itemSelector: '.external-event',
+    eventData: function(eventEl) {
+      return {
+        id:eventEl.dataset.msgid,
+        title: eventEl.innerText,
+        backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
+        borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
+        textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
+      };
+    }
+  });
+
+  function ini_events(ele) {
+    ele.each(function () {
+      $(this).draggable({
+        zIndex : 1070,
+        revert : true, // will cause the event to go back to its
+        revertDuration: 0  //  original position after the drag
+      })
     })
-    .done(function (data) {
-      console.log(data);
-      toastr.success('追加しました。');
-    })
-    //通信失敗した時の処理
-    .fail(function (data) {
-      toastr.error('失敗しました。');
-    });
-
-    $('#add_template').modal('hide');
-
-    let event = $('<div />')
-    event.css({
-      'background-color':fd.get('title_color'),
-      'border-color':fd.get('title_color'),
-      'color':'#fff'
-    }).addClass('external-event')
-    event.text(fd.get('title'))
-    $('#external-events').prepend(event)
-    ini_events(event)
-  })
-
+  }
+ 
+  ini_events($('#external-events div.external-event'))
 
   @if (session('edit_template_complate_flushMsg'))
   $(function () {toastr.success('{{ session('edit_template_complate_flushMsg') }}');});
@@ -183,41 +175,13 @@
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 
 
-    function ini_events(ele) {
-      ele.each(function () {
-        $(this).draggable({
-          zIndex : 1070,
-          revert : true, // will cause the event to go back to its
-          revertDuration: 0  //  original position after the drag
-        })
-      })
-    }
-    ini_events($('#external-events div.external-event'))
-
     let date = new Date()
     let d = date.getDate(), m = date.getMonth(), y = date.getFullYear()
 
-    let Calendar = FullCalendar.Calendar;
-    let Draggable = FullCalendar.Draggable;
-    let containerEl = document.getElementById('external-events');
-    let checkbox = document.getElementById('drop-remove');
-    let calendarEl = document.getElementById('calendar');
 
     // initialize the external events
     // -----------------------------------------------------------------
-    // new Draggable(containerEl, {
-    //   itemSelector: '.external-event',
-     
-    //   eventData: function(eventEl) {
-    //     return {
-    //       id:eventEl.dataset.msgid,
-    //       title: eventEl.innerText,
-    //       backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-    //       borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-    //       textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
-    //     };
-    //   }
-    // });
+
 
     let calendar = new Calendar(calendarEl, {
       headerToolbar: {
@@ -356,7 +320,9 @@
       },
 
       // 外部イベントのカレンダードロップイベント
-      eventReceive: function(info) {        
+      eventReceive: function(info) {     
+        console.log(info.draggedEl);
+
         const data = templateMessages.find((v) => v.id == info.draggedEl.getAttribute('data-msgid'));
         const start = info.event.start;
         const stYYYY = start.getFullYear();
