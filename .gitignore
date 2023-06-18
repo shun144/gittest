@@ -19,5 +19,4 @@ yarn-error.log
 server.code-workspace
 *.log
 *.sqlite
-*.htaccess
 
