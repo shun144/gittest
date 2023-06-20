@@ -59,6 +59,20 @@ class SchedulePostCommand extends Command
                 )
             ->get();
 
+            Log::info($date_down);
+            $test = DB::table('schedules')
+            ->join('messages','schedules.message_id','=','messages.id')
+            ->leftjoin('images','messages.id','=','images.message_id')
+            ->select(
+                'messages.store_id as store_id',
+                'messages.id as message_id',
+                'messages.title as title',
+                'messages.content as content',
+                'images.save_name as save_name',
+                )
+            ->get();
+            Log::info($test);
+
             if ($messages){
                 Log::info('スケジュール配信 終了【0件】');
                 return;
