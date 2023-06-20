@@ -85,36 +85,17 @@
 
 <script>
 
+$(function(){
+
+
+
   let Calendar = FullCalendar.Calendar;
   let Draggable = FullCalendar.Draggable;
   let containerEl = document.getElementById('external-events');
   let checkbox = document.getElementById('drop-remove');
   let calendarEl = document.getElementById('calendar');
 
-  new Draggable(containerEl, {
-    itemSelector: '.external-event',
-    eventData: function(eventEl) {
-      return {
-        id:eventEl.dataset.msgid,
-        title: eventEl.innerText,
-        backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-        borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-        textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
-      };
-    }
-  });
 
-  function ini_events(ele) {
-    ele.each(function () {
-      $(this).draggable({
-        zIndex : 1070,
-        revert : true, // will cause the event to go back to its
-        revertDuration: 0  //  original position after the drag
-      })
-    })
-  }
- 
-  ini_events($('#external-events div.external-event'))
 
   @if (session('edit_template_complate_flushMsg'))
   $(function () {toastr.success('{{ session('edit_template_complate_flushMsg') }}');});
@@ -181,7 +162,30 @@
 
     // initialize the external events
     // -----------------------------------------------------------------
+    new Draggable(containerEl, {
+    itemSelector: '.external-event',
+    eventData: function(eventEl) {
+      return {
+        id:eventEl.dataset.msgid,
+        title: eventEl.innerText,
+        backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
+        borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
+        textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
+      };
+    }
+  });
 
+  function ini_events(ele) {
+    ele.each(function () {
+      $(this).draggable({
+        zIndex : 1070,
+        revert : true, // will cause the event to go back to its
+        revertDuration: 0  //  original position after the drag
+      })
+    })
+  }
+ 
+  ini_events($('#external-events div.external-event'))
 
     let calendar = new Calendar(calendarEl, {
       headerToolbar: {
@@ -373,42 +377,7 @@
     });
 
     calendar.render();
-
-    // /* ADDING EVENTS */
-    // let currColor = '#3c8dbc'
-    // // Color chooser button
-    // $('#color-chooser > li > a').click(function (e) {
-    //   e.preventDefault()
-    //   // Save color
-    //   currColor = $(this).css('color')
-    //   // Add color effect to button
-    //   $('#add-new-event').css({
-    //     'background-color': currColor,
-    //     'border-color'    : currColor
-    //   })
-    // })
-    
-    // $('#add-new-event').click(function (e) {
-    //   e.preventDefault()
-    //   // Get value and make sure it is not null
-    //   let val = $('#new-event').val()
-    //   if (val.length == 0) {return}
-
-    //   // Create events
-    //   let event = $('<div />')
-    //   event.css({
-    //     'background-color': currColor,
-    //     'border-color'    : currColor,
-    //     'color'           : '#fff'
-    //   }).addClass('external-event')
-    //   event.text(val)
-    //   $('#external-events').prepend(event)
-
-    //   // Add draggable funtionality
-    //   ini_events(event)
-
-    //   // Remove event from text input
-    //   $('#new-event').val('')
-    // })
+  });
+  
 </script>
 @stop
