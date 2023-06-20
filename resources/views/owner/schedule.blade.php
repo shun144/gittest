@@ -75,6 +75,7 @@
 @stop
 
 @section('js')
+<script src="{{ asset('vendor/adminlte/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
   <script src="{{ asset('vendor/adminlte/plugins/moment/moment.min.js') }}"></script>
   <script src="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.js') }}"></script>
   {{-- <script src="{{ asset('vendor/adminlte/plugins/jquery/jquery.min.js') }}"></script> --}}
@@ -378,6 +379,6 @@ $(function(){
 
     calendar.render();
   });
-  
+
 </script>
 @stop
