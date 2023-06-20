@@ -59,20 +59,6 @@ class SchedulePostCommand extends Command
                 )
             ->get();
 
-            // Log::info($date_down);
-            // $test = DB::table('schedules')
-            // ->join('messages','schedules.message_id','=','messages.id')
-            // ->leftjoin('images','messages.id','=','images.message_id')
-            // ->select(
-            //     'messages.store_id as store_id',
-            //     'messages.id as message_id',
-            //     'messages.title as title',
-            //     'messages.content as content',
-            //     'images.save_name as save_name',
-            //     )
-            // ->get();
-            Log::info($messages->count());
-
             if ($messages->count() == 0){
                 Log::info('スケジュール配信 終了【0件】');
                 return;
@@ -143,7 +129,7 @@ class SchedulePostCommand extends Command
             }
             ini_set("max_execution_time",0);
 
-            sleep(600);
+            // sleep(600);
             Log::info('★★★【要削除】スケジュール配信時の処理時間チェックタイムアウト設定してるよ!!【要削除】');
 
             $client = new Client();

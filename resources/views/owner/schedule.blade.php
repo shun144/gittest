@@ -8,8 +8,6 @@
 
 @section('content')
 
-<a href="{{route('dummy')}}">ダミースケジュール送信</a>
-
 <div class="card">
   <div class="card-header">
     <button class="btn btn-success" data-toggle="modal" data-target="#post_message">
