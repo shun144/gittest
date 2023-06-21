@@ -38,10 +38,20 @@ class ScheduleController extends Controller
 
             $img_path = '';
             if ($request->has('imagefile')){
-                $image = $request->file('imagefile')[0];
-                $save_path = Storage::putFile(config('app.save_storage.image'), $image);
-                $save_name = basename($save_path);        
-                $img_path = url(config('app.access_storage.image').'/'.$save_name);
+                $img = $request->file('imagefile')[0];
+                $save_name = Storage::disk('owner')->put('', $img);
+                $img_path = Storage::disk('owner')->url($save_name);
+
+    
+                // dd($save_name);
+                // $save_name = Storage::disk('public')->put('', $img);
+                // $org_name = $img->getClientOriginalName();
+                
+                
+                // $image = $request->file('imagefile')[0];
+                // $save_path = Storage::putFile(config('app.save_storage.image'), $image);
+                // $save_name = basename($save_path);        
+                // $img_path = url(config('app.access_storage.image').'/'.$save_name);
             }
             
             $inputs['img_path'] = $img_path;
@@ -157,8 +167,6 @@ class ScheduleController extends Controller
             }
         }
 
-        // dd($requests_param[0]);
-
         ini_set("max_execution_time",0);
         $client = new Client();
         $requests = function ($requests_param) use ($client, $API) {
@@ -238,105 +246,6 @@ class ScheduleController extends Controller
     }
 
 
-    // public function dummy()
-    // {
-    //     $sep_time = 10;
-    //     $now = Carbon::now();
-
-    //     // 10分単位で切り捨て
-    //     $date_down = $now->subMinutes($now->minute % $sep_time);
-    //     $date_down = date('Y-m-d H:i', strtotime($date_down));
-
-    //     $API = 'https://notify-api.line.me/api/notify';
-
-    //     $messages = DB::table('schedules')
-    //     ->where('plan_at', $date_down)
-    //     ->join('messages','schedules.message_id','=','messages.id')
-    //     ->leftjoin('images','messages.id','=','images.message_id')
-    //     ->select(
-    //         'messages.store_id as store_id',
-    //         'messages.id as message_id',
-    //         'messages.title as title',
-    //         'messages.content as content',
-    //         'images.save_name as save_name',
-    //         )
-    //     ->get();
-        
-    //     foreach($messages as $msg)
-    //     {
-    //         $history_id = DB::table('histories')
-    //         ->insertGetId(
-    //             [
-    //                 'store_id' => $msg->store_id,
-    //                 'title'=> $msg->title,
-    //                 'content'=> $msg->content,
-    //                 'status'=> '配信待ち',
-    //                 'img_url' => $msg->save_name == Null ? Null: url(config('app.access_storage.image').'/'.$msg->save_name),
-    //                 'created_at'=> Carbon::now()
-    //             ]
-    //         );
-
-    //         $lines = DB::table('lines')
-    //         ->select('id','token', 'user_name')
-    //         ->where('is_valid', true)
-    //         ->where('store_id', $msg->store_id
-    //         )->get();
-
-    //         ini_set("max_execution_time",0);
-    //         $result = "OK"; 
-    //         $client = new Client();
-    //         $err_list = [];
-
-
-    //         $multipart = [[ 'name' => 'message','contents' => $msg->content]];
-    //         if ($msg->save_name != null) {
-    //             array_push($multipart,[
-    //                 'name'=> 'imageFile',
-    //                 'contents' => Psr7\Utils::tryFopen(config('app.access_storage.image').'/'.$msg->save_name, 'r')
-    //             ]);
-    //         }
-
-    //         foreach($lines as $line)
-    //         {    
-    //             $multipart = [[ 'name' => 'message','contents' => $msg->content]];
-    //             if ($msg->save_name != null) {
-    //                 array_push($multipart,[
-    //                     'name'=> 'imageFile',
-    //                     'contents' => Psr7\Utils::tryFopen(config('app.access_storage.image').'/'.$msg->save_name, 'r')
-    //                 ]);
-    //             }
-
-    //             $res = $client->request('POST', $API, [
-    //                 'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
-    //                 'http_errors' => false,
-    //                 'multipart' => $multipart
-    //             ]);
-    //             // \Log::info($res);
-                
-    //             $res_body = json_decode($res->getBody());  
-    //             if ($res_body->status != 200){                    
-    //                 $result = 'NG';
-    //                 array_push($err_list, '['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);
-    //                 \Log::error('['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                      
-    //             }
-    //         }
-
-    //         DB::table('histories')->where('id',$history_id )
-    //         ->update(
-    //             [
-    //                 'status'=> $result,
-    //                 'err_info' => empty($err_list) ? 'ー' : join('/', $err_list),
-    //                 'updated_at'=> Carbon::now()
-    //             ]);
-    //     }
-    //     return redirect(route('owner.schedule'));
-    // }
-
-
-
-
-
-
 
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     // スケジュール取得
@@ -389,44 +298,6 @@ class ScheduleController extends Controller
         }
     }
 
-    // public function insertTemplate(Request $request)
-    // {
-    //     try {
-    //         $post = $request->only(['title','content','title_color']);
-    //         $images = $request->file('imagefile');
-    //         $para = array_merge($post,array('images'=>$images));
-    //         $user = Auth::user();
-    //         DB::transaction(function() use($para, $user)
-    //         {
-    //             $msg_id = Message::insertGetId(
-    //                 [
-    //                     'user_id' => $user->id,
-    //                     'store_id' => $user->store_id,
-    //                     'title'=> $para['title'],
-    //                     'title_color' => strtoupper($para['title_color']),
-    //                     'content'=> $para['content']
-    //                 ]
-    //             );
-    //             DB::table('templates')->insert(['message_id' => $msg_id]);
-                
-    //             if ($para['images'])
-    //             {
-    //                 foreach ($para['images'] as $img)
-    //                 {
-    //                     $save_path = Storage::putFile(config('app.save_storage.image'), $img);
-    //                     $save_name = basename($save_path);
-    //                     $org_name = $img->getClientOriginalName();                    
-    //                     Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
-    //                 }
-    //             }
-    //         });
-    //     }
-    //     catch (\Exception $e) {
-    //         \Log::error($e->getMessage());
-    //     }
-    // }
-
-
 
     public function insertTemplate(Request $request)
     {
@@ -451,10 +322,15 @@ class ScheduleController extends Controller
             {
                 foreach ($para['images'] as $img)
                 {
-                    $save_path = Storage::putFile(config('app.save_storage.image'), $img);
-                    $save_name = basename($save_path);
-                    $org_name = $img->getClientOriginalName();                    
+                    $save_name = Storage::disk('owner')->put('', $img);
+                    // dd($save_name);
+                    // $save_name = Storage::disk('public')->put('', $img);
+                    $org_name = $img->getClientOriginalName();               
                     Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
+
+                    
+
+                    // dd(env('APP_URL').'/storage/owner/image/template/'.$save_name);
                 }
             }
         });
@@ -463,75 +339,38 @@ class ScheduleController extends Controller
 
 
 
-
-    // public function testPost()
+    // public function insertTemplate(Request $request)
     // {
-    //     $message = 'テストメッセージ';
-    //     $image_path = 'C:\WebApp\work\20230430\work\login.jpg';
-        
-    //     $API = 'https://notify-api.line.me/api/notify';
-    //     $store_id = Auth::user()->store_id;
-    //     $lines = DB::table('lines')->select('id','token')->where('store_id', $store_id)->get();
-    //     $line = $lines[0];
-    //     $img_path = 'https://img07.shop-pro.jp/PA01423/383/product/135946838.jpg';
-    //     $cfile = new \CURLFile($img_path);
-    //     $data = array(
-    //         'message' => ' ',
-    //         'imageFile' => $cfile
-    //     );
-
-    //     $chOne = curl_init();
-    //     curl_setopt($chOne, CURLOPT_URL, $API); 
-    //     // curl_setopt($chOne, CURLOPT_SSL_VERIFYHOST, 0);
-    //     // curl_setopt($chOne, CURLOPT_SSL_VERIFYPEER, 0);
-    //     curl_setopt($chOne, CURLOPT_POST, 1);
-    //     curl_setopt($chOne, CURLOPT_POSTFIELDS, $data);
-    //     $headers = array('Content-Type: multipart/form-data','Authorization: Bearer ' . $line->token);
-    //     curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
-    //     curl_setopt($chOne, CURLOPT_RETURNTRANSFER, 1);
-    //     $result = curl_exec($chOne);
-    //     // dd($result);
-
+    //     $post = $request->only(['title','content','title_color']);
+    //     $images = $request->file('imagefile');
+    //     $para = array_merge($post,array('images'=>$images));
+    //     $user = Auth::user();
+    //     DB::transaction(function() use($para, $user)
+    //     {
+    //         $msg_id = Message::insertGetId(
+    //             [
+    //                 'user_id' => $user->id,
+    //                 'store_id' => $user->store_id,
+    //                 'title'=> $para['title'],
+    //                 'title_color' => strtoupper($para['title_color']),
+    //                 'content'=> $para['content']
+    //             ]
+    //         );
+    //         DB::table('templates')->insert(['message_id' => $msg_id]);
+            
+    //         if ($para['images'])
+    //         {
+    //             foreach ($para['images'] as $img)
+    //             {
+    //                 $save_path = Storage::putFile(config('app.save_storage.image'), $img);
+    //                 $save_name = basename($save_path);
+    //                 $org_name = $img->getClientOriginalName();                    
+    //                 Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
+    //             }
+    //         }
+    //     });
     //     return redirect(route('owner.schedule'));
     // }
-
-
-    // public function testPost()
-    // {
-    //     $message = 'テストメッセージ';
-    //     $image_path = 'C:\WebApp\work\20230430\work\login.jpg';
-        
-    //     $API = 'https://notify-api.line.me/api/notify';
-    //     $store_id = Auth::user()->store_id;
-    //     $lines = DB::table('lines')->select('id','token')->where('store_id', $store_id)->get();
-    //     $line = $lines[0];
-    //     $img_path = 'https://img07.shop-pro.jp/PA01423/383/product/135946838.jpg';
-    //     $cfile = new \CURLFile($img_path);
-    //     $data = array(
-    //         'message' => 'テスト送信',
-    //         'imageFile' => $cfile
-    //     );
-
-    //     $chOne = curl_init();
-    //     curl_setopt($chOne, CURLOPT_URL, $API); 
-    //     // curl_setopt($chOne, CURLOPT_SSL_VERIFYHOST, 0);
-    //     // curl_setopt($chOne, CURLOPT_SSL_VERIFYPEER, 0);
-    //     curl_setopt($chOne, CURLOPT_POST, 1);
-    //     curl_setopt($chOne, CURLOPT_POSTFIELDS, $data);
-    //     $headers = array('Content-Type: multipart/form-data','Authorization: Bearer ' . $line->token);
-    //     curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
-    //     curl_setopt($chOne, CURLOPT_RETURNTRANSFER, 1);
-    //     $result = curl_exec($chOne);
-
-    //     dd($result);
-        
-    //     return redirect(route('owner.schedule'));
-
-    // }
-
-
-
-
 
 
 

@@ -52,22 +52,6 @@
 <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
 
-{{-- <style>
-  .btn_show:hover i{
-    color: blue!important;
-  }
-
-  td {
-    vertical-align: middle !important;
-  }
-  .omit_td {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-  
-</style> --}}
-
 @stop
 
 @section('js')
@@ -92,7 +76,7 @@ function confirmDelete(e){
 
 $(function () {
   $.extend( $.fn.dataTable.defaults, { 
-    language: {url: "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json" } 
+    language: {url: "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json" } 
   }); 
   $('#history_table').DataTable({
     paging:true,

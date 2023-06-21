@@ -9,7 +9,7 @@ use \GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Pool;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Storage;
 
 
 class SchedulePostCommand extends Command
@@ -39,7 +39,7 @@ class SchedulePostCommand extends Command
             $now = Carbon::now();
 
 
-            // 10分単位で切り捨て
+            // 10分単位で切り捨て(15分→10分)
             $date_down = $now->subMinutes($now->minute % $sep_time);
             $date_down = date('Y-m-d H:i', strtotime($date_down));
 
@@ -64,7 +64,6 @@ class SchedulePostCommand extends Command
                 return;
             }
 
-            
             // 非同期リクエスト用パラメータリスト作成
             $requests_param = [];
             foreach($messages as $msg)
@@ -78,7 +77,7 @@ class SchedulePostCommand extends Command
                         'content'=> $msg->content,
                         'status'=> '配信中',
                         'start_at'=> Carbon::now(),
-                        'img_url' => $msg->save_name == Null ? Null: url(config('app.access_storage.image').'/'.$msg->save_name),
+                        'img_url' => $msg->save_name == Null ? Null: Storage::disk('owner')->url($msg->save_name),
                         'created_at'=> Carbon::now()
                     ]
                 );
@@ -120,7 +119,7 @@ class SchedulePostCommand extends Command
                                 'http_errors' => false,
                                 'multipart' => [
                                     ['name' => 'message','contents' => $msg->content],
-                                    ['name' => 'imageFile','contents' => Psr7\Utils::tryFopen(config('app.access_storage.image').'/'.$msg->save_name, 'r')]
+                                    ['name' => 'imageFile','contents' => Psr7\Utils::tryFopen(Storage::disk('owner')->url($msg->save_name), 'r')]
                                 ]
                             ]
                         ]);
@@ -130,7 +129,7 @@ class SchedulePostCommand extends Command
             ini_set("max_execution_time",0);
 
             // sleep(600);
-            Log::info('★★★【要削除】スケジュール配信時の処理時間チェックタイムアウト設定してるよ!!【要削除】');
+            // Log::info('★★★【要削除】スケジュール配信時の処理時間チェックタイムアウト設定してるよ!!【要削除】');
 
             $client = new Client();
             $requests = function ($requests_param) use ($client, $API) {

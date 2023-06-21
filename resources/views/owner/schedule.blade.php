@@ -101,7 +101,7 @@ $(function(){
   @endif
 
   // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-  // 定例メッセージ取得
+  // 定型メッセージ取得
   let templateMessages = null;
   $.ajax(
     {url: '{{route('template.get')}}', type:'get'})
@@ -115,7 +115,7 @@ $(function(){
 
 
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-    //  定例メッセージクリックイベント
+    //  定型メッセージクリックイベント
     $('.external-event').click(function() {
       const data = templateMessages.find((v) => v.id == $(this).data('msgid'));
       const modal = $('#edit_template')
@@ -142,7 +142,11 @@ $(function(){
           let img_id_list = []
           $.each(data.images, function(index,img) {
             const imgElem = document.createElement('img')
-            imgElem.src = '{{url(config('app.access_storage.image'))}}/' + img.save_name
+
+            // console.log('{{config('storage.owner.image.template')}}');
+            
+            imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
+            
             preview.appendChild(imgElem);
             file_list.push(img.org_name)
           })
@@ -251,7 +255,8 @@ $(function(){
             let img_id_list = []
             $.each(images, function(index,img) {
               const imgElem = document.createElement('img')
-              imgElem.src = '{{url(config('app.access_storage.image'))}}/' + img.save_name
+            
+              imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
               preview.appendChild(imgElem);
               file_list.push(img.org_name)
             })
@@ -307,7 +312,7 @@ $(function(){
             let img_id_list = []
             $.each(images, function(index,img) {
               const imgElem = document.createElement('img')
-              imgElem.src = '{{url(config('app.access_storage.image'))}}/' + img.save_name
+              imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
               preview.appendChild(imgElem);
               file_list.push(img.org_name)
             })
@@ -358,7 +363,7 @@ $(function(){
             let img_id_list = []
             $.each(data.images, function(index,img) {
               const imgElem = document.createElement('img')
-              imgElem.src = '{{url(config('app.access_storage.image'))}}/' + img.save_name
+              imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
               preview.appendChild(imgElem);
               file_list.push(img.org_name)
               img_id_list.push(img.image_id)

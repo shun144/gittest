@@ -189,19 +189,32 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
-    'storage' => [
-        'register' => [
-            'image' =>'storage/register'
-        ]
-    ],
+    // 'image' => [
+    //     'owner' => [
+    //         'template' => 'storage\owner\template',
+    //     ],
+    //     'user' => [
+    //         'register' => 'storage\user\register'
+    //     ]
+    // ],
+
+
+    // 'storage' => [
+    //     'schedule' => [
+    //         'image' => ''
+    //     ],
+    //     'register' => [
+    //         'image' =>'storage/register'
+    //     ]
+    // ],
 
     
-    'access_storage' => [
-        'image' => 'storage/message/template'
-    ],
+    // 'access_storage' => [
+    //     'image' => 'storage/message/template'
+    // ],
 
 
-    'save_storage' => [
-        'image' => 'public/message/template'
-    ],
+    // 'save_storage' => [
+    //     'image' => 'public/message/template'
+    // ],
 ];
