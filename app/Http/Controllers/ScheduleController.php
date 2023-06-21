@@ -323,9 +323,7 @@ class ScheduleController extends Controller
                 foreach ($para['images'] as $img)
                 {
                     $save_name = Storage::disk('owner')->put('', $img);
-                    // dd($save_name);
-                    // $save_name = Storage::disk('public')->put('', $img);
-                    $org_name = $img->getClientOriginalName();               
+                    $org_name = $img->getClientOriginalName();                                   
                     Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
 
                     
@@ -407,9 +405,11 @@ class ScheduleController extends Controller
             {
                 foreach ($images as $img)
                 {
-                    $save_path = Storage::putFile(config('app.save_storage.image'), $img);
-                    $save_name = basename($save_path);
-                    $org_name = $img->getClientOriginalName();                    
+                    // $save_path = Storage::putFile(config('app.save_storage.image'), $img);
+                    // $save_name = basename($save_path);
+                    // $org_name = $img->getClientOriginalName();        
+                    $save_name = Storage::disk('owner')->put('', $img);
+                    $org_name = $img->getClientOriginalName();                         
                     Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
                 }
             }
@@ -471,9 +471,11 @@ class ScheduleController extends Controller
                 if ($images) {
                     $dt_images->delete();
                     foreach ($images as $img){
-                        $save_path = Storage::putFile(config('app.save_storage.image'), $img);
-                        $save_name = basename($save_path);
-                        $org_name = $img->getClientOriginalName();
+                        // $save_path = Storage::putFile(config('app.save_storage.image'), $img);
+                        // $save_name = basename($save_path);
+                        // $org_name = $img->getClientOriginalName();
+                        $save_name = Storage::disk('owner')->put('', $img);
+                        $org_name = $img->getClientOriginalName();             
                         DB::table('images')->insert([
                             'message_id' => $post['message_id'],
                             'save_name' => $save_name,
@@ -552,9 +554,13 @@ class ScheduleController extends Controller
                     if ($images) {
                         $dt_images->delete();
                         foreach ($images as $img){
-                            $save_path = Storage::putFile(config('app.save_storage.image'), $img);
-                            $save_name = basename($save_path);
-                            $org_name = $img->getClientOriginalName();
+                            // $save_path = Storage::putFile(config('app.save_storage.image'), $img);
+                            // $save_name = basename($save_path);
+                            // $org_name = $img->getClientOriginalName();
+
+                            $save_name = Storage::disk('owner')->put('', $img);
+                            $org_name = $img->getClientOriginalName();             
+
                             DB::table('images')->insert([
                                 'message_id' => $post['message_id'],
                                 'save_name' => $save_name,
