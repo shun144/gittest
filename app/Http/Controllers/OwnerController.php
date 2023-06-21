@@ -25,19 +25,29 @@ class OwnerController extends Controller
 {
     public function viewPostHistory()
     {
-        $posts = DB::table('histories')
-        ->select(
-            'id',
-            'start_at',
-            'end_at',
-            'title',
-            'content',
-            'img_url',
-            'status',
-            'err_info'
-        )
-        ->get();
-        return view('owner.postHistory', compact('posts'));
+        try {
+            \Log::info('UserID:'. Auth::user()->id .' 配信履歴表示 開始');
+            $store_id = Auth::user()->store_id;
+            $posts = DB::table('histories')
+            ->where('store_id', $store_id )
+            ->select(
+                'id',
+                'start_at',
+                'end_at',
+                'title',
+                'content',
+                'img_url',
+                'status',
+                'err_info'
+            )
+            ->get();
+            \Log::info('UserID:'. Auth::user()->id .' 配信履歴表示 終了');
+            return view('owner.postHistory', compact('posts'));
+        }
+        catch (\Exception $e) {
+            \Log::error($e->getMessage());
+        }
+
     }
 
     public function viewPostHistoryInfo(Request $request)
