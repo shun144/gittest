@@ -40,6 +40,7 @@ class OwnerController extends Controller
                 'status',
                 'err_info'
             )
+            ->latest('created_at')
             ->get();
             \Log::info('UserID:'. Auth::user()->id .' 配信履歴表示 終了');
             return view('owner.postHistory', compact('posts'));
