@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -29,14 +30,12 @@ class Handler extends ExceptionHandler
     }
 
 
-    // public function render($request, Throwable $exception)
-    // {
-    //     if ($exception instanceof ClientException) {
-    //         response()->json([
-    //                 'errMsg'   => '認証エラーが発生しました。再度ログインしなおしてください。'
-    //             ], 401);
-    //     }
-
-    //     return parent::render($request, $exception);
-    // }
+    public function render($request, Throwable $e) {
+        if ($e instanceof Illuminate\Session\TokenMismatchException) {
+            if (url()->current() == route('logout')) {
+                return redirect()->route('login');
+            }
+        }
+        return parent::render($request, $e);
+    }
 }

@@ -14,6 +14,8 @@
       即時配信
     </button>
   </div>
+
+
   <div class="card-body">
     <div class="row">
       <div class="col-md-3">        
@@ -51,7 +53,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>    
   </div>
 
 </div>
@@ -86,15 +88,11 @@
 
 $(function(){
 
-
-
   let Calendar = FullCalendar.Calendar;
   let Draggable = FullCalendar.Draggable;
   let containerEl = document.getElementById('external-events');
   let checkbox = document.getElementById('drop-remove');
   let calendarEl = document.getElementById('calendar');
-
-
 
   @if (session('edit_template_complate_flushMsg'))
   $(function () {toastr.success('{{ session('edit_template_complate_flushMsg') }}');});
@@ -135,32 +133,62 @@ $(function(){
         let has_image = "0"
         preview.innerHTML = '';
         text_form.val(null);
-        if (data.images.length)
+
+        const img = data.images[0]
+        if (typeof img !== "undefined")
         { 
           has_image = "1"
-          let file_list = []
-          let img_id_list = []
-          $.each(data.images, function(index,img) {
-            const imgElem = document.createElement('img')
-
-            // console.log('{{config('storage.owner.image.template')}}');
-            
-            imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
-            
-            preview.appendChild(imgElem);
-            file_list.push(img.org_name)
-          })
-          text_form.val(file_list.join(' '))
+          const imgElem = document.createElement('img')
+          imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
+          preview.appendChild(imgElem);
+          text_form.val(img.org_name)
         }
         modal.find('.has_file').val(has_image)
       })
       modal.modal('toggle');
     })
+
+    // $('.external-event').click(function() {
+    //   const data = templateMessages.find((v) => v.id == $(this).data('msgid'));
+    //   const modal = $('#edit_template')
+    //   modal.on('show.bs.modal', function(){
+    //     modal.find('.msg_id').val(data.id)
+    //     modal.find('.title_form').val(data.title)
+    //     modal.find('.content_form').val(data.content)
+    //     $.each(modal.find('.title_color'), function(index, elem) {
+    //       if (elem.value == data.title_color)
+    //       { 
+    //         elem.checked = true
+    //         elem.dispatchEvent(new Event('change'));
+    //       }
+    //     })
+    //     let preview = modal.find('.image_preview').get(0);
+    //     let text_form = modal.find('.filename_view');
+    //     let has_image = "0"
+    //     preview.innerHTML = '';
+    //     text_form.val(null);
+    //     if (data.images.length)
+    //     { 
+    //       has_image = "1"
+    //       let file_list = []
+    //       let img_id_list = []
+    //       $.each(data.images, function(index,img) {
+    //         const imgElem = document.createElement('img')
+    //         imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
+    //         preview.appendChild(imgElem);
+    //         file_list.push(img.org_name)
+    //       })
+    //       text_form.val(file_list.join(' '))
+    //     }
+    //     modal.find('.has_file').val(has_image)
+    //   })
+    //   modal.modal('toggle');
+    // })
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 
 
-    let date = new Date()
-    let d = date.getDate(), m = date.getMonth(), y = date.getFullYear()
+    // let date = new Date()
+    // let d = date.getDate(), m = date.getMonth(), y = date.getFullYear()
 
 
     // initialize the external events
@@ -201,6 +229,10 @@ $(function(){
       businessHours:true,
       editable:true,
       droppable: true,
+
+      eventOrderStrict: true,
+      eventOrder: "plan_at",
+
       eventSources: [{url:'{{route('schedule.get')}}'}],
 
       // カレンダー日付クリックイベント
@@ -221,7 +253,6 @@ $(function(){
       // 登録スケジュールクリックイベント
       eventClick:(e)=>{
         const modal = $('#edit_schedule')
-        // const start_str = e.event.start
         const start_str = e.event.extendedProps.plan_at
         const calendarDate = start_str.split(' ')[0]
         const hhmmss = start_str.split(' ')[1]
@@ -247,26 +278,19 @@ $(function(){
           let has_image = "0"
           preview.innerHTML = '';
           text_form.val(null);
-          const images = e.event.extendedProps.images;
-          if (images.length)
+
+          const img = e.event.extendedProps.images[0];
+          if (typeof img !== "undefined")
           { 
             has_image = "1"
-            let file_list = []
-            let img_id_list = []
-            $.each(images, function(index,img) {
-              const imgElem = document.createElement('img')
-            
-              imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
-              preview.appendChild(imgElem);
-              file_list.push(img.org_name)
-            })
-            text_form.val(file_list.join(' '))
+            const imgElem = document.createElement('img')
+            imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
+            preview.appendChild(imgElem);
+            text_form.val(img.org_name)
           }
           modal.find('.has_file').val(has_image)
         })
         modal.modal('toggle');
-
-
       },
       
       // カレンダー内ドロップイベント

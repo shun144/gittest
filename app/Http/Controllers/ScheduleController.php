@@ -41,17 +41,6 @@ class ScheduleController extends Controller
                 $img = $request->file('imagefile')[0];
                 $save_name = Storage::disk('owner')->put('', $img);
                 $img_path = Storage::disk('owner')->url($save_name);
-
-    
-                // dd($save_name);
-                // $save_name = Storage::disk('public')->put('', $img);
-                // $org_name = $img->getClientOriginalName();
-                
-                
-                // $image = $request->file('imagefile')[0];
-                // $save_path = Storage::putFile(config('app.save_storage.image'), $image);
-                // $save_name = basename($save_path);        
-                // $img_path = url(config('app.access_storage.image').'/'.$save_name);
             }
             
             $inputs['img_path'] = $img_path;
@@ -270,8 +259,6 @@ class ScheduleController extends Controller
                 $query->select('message_id','images.id as image_id', 'save_name', 'org_name');
             }])
             ->get();
-
-            \Log::info($data);
             return $data;
         }
         catch (\Exception $e) {

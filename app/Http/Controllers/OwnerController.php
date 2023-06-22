@@ -48,7 +48,6 @@ class OwnerController extends Controller
         catch (\Exception $e) {
             \Log::error($e->getMessage());
         }
-
     }
 
     public function viewPostHistoryInfo(Request $request)

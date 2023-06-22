@@ -27,18 +27,18 @@ class StoresTableSeeder extends Seeder
             ]
         ]);
 
-        $params = [];
-        for($i = 3; $i < 30; $i++){
-            array_push($params,
-                [
-                    'name'  => 'オーナ店舗' . $i,
-                    'url_name' => 'ownerUrl'. $i,
-                    'client_id' => 'clientId' . $i,
-                    'client_secret' => 'clientSecret' . $i,
-                ]
-            );
-        };
-        DB::table('stores')->insert($params);
+        // $params = [];
+        // for($i = 3; $i < 30; $i++){
+        //     array_push($params,
+        //         [
+        //             'name'  => 'オーナ店舗' . $i,
+        //             'url_name' => 'ownerUrl'. $i,
+        //             'client_id' => 'clientId' . $i,
+        //             'client_secret' => 'clientSecret' . $i,
+        //         ]
+        //     );
+        // };
+        // DB::table('stores')->insert($params);
 
     }
 }
