@@ -22,16 +22,16 @@ class Handler extends ExceptionHandler
     /**
      * Register the exception handling callbacks for the application.
      */
-    public function register(): void
-    {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
-    }
+    // public function register(): void
+    // {
+    //     $this->reportable(function (Throwable $e) {
+    //         //
+    //     });
+    // }
 
 
     public function render($request, Throwable $e) {
-        if ($e instanceof Illuminate\Session\TokenMismatchException) {
+        if ($e instanceof TokenMismatchException) {
             if (url()->current() == route('logout')) {
                 return redirect()->route('login');
             }
