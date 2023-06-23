@@ -30,8 +30,6 @@ class ScheduleController extends Controller
     public function postMessage(Request $request)
     {
         try {
-            \Log::info('UserID:'. Auth::user()->id .' 即時投稿Job追加 開始');
-
             $inputs = $request->only(['content']);
             $inputs['title'] = $request->has('title') ? $request->only(['title']):'ー';
             $inputs['store_id'] = Auth::user()->store_id;
@@ -58,10 +56,9 @@ class ScheduleController extends Controller
             );
             $inputs['history_id'] = $history_id;
             PostMessageJob::dispatch($inputs);
-
-            \Log::info('UserID:'. Auth::user()->id .' 即時投稿Job追加 終了');
         }
         catch (\Exception $e) {
+            \Log::error('UserID:'. Auth::user()->id .' 即時投稿Job追加 開始');
             \Log::error($e->getMessage());
         }
     }
@@ -239,9 +236,12 @@ class ScheduleController extends Controller
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     // スケジュール取得
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-    public function getSchedule()
+    public function getSchedule(Request $request)
     {   
         try {
+            $start_date = date('Y-m-d 00:00:00', $request->input('start_date') / 1000);
+            $end_date = date('Y-m-d 23:59:59', $request->input('end_date') / 1000);
+
             $data = Message::select(
                 'messages.id as id',
                 'messages.title as title',
@@ -254,7 +254,8 @@ class ScheduleController extends Controller
             )->where('messages.store_id', Auth::user()->store_id)
             ->join('schedules','schedules.message_id','=','messages.id')
             ->whereNull('schedules.deleted_at')
-            ->whereNotNull('schedules.plan_at')
+            ->where('plan_at', '>', $start_date)
+            ->where('plan_at', '<', $end_date)
             ->with(['images' => function ($query) {
                 $query->select('message_id','images.id as image_id', 'save_name', 'org_name');
             }])
@@ -313,9 +314,6 @@ class ScheduleController extends Controller
                     $org_name = $img->getClientOriginalName();                                   
                     Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
 
-                    
-
-                    // dd(env('APP_URL').'/storage/owner/image/template/'.$save_name);
                 }
             }
         });
@@ -359,9 +357,6 @@ class ScheduleController extends Controller
 
 
 
-
-
-
     public function insertSchedule(Request $request)
     {
         $post = $request->only(['title','content','title_color','has_file','image_id', 'date', 'hh', 'mm']);
@@ -369,8 +364,9 @@ class ScheduleController extends Controller
 
         $datatime = sprintf('%s %s:%s:00', $post['date'], $post['hh'], $post['mm']);
         $user = Auth::user();
+
     
-        DB::transaction(function() use($post, $images, $user, $datatime)
+        $message_id = DB::transaction(function() use($post, $images, $user, $datatime)
         {
             $msg_id = Message::insertGetId(
                 [
@@ -390,15 +386,10 @@ class ScheduleController extends Controller
 
             if($images)
             {
-                foreach ($images as $img)
-                {
-                    // $save_path = Storage::putFile(config('app.save_storage.image'), $img);
-                    // $save_name = basename($save_path);
-                    // $org_name = $img->getClientOriginalName();        
-                    $save_name = Storage::disk('owner')->put('', $img);
-                    $org_name = $img->getClientOriginalName();                         
-                    Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
-                }
+                $img = $images[0];
+                $save_name = Storage::disk('owner')->put('', $img);
+                $org_name = $img->getClientOriginalName();                         
+                Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
             }
             else {
                 if ($post['has_file'] == '1'){
@@ -421,9 +412,93 @@ class ScheduleController extends Controller
                     }
                 }
             }
-        });  
-        return redirect(route('owner.schedule'));
+            return $msg_id;
+        });
+
+        $data = Message::select(
+            'messages.id as id',
+            'messages.title as title',
+            'schedules.plan_at as start',
+            'messages.title_color as backgroundColor',
+            'messages.title_color as borderColor',
+            DB::raw("'true' as allDay"),
+            'messages.content as content',
+            'schedules.plan_at as plan_at',
+        )->where('messages.id', $message_id)
+        ->join('schedules','schedules.message_id','=','messages.id')
+        ->with(['images' => function ($query) {
+            $query->select('message_id','images.id as image_id', 'save_name', 'org_name');
+        }])
+        ->first();
+        return $data;
+        // return redirect(route('owner.schedule'));
     }
+
+
+
+
+    // public function insertSchedule(Request $request)
+    // {
+    //     $post = $request->only(['title','content','title_color','has_file','image_id', 'date', 'hh', 'mm']);
+    //     $images = $request->file('imagefile');
+
+    //     $datatime = sprintf('%s %s:%s:00', $post['date'], $post['hh'], $post['mm']);
+    //     $user = Auth::user();
+    
+    //     DB::transaction(function() use($post, $images, $user, $datatime)
+    //     {
+    //         $msg_id = Message::insertGetId(
+    //             [
+    //                 'user_id' => $user->id,
+    //                 'store_id' => $user->store_id,
+    //                 'title'=> $post['title'],
+    //                 'title_color' => strtoupper($post['title_color']),
+    //                 'content'=> $post['content']
+    //             ]
+    //         );
+    //         DB::table('schedules')->insert(
+    //             [
+    //                 'message_id' => $msg_id,
+    //                 'plan_at' => $datatime
+    //             ]
+    //         );
+
+    //         if($images)
+    //         {
+    //             foreach ($images as $img)
+    //             {
+    //                 // $save_path = Storage::putFile(config('app.save_storage.image'), $img);
+    //                 // $save_name = basename($save_path);
+    //                 // $org_name = $img->getClientOriginalName();        
+    //                 $save_name = Storage::disk('owner')->put('', $img);
+    //                 $org_name = $img->getClientOriginalName();                         
+    //                 Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
+    //             }
+    //         }
+    //         else {
+    //             if ($post['has_file'] == '1'){
+    //                 $imgIdList = explode(",",$post['image_id']);
+    //                 if ($imgIdList)
+    //                 {
+    //                     foreach ($imgIdList as $imgId)
+    //                     {
+    //                         $get_img = DB::table('images')
+    //                         ->select('save_name','org_name')
+    //                         ->where('id',$imgId)
+    //                         ->first();              
+    //                         Image::insert(
+    //                             [
+    //                                 'message_id' => $msg_id,
+    //                                 'save_name' => $get_img->save_name,
+    //                                 'org_name' => $get_img->org_name
+    //                             ]);
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     });  
+    //     return redirect(route('owner.schedule'));
+    // }
 
 
 
@@ -485,7 +560,6 @@ class ScheduleController extends Controller
     public function deleteSchedule(Request $request)
     {
         try {
-            \Log::info('UserID:'. Auth::user()->id .' スケジュール削除 開始');
 
             $post = $request->only(['message_id']);
 
@@ -506,14 +580,49 @@ class ScheduleController extends Controller
                 );
             });
 
-            \Log::info('UserID:'. Auth::user()->id .' スケジュール削除 終了');
+            return $post['message_id'];
+
             
-            return redirect(route('owner.schedule'))->with('delete_schedule_complate_flushMsg','スケジュールの削除が完了しました');
+            // return redirect(route('owner.schedule'))->with('delete_schedule_complate_flushMsg','スケジュールの削除が完了しました');
         }
         catch (\Exception $e) {
+            \Log::error('UserID:'. Auth::user()->id .' スケジュール削除');
             \Log::error($e->getMessage());
         }
     }
+
+    // public function deleteSchedule(Request $request)
+    // {
+    //     try {
+    //         \Log::info('UserID:'. Auth::user()->id .' スケジュール削除 開始');
+
+    //         $post = $request->only(['message_id']);
+
+    //         DB::transaction(function () use($post){
+    //             DB::table('messages')
+    //             ->where('id', $post['message_id'])
+    //             ->update(
+    //                 [
+    //                     'deleted_at' => Carbon::now()
+    //                 ]
+    //             );
+    //             DB::table('schedules')
+    //             ->where('message_id', $post['message_id'])
+    //             ->update(
+    //                 [
+    //                     'deleted_at' => Carbon::now()
+    //                 ]
+    //             );
+    //         });
+
+    //         \Log::info('UserID:'. Auth::user()->id .' スケジュール削除 終了');
+            
+    //         return redirect(route('owner.schedule'))->with('delete_schedule_complate_flushMsg','スケジュールの削除が完了しました');
+    //     }
+    //     catch (\Exception $e) {
+    //         \Log::error($e->getMessage());
+    //     }
+    // }
 
     public function updateTemplate(Request $request)
     {  

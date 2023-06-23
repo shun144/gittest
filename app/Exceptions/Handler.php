@@ -19,17 +19,10 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
-    /**
-     * Register the exception handling callbacks for the application.
-     */
-    // public function register(): void
-    // {
-    //     $this->reportable(function (Throwable $e) {
-    //         //
-    //     });
-    // }
 
-
+    // セッションが切れている状態でログアウトを実行した際に
+    // ログイン画面に遷移させる
+    // これがないと419エラー画面となる
     public function render($request, Throwable $e) {
         if ($e instanceof TokenMismatchException) {
             if (url()->current() == route('logout')) {

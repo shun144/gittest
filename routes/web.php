@@ -33,10 +33,10 @@ Route::group(['prefix' => 'admin','middleware' => ['auth','can:isAdmin']], funct
 
 // オーナーページ
 Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], function () {
-    Route::get('/schedule', [OwnerController::class, 'getTemplateOverview'])->name('owner.schedule');
+    Route::get('/schedule', [OwnerController::class, 'viewSchedule'])->name('owner.schedule');
     
-    //★dummy
-    Route::get('/dummy', [ScheduleController::class, 'dummy'])->name('dummy');
+    // //★dummy
+    // Route::get('/dummy', [ScheduleController::class, 'dummy'])->name('dummy');
     
     
     Route::get('/line-users', [OwnerController::class, 'viewLineUsers'])->name('owner.line_users');
@@ -50,7 +50,9 @@ Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], fu
     Route::patch('/template-edit', [ScheduleController::class, 'updateTemplate'])->name('template.edit');
     Route::post('/template-del', [ScheduleController::class, 'deleteTemplate'])->name('template.del');
 
-    Route::get('/schedule-get', [ScheduleController::class, 'getSchedule'])->name('schedule.get');
+    // Route::get('/schedule-get', [ScheduleController::class, 'getSchedule'])->name('schedule.get');
+    Route::post('/schedule-get', [ScheduleController::class, 'getSchedule'])->name('schedule.get');
+    
     Route::post('/schedule-add', [ScheduleController::class, 'insertSchedule'])->name('schedule.add');
     Route::post('/schedule-edit', [ScheduleController::class, 'updateSchedule'])->name('schedule.edit');
     Route::post('/schedule-del', [ScheduleController::class, 'deleteSchedule'])->name('schedule.del');
@@ -66,64 +68,7 @@ Route::group(['prefix'=>'{url_name}'], function () {
     Route::get('/register', [LineNotifyController::class, 'register'])->name('line.register');
     Route::get('/auth', [LineNotifyController::class, 'viewLineAuth'])->name('line.auth');
     Route::post('/callback', [LineNotifyController::class, 'auth_callback']);
-    Route::post('/send', [LineNotifyController::class, 'send']);
-    Route::get('/aaa', [LineNotifyController::class, 'broadcastSend']);
-    Route::post('/image', [LineNotifyController::class, 'sendImage']);
+    // Route::post('/send', [LineNotifyController::class, 'send']);
+    // Route::get('/aaa', [LineNotifyController::class, 'broadcastSend']);
+    // Route::post('/image', [LineNotifyController::class, 'sendImage']);
 });
-
-
-
-// // オーナーページ
-// Route::prefix('dashboard')->group(function (){
-//     Route::get('/schedule', [OwnerController::class, 'getTemplateOverview'])->name('owner.schedule');
-//     Route::get('/lineusers', [OwnerController::class, 'line_users'])->name('owner.line_users');
-//     // Route::post('/store/add', [OwnerController::class, 'add_store'])->name('owner.store.add');
-
-//     // Route::get('/member', [OwnerController::class, 'member'])->name('owner.member');
-//     // Route::post('/schedule', [OwnerController::class, 'schedule'])->name('owner.schedule');
-//     Route::post('/send', [OwnerController::class, 'send'])->name('owner.send');
-
-
-//     Route::get('/template-get', [ScheduleController::class, 'getTemplateDetail'])->name('template.get');
-//     Route::post('/message-add', [ScheduleController::class, 'insertTemplate'])->name('template.add');
-//     Route::patch('/template-edit', [ScheduleController::class, 'updateTemplate'])->name('template.edit');
-
-    
-//     Route::get('/schedule-get', [ScheduleController::class, 'getSchedule'])->name('schedule.get');
-//     Route::post('/schedule-add', [ScheduleController::class, 'insertSchedule'])->name('schedule.add');
-//     Route::post('/schedule-edit', [ScheduleController::class, 'updateSchedule'])->name('schedule.edit');
-//     // Route::get('/eventinfo', [ScheduleController::class, 'getEventInfo'])->name('owner.getEventInfo');
-//     // Route::post('/createSchedule', [ScheduleController::class, 'createSchedule'])->name('schedule.createSchedule');
-// });
-
-
-
-
-
-
-// // 一般利用者登録ページ
-// Route::prefix('{url_name}')->group(function (){
-//     Route::get('/register', [LineNotifyController::class, 'register'])->name('line.register');
-//     Route::get('/auth', [LineNotifyController::class, 'auth'])->name('notify.auth');
-//     Route::post('/callback', [LineNotifyController::class, 'auth_callback']);
-
-//     Route::post('/send', [LineNotifyController::class, 'send']);
-//     Route::get('/aaa', [LineNotifyController::class, 'broadcastSend']);
-//     Route::post('/image', [LineNotifyController::class, 'sendImage']);
-// });
-
-
-
-// Route::prefix('notify')->group(function (){
-//     Route::get('/register/{url_name}', [LineNotifyController::class, 'register']);
-
-//     Route::get('/auth', [LineNotifyController::class, 'auth'])->name('notify.auth');
-//     Route::post('/callback/{url_name}', [LineNotifyController::class, 'auth_callback']);
-
-//     Route::post('/send', [LineNotifyController::class, 'send']);
-//     Route::get('/aaa', [LineNotifyController::class, 'broadcastSend']);
-//     Route::post('/image', [LineNotifyController::class, 'sendImage']);
-// });
-
-
-

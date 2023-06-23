@@ -1,4 +1,6 @@
-@extends('adminlte::auth.auth-page', ['auth_type' => 'login'])
+{{-- @extends('adminlte::auth.auth-page', ['auth_type' => 'login']) --}}
+@extends('auth.auth-page', ['auth_type' => 'login'])
+
 
 @section('adminlte_css_pre')
     <link rel="stylesheet" href="{{ asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}">
@@ -23,6 +25,7 @@
 @section('auth_body')
     <form action="{{ $login_url }}" method="post">
         @csrf
+
 
         {{-- LoginID field --}}
         <div class="input-group mb-3">

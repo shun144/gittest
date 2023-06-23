@@ -1,5 +1,6 @@
 @extends('adminlte::page')
 
+
 @section('title', 'Dashboard')
 
 @section('content_header')
@@ -32,6 +33,7 @@
             </div>
 
             <div class="card-body">
+              
               <div id="external-events">
                 @foreach ($templates as $item)
                 <div class="external-event" data-msgid="{{ $item->id }}" style="color:white; background-color:{{$item->title_color}}">
@@ -49,6 +51,7 @@
       <div class="col-md-9">
         <div class="card card-primary">
           <div class="card-body p-0">
+            <div id="calendarToken" style="display:none">{{ csrf_token()}}</div>
             <div id="calendar"></div>
           </div>
         </div>
@@ -86,17 +89,114 @@
 
 <script>
 
-$(function(){
-
   let Calendar = FullCalendar.Calendar;
   let Draggable = FullCalendar.Draggable;
   let containerEl = document.getElementById('external-events');
   let checkbox = document.getElementById('drop-remove');
   let calendarEl = document.getElementById('calendar');
+  let viewMonth = null
+
+
+  function submitAddSchedule(e){
+    e.preventDefault();
+    const msg = 'スケジュールを作成してよろしいですか?'
+    if(window.confirm(msg)){
+      const csrf = $('#addTemplateCsrfToken').val();
+      let $form = $('#form_add_schedule');
+      let fd = new FormData($form.get(0));
+      $.ajax({
+        headers: {'X-CSRF-TOKEN': csrf},
+        url: '{{route('schedule.add')}}',
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        data: fd
+      })
+      .done(function (data) {
+        calendar.addEvent({
+          id: data.id,
+          title: data.title,
+          start: data.start,
+          backgroundColor: data.title_color,
+          borderColor: data.title_color,
+          allDay: data.allDay,
+          content: data.content,
+          plan_at: data.plan_at,
+          images:data.images
+        });
+        toastr.success('追加しました。');
+      })
+      .fail(function () {
+        toastr.error('スケジュール追加に失敗しました。');
+      });
+    }
+    $('#add_schedule').modal('hide');
+    return false; 
+  };
+
+
+  function submitDeleteSchedule(e){
+    e.preventDefault();
+
+    const msg = 'スケジュールを削除してよろしいですか?'
+    if(window.confirm(msg)){
+      const csrf = $('#delScheduleCsrfToken').val();
+      let $form = $('#form_del_schedule');
+      let fd = new FormData($form.get(0));
+      $.ajax({
+        headers: {'X-CSRF-TOKEN': csrf},
+        url: '{{route('schedule.del')}}',
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        data: fd
+      })
+      .done(function (message_id) {
+        let event = calendar.getEventById(message_id)
+        event.remove();
+        toastr.success('スケジュールを削除しました。');
+      })
+      .fail(function () {
+        toastr.error('スケジュール削除に失敗しました。');
+      });
+    }
+    $('#edit_schedule').modal('hide');
+    return false;
+
+
+    // const csrf = $('#delScheduleCsrfToken').val();
+    // let $form = $('#form_del_schedule');
+    // let fd = new FormData($form.get(0));
+    // const event_id = fd.get('message_id');
+    // let event = calendar.getEventById(event_id)
+    // event.remove();
+
+
+    // console.log(event);
+    // for (const key of fd.keys())
+    // {
+    //   console.log(key);
+    // }
+    // console.log(e)
+
+    // modal.find('.eventid').text(event_id)
+    // const msg = 'スケジュールを削除してよろしいですか?'
+    // if(window.confirm(msg)){
+    //   return true;
+    // }
+    // else {
+    //   return false;
+    // }
+  };  
+
+
 
   @if (session('edit_template_complate_flushMsg'))
   $(function () {toastr.success('{{ session('edit_template_complate_flushMsg') }}');});
   @endif
+
+
+
 
   // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
   // 定型メッセージ取得
@@ -111,89 +211,44 @@ $(function(){
     console.error("読み込み失敗");
   }); 
 
-
-    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-    //  定型メッセージクリックイベント
-    $('.external-event').click(function() {
-      const data = templateMessages.find((v) => v.id == $(this).data('msgid'));
-      const modal = $('#edit_template')
-      modal.on('show.bs.modal', function(){
-        modal.find('.msg_id').val(data.id)
-        modal.find('.title_form').val(data.title)
-        modal.find('.content_form').val(data.content)
-        $.each(modal.find('.title_color'), function(index, elem) {
-          if (elem.value == data.title_color)
-          { 
-            elem.checked = true
-            elem.dispatchEvent(new Event('change'));
-          }
-        })
-        let preview = modal.find('.image_preview').get(0);
-        let text_form = modal.find('.filename_view');
-        let has_image = "0"
-        preview.innerHTML = '';
-        text_form.val(null);
-
-        const img = data.images[0]
-        if (typeof img !== "undefined")
+  // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+  //  定型メッセージクリックイベント
+  $('.external-event').click(function() {
+    const data = templateMessages.find((v) => v.id == $(this).data('msgid'));
+    const modal = $('#edit_template')
+    modal.on('show.bs.modal', function(){
+      modal.find('.msg_id').val(data.id)
+      modal.find('.title_form').val(data.title)
+      modal.find('.content_form').val(data.content)
+      $.each(modal.find('.title_color'), function(index, elem) {
+        if (elem.value == data.title_color)
         { 
-          has_image = "1"
-          const imgElem = document.createElement('img')
-          imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
-          preview.appendChild(imgElem);
-          text_form.val(img.org_name)
+          elem.checked = true
+          elem.dispatchEvent(new Event('change'));
         }
-        modal.find('.has_file').val(has_image)
       })
-      modal.modal('toggle');
+      let preview = modal.find('.image_preview').get(0);
+      let text_form = modal.find('.filename_view');
+      let has_image = "0"
+      preview.innerHTML = '';
+      text_form.val(null);
+
+      const img = data.images[0]
+      if (typeof img !== "undefined")
+      { 
+        has_image = "1"
+        const imgElem = document.createElement('img')
+        imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
+        preview.appendChild(imgElem);
+        text_form.val(img.org_name)
+      }
+      modal.find('.has_file').val(has_image)
     })
-
-    // $('.external-event').click(function() {
-    //   const data = templateMessages.find((v) => v.id == $(this).data('msgid'));
-    //   const modal = $('#edit_template')
-    //   modal.on('show.bs.modal', function(){
-    //     modal.find('.msg_id').val(data.id)
-    //     modal.find('.title_form').val(data.title)
-    //     modal.find('.content_form').val(data.content)
-    //     $.each(modal.find('.title_color'), function(index, elem) {
-    //       if (elem.value == data.title_color)
-    //       { 
-    //         elem.checked = true
-    //         elem.dispatchEvent(new Event('change'));
-    //       }
-    //     })
-    //     let preview = modal.find('.image_preview').get(0);
-    //     let text_form = modal.find('.filename_view');
-    //     let has_image = "0"
-    //     preview.innerHTML = '';
-    //     text_form.val(null);
-    //     if (data.images.length)
-    //     { 
-    //       has_image = "1"
-    //       let file_list = []
-    //       let img_id_list = []
-    //       $.each(data.images, function(index,img) {
-    //         const imgElem = document.createElement('img')
-    //         imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
-    //         preview.appendChild(imgElem);
-    //         file_list.push(img.org_name)
-    //       })
-    //       text_form.val(file_list.join(' '))
-    //     }
-    //     modal.find('.has_file').val(has_image)
-    //   })
-    //   modal.modal('toggle');
-    // })
-    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    modal.modal('toggle');
+  })
 
 
-    // let date = new Date()
-    // let d = date.getDate(), m = date.getMonth(), y = date.getFullYear()
-
-
-    // initialize the external events
-    // -----------------------------------------------------------------
-    new Draggable(containerEl, {
+  new Draggable(containerEl, {
     itemSelector: '.external-event',
     eventData: function(eventEl) {
       return {
@@ -209,50 +264,67 @@ $(function(){
   function ini_events(ele) {
     ele.each(function () {
       $(this).draggable({
-        zIndex : 1070,
-        revert : true, // will cause the event to go back to its
-        revertDuration: 0  //  original position after the drag
+        zIndex:1070,
+        revert:true, // will cause the event to go back to its
+        revertDuration:0  //  original position after the drag
       })
     })
   }
  
-  ini_events($('#external-events div.external-event'))
+  ini_events($('#external-events div.external-event'));
 
-    let calendar = new Calendar(calendarEl, {
-      headerToolbar: {
-        left  : 'prev,next today',
-        center: 'title',
-        right : 'dayGridMonth'
-      },
-      themeSystem: 'bootstrap',
-      locale: 'ja',
-      businessHours:true,
-      editable:true,
-      droppable: true,
-
-      eventOrderStrict: true,
-      eventOrder: "plan_at",
-
-      eventSources: [{url:'{{route('schedule.get')}}'}],
-
-      // カレンダー日付クリックイベント
-      dateClick: (info)=>{
-        const start = info.date;
-        const stYYYY = start.getFullYear();
-        const stMonth = ('00'+(Number(start.getMonth())+1)).slice(-2);
-        const stDate = ('00'+start.getDate()).slice(-2);
-        const calendarDate = `${stYYYY}-${stMonth}-${stDate}`
-
-        const modal = $('#add_schedule')
-        modal.on('show.bs.modal', function(){
-          modal.find('.datetime_form').val(calendarDate)
+  let calendar = new Calendar(calendarEl, {
+    timeZone: 'local',
+    headerToolbar: {
+      left  : 'prev,next today',
+      center: 'title',
+      right : 'dayGridMonth'
+    },
+    themeSystem: 'bootstrap',
+    locale: 'ja',
+    businessHours:true,
+    editable:true,
+    droppable: true,
+    eventOrderStrict: true,
+    eventOrder: "plan_at",
+    events:[],
+    datesSet:(info) => {
+      if (viewMonth != info.view.title){
+        viewMonth = info.view.title;
+        $.ajax({
+          headers: {'X-CSRF-TOKEN': $('#calendarToken').text()},
+          url: '{{route('schedule.get')}}',
+          method: 'POST',
+          data:{
+            start_date: info.start.valueOf(),
+            end_date: info.end.valueOf(),
+          }
         })
-        modal.modal('toggle');
-      },
+        .done(function (data) {
+          calendar.setOption('events', data);
+        });
+      }
+    },
+
+    // カレンダー日付クリックイベント
+    dateClick: (info)=>{
+      const start = info.date;
+      const stYYYY = start.getFullYear();
+      const stMonth = ('00'+(Number(start.getMonth())+1)).slice(-2);
+      const stDate = ('00'+start.getDate()).slice(-2);
+      const calendarDate = `${stYYYY}-${stMonth}-${stDate}`
+
+      const modal = $('#add_schedule')
+      modal.on('show.bs.modal', function(){
+        modal.find('.datetime_form').val(calendarDate)
+      })
+      modal.modal('toggle');
+    },
 
       // 登録スケジュールクリックイベント
       eventClick:(e)=>{
         const modal = $('#edit_schedule')
+        // const event_id = e.event.id;
         const start_str = e.event.extendedProps.plan_at
         const calendarDate = start_str.split(' ')[0]
         const hhmmss = start_str.split(' ')[1]
@@ -260,6 +332,7 @@ $(function(){
         const calendarMm = hhmmss.split(':')[1]
 
         modal.on('show.bs.modal', function(){
+          // modal.find('.eventid').val(event_id)
           modal.find('.datetime_form').val(calendarDate)
           modal.find('.hh_form').val(calendarHh)
           modal.find('.mm_form').val(calendarMm)
@@ -405,7 +478,7 @@ $(function(){
     });
 
     calendar.render();
-  });
+
 
 </script>
 @stop
