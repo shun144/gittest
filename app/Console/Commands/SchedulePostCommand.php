@@ -44,7 +44,7 @@ class SchedulePostCommand extends Command
             $date_down = date('Y-m-d H:i', strtotime($date_down));
 
             // Log::info('スケジュール配信 開始');
-            Log::info($date_down);
+            Log::info($date_down.' スケジュール配信');
 
             // 配信対象メッセージ抽出
             $messages = DB::table('schedules')
@@ -61,7 +61,7 @@ class SchedulePostCommand extends Command
             ->get();
 
             if ($messages->count() == 0){
-                Log::info('スケジュール配信 終了【0件】');
+                Log::info($date_down.' スケジュール配信 0件終了');
                 return;
             }
 
