@@ -81,7 +81,7 @@ class PostMessageJob implements ShouldQueue
 
             foreach($lines as $line)
             {
-                \Log::info('送信対象LINE: '. $line);
+                \Log::info('送信対象LINE: '. $line->user_name);
 
                 $res = $client->request('POST', $API, [
                     'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
