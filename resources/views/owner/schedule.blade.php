@@ -97,6 +97,7 @@
   let calendarEl = document.getElementById('calendar');
   let viewMonth = null
   let tmp_schedule_date = $('#tmp_schedule_date')
+  let modal_add_schedule = $('#add_schedule');
   let modal_edit_schedule = $('#edit_schedule')
 
 
@@ -153,22 +154,73 @@
         toastr.error('スケジュール追加に失敗しました。');
       });
     }
-    let modal = $('#add_schedule');
-    modal.modal('hide');
-    modal.find('input[name=date]').val('');
-    modal.find('select[name=hh]').val('00');
-    modal.find('select[name=mm]').val('00');
-    modal.find('input[name=title]').val('');
-    modal.find('input[name=message_id]').val('');
-    modal.find('textarea[name=content]').val('');
-    modal.find('input[name=has_file]').val("0");
-    modal.find('input.filename_view').val('');
-    modal.find('p.image_preview').empty();
-    modal.find('input[name=image_id]').val('');
-    modal.find('.title_color')[0].checked = true
-    modal.find('.title_color')[0].dispatchEvent(new Event('change'));
+    modal_add_schedule.find('input[name=date]').val('');
+    modal_add_schedule.find('select[name=hh]').val('00');
+    modal_add_schedule.find('select[name=mm]').val('00');
+    modal_add_schedule.find('input[name=title]').val('');
+    modal_add_schedule.find('input[name=message_id]').val('');
+    modal_add_schedule.find('textarea[name=content]').val('');
+    modal_add_schedule.find('input[name=has_file]').val("0");
+    modal_add_schedule.find('input.filename_view').val('');
+    modal_add_schedule.find('p.image_preview').empty();
+    modal_add_schedule.find('input[name=image_id]').val('');
+    modal_add_schedule.find('.title_color')[0].checked = true
+    modal_add_schedule.find('.title_color')[0].dispatchEvent(new Event('change'));
+    modal_add_schedule.modal('hide');
     return false; 
   };
+
+  // function submitAddSchedule(e){
+
+  //   e.preventDefault();
+  //   const msg = 'スケジュールを作成してよろしいですか?'
+  //   if(window.confirm(msg)){
+  //     const csrf = $('#addTemplateCsrfToken').val();
+  //     let $form = $('#form_add_schedule');
+  //     let fd = new FormData($form.get(0));
+  //     $.ajax({
+  //       headers: {'X-CSRF-TOKEN': csrf},
+  //       url: '{{route('schedule.add')}}',
+  //       method: 'POST',
+  //       contentType: false,
+  //       processData: false,
+  //       data: fd
+  //     })
+  //     .done(function (data) {
+  //       calendar.addEvent({
+  //         id: data.id,
+  //         title: data.title,
+  //         start: data.start,
+  //         backgroundColor: data.backgroundColor,
+  //         borderColor: data.borderColor,
+  //         allDay: data.allDay,
+  //         content: data.content,
+  //         plan_at: data.plan_at,
+  //         images:data.images
+  //       });
+  //       toastr.success('スケジュールを追加しました。');
+  //     })
+  //     .fail(function () {
+  //       toastr.error('スケジュール追加に失敗しました。');
+  //     });
+  //   }
+  //   let modal = $('#add_schedule');
+
+  //   modal.find('input[name=date]').val('');
+  //   modal.find('select[name=hh]').val('00');
+  //   modal.find('select[name=mm]').val('00');
+  //   modal.find('input[name=title]').val('');
+  //   modal.find('input[name=message_id]').val('');
+  //   modal.find('textarea[name=content]').val('');
+  //   modal.find('input[name=has_file]').val("0");
+  //   modal.find('input.filename_view').val('');
+  //   modal.find('p.image_preview').empty();
+  //   modal.find('input[name=image_id]').val('');
+  //   modal.find('.title_color')[0].checked = true
+  //   modal.find('.title_color')[0].dispatchEvent(new Event('change'));
+  //   modal.modal('hide');
+  //   return false; 
+  // };
 
 
   // /_/_/_/_/_/_/_/_/_/_/_
@@ -370,11 +422,20 @@
       const stDate = ('00'+start.getDate()).slice(-2);
       const calendarDate = `${stYYYY}-${stMonth}-${stDate}`
 
-      const modal = $('#add_schedule')
-      modal.on('show.bs.modal', function(){
-        modal.find('.datetime_form').val(calendarDate)
+      modal_add_schedule.on('show.bs.modal', function(){
+        modal_add_schedule.find('.datetime_form').val(calendarDate)
+        modal_add_schedule.find('input[name=title]').val('');
+        modal_add_schedule.find('input[name=message_id]').val('');
+        modal_add_schedule.find('textarea[name=content]').val('');
+        modal_add_schedule.find('input[name=has_file]').val("0");
+        modal_add_schedule.find('input.filename_view').val('');
+        modal_add_schedule.find('p.image_preview').empty();
+        modal_add_schedule.find('input[name=image_id]').val('');
+        modal_add_schedule.find('.title_color')[0].checked = true
+        modal_add_schedule.find('.title_color')[0].dispatchEvent(new Event('change'));
       })
-      modal.modal('toggle');
+      modal_add_schedule.modal('show');
+
     },
 
     // 登録スケジュールクリックイベント
@@ -443,7 +504,6 @@
         tmp_schedule_date.data('oldStart',e.oldEvent.start)
         tmp_schedule_date.data('oldEnd',e.oldEvent.end)
 
-
         modal_edit_schedule.find('.datetime_form').val(calendarDate)
         modal_edit_schedule.find('.hh_form').val(calendarHh)
         modal_edit_schedule.find('.mm_form').val(calendarMm)
@@ -481,7 +541,7 @@
       modal_edit_schedule.modal('show');
     },
 
-    // 外部イベントのカレンダードロップイベント
+    // 定型メッセージのカレンダードロップイベント
     eventReceive: function(info) {     
       const data = templateMessages.find((v) => v.id == info.draggedEl.getAttribute('data-msgid'));
       const start = info.event.start;
@@ -489,22 +549,24 @@
       const stMonth = ('00'+(Number(start.getMonth())+1)).slice(-2);
       const stDate = ('00'+start.getDate()).slice(-2);
       const calendarDate = `${stYYYY}-${stMonth}-${stDate}`
-      const modal = $('#add_schedule');
-      modal.on('show.bs.modal', function(){
-        modal.find('.msg_id').val(data.id)
-        modal.find('.datetime_form').val(calendarDate)
-        modal.find('.title_form').val(data.title)
-        modal.find('.content_form').val(data.content)
-        $.each(modal.find('.title_color'), function(index, elem) {
+
+      // const modal = $('#add_schedule');
+
+      modal_add_schedule.on('show.bs.modal', function(){
+        modal_add_schedule.find('.msg_id').val(data.id)
+        modal_add_schedule.find('.datetime_form').val(calendarDate)
+        modal_add_schedule.find('.title_form').val(data.title)
+        modal_add_schedule.find('.content_form').val(data.content)
+        $.each(modal_add_schedule.find('.title_color'), function(index, elem) {
           if (elem.value == data.title_color)
           { 
             elem.checked = true
             elem.dispatchEvent(new Event('change'));
           }
         })
-        let preview = modal.find('.image_preview').get(0);
-        let text_form = modal.find('.filename_view');
-        let img_id_form = modal.find('.img_id');
+        let preview = modal_add_schedule.find('.image_preview').get(0);
+        let text_form = modal_add_schedule.find('.filename_view');
+        let img_id_form = modal_add_schedule.find('.img_id');
         let has_image = "0"
         preview.innerHTML = '';
         text_form.val(null);
@@ -523,14 +585,66 @@
           text_form.val(file_list.join(' '))
           img_id_form.val(img_id_list.join(','))
         }
-        modal.find('.has_file').val(has_image)
+        modal_add_schedule.find('.has_file').val(has_image)
       });
-      modal.on('hide.bs.modal', function(){
+      modal_add_schedule.on('hide.bs.modal', function(){
         info.event.remove()
       });
-      modal.modal('toggle');
+      modal_add_schedule.modal('show');
     },
   });
+
+    //   eventReceive: function(info) {     
+  //     const data = templateMessages.find((v) => v.id == info.draggedEl.getAttribute('data-msgid'));
+  //     const start = info.event.start;
+  //     const stYYYY = start.getFullYear();
+  //     const stMonth = ('00'+(Number(start.getMonth())+1)).slice(-2);
+  //     const stDate = ('00'+start.getDate()).slice(-2);
+  //     const calendarDate = `${stYYYY}-${stMonth}-${stDate}`
+
+  //     const modal = $('#add_schedule');
+
+  //     modal.on('show.bs.modal', function(){
+  //       modal.find('.msg_id').val(data.id)
+  //       modal.find('.datetime_form').val(calendarDate)
+  //       modal.find('.title_form').val(data.title)
+  //       modal.find('.content_form').val(data.content)
+  //       $.each(modal.find('.title_color'), function(index, elem) {
+  //         if (elem.value == data.title_color)
+  //         { 
+  //           elem.checked = true
+  //           elem.dispatchEvent(new Event('change'));
+  //         }
+  //       })
+  //       let preview = modal.find('.image_preview').get(0);
+  //       let text_form = modal.find('.filename_view');
+  //       let img_id_form = modal.find('.img_id');
+  //       let has_image = "0"
+  //       preview.innerHTML = '';
+  //       text_form.val(null);
+  //       if (data.images.length)
+  //       { 
+  //         has_image = "1"
+  //         let file_list = []
+  //         let img_id_list = []
+  //         $.each(data.images, function(index,img) {
+  //           const imgElem = document.createElement('img')
+  //           imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
+  //           preview.appendChild(imgElem);
+  //           file_list.push(img.org_name)
+  //           img_id_list.push(img.image_id)
+  //         })
+  //         text_form.val(file_list.join(' '))
+  //         img_id_form.val(img_id_list.join(','))
+  //       }
+  //       modal.find('.has_file').val(has_image)
+  //     });
+  //     modal.on('hide.bs.modal', function(){
+  //       info.event.remove()
+  //     });
+  //     modal.modal('show');
+  //   },
+  // });
 
   calendar.render();
 
