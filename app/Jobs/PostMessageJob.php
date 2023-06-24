@@ -77,11 +77,11 @@ class PostMessageJob implements ShouldQueue
                 array_push($multipart,[ 'name'=> 'imageFile','contents' => Psr7\Utils::tryFopen($img_path, 'r')]);
             }
 
-            \Log::info('送信対象LINE数: '. $lines->count());
+            // \Log::info('送信対象LINE数: '. $lines->count());
 
             foreach($lines as $line)
             {
-                \Log::info('送信対象LINE: '. $line->user_name);
+                // \Log::info('送信対象LINE: '. $line->user_name);
 
                 $res = $client->request('POST', $API, [
                     'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
@@ -97,7 +97,7 @@ class PostMessageJob implements ShouldQueue
                 }
             }
 
-            \Log::info('ループからは抜けている');
+            // \Log::info('ループからは抜けている');
 
             DB::table('histories')->where('id',$history_id )
             ->update(
