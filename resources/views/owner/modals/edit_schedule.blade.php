@@ -26,7 +26,7 @@
           <form id="form_edit_schedule" action="{{ route('schedule.edit') }}" method="post" enctype="multipart/form-data" onSubmit="return submitEditSchedule(event)">
             {{-- @csrf --}}
             <input id="editScheduleCsrfToken" type="hidden" name="_token" value="{{csrf_token()}}">
-            <p style="display:none" id="tmp_schedule_date" data-is-change="" data-old-start="" data-old-end=""></p>
+            <p style="display:none" id="tmp_edit_schedule_data" data-msg-id="" data-is-change="" data-old-start="" data-old-end="" data-view-date=""></p>
             <div class="row mb-5">
               @include('owner.components.message_datatime')
             </div>

@@ -386,6 +386,8 @@ class ScheduleController extends Controller
                 ]
             );
 
+            \Log::info($images);
+
             if($images)
             {
                 $img = $images[0];

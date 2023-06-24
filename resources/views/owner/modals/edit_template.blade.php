@@ -22,6 +22,9 @@
           <form id="form_edit_template" action="{{ route('template.edit') }}" method="post" enctype="multipart/form-data" onSubmit="return submitEditTemplate(event)">
             @csrf
             @method('PATCH')
+            <p style="display:none" id="tmp_edit_template_data" data-temp-id=""></p>
+          
+
             <div class="row mb-3">
               @include('owner.components.message_title')
               <input type="hidden" name='message_id' class='msg_id'>

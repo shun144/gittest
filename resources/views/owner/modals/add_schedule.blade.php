@@ -13,6 +13,7 @@
           <form id="form_add_schedule" action="{{ route('schedule.add') }}" method="post" enctype="multipart/form-data" onSubmit="return submitAddSchedule(event)">
             {{-- @csrf --}}
           <input id="addScheduleCsrfToken" type="hidden" name="_token" value="{{csrf_token()}}">
+          <p style="display:none" id="tmp_add_schedule_data" data-temp-id=""  data-view-date=""></p>
           <div class="row mb-5">
             @include('owner.components.message_datatime')
           </div>
