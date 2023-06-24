@@ -26,7 +26,7 @@ class OwnerController extends Controller
     public function viewPostHistory()
     {
         try {
-            \Log::info('UserID:'. Auth::user()->id .' 配信履歴表示 開始');
+            // \Log::info('UserID:'. Auth::user()->id .' 配信履歴表示 開始');
             $store_id = Auth::user()->store_id;
             $posts = DB::table('histories')
             ->where('store_id', $store_id )
@@ -42,7 +42,7 @@ class OwnerController extends Controller
             )
             ->latest('created_at')
             ->get();
-            \Log::info('UserID:'. Auth::user()->id .' 配信履歴表示 終了');
+            // \Log::info('UserID:'. Auth::user()->id .' 配信履歴表示 終了');
             return view('owner.postHistory', compact('posts'));
         }
         catch (\Exception $e) {
@@ -90,14 +90,14 @@ class OwnerController extends Controller
     public function viewLineUsers()
     {
         try {
-            \Log::info('UserID:'. Auth::user()->id .' LINEユーザ一覧表示 開始');
+            // \Log::info('UserID:'. Auth::user()->id .' LINEユーザ一覧表示 開始');
             $store_id = Auth::user()->store_id;
             $lines = DB::table('lines')
             ->select('id','user_name', 'is_valid','created_at')
             ->where('store_id', $store_id)->get();
             $url_name = DB::table('stores')->find($store_id)->url_name;
             $reg_url = url($url_name) . '/register';
-            \Log::info('UserID:'. Auth::user()->id .' LINEユーザ一覧表示 終了');
+            // \Log::info('UserID:'. Auth::user()->id .' LINEユーザ一覧表示 終了');
             return view('owner.line_users', compact('lines', 'reg_url'));
         }
         catch (\Exception $e) {
@@ -109,14 +109,14 @@ class OwnerController extends Controller
     public function updateLineUser(Request $request)
     {
         try {
-            \Log::info('UserID:'. Auth::user()->id .' LINEユーザ更新 開始');
+            // \Log::info('UserID:'. Auth::user()->id .' LINEユーザ更新 開始');
 
             $post = $request->only(['line_user_id','new_valid']);
             DB::table('lines')
             ->where('id',$post['line_user_id'])
             ->update(['is_valid' => $post['new_valid']]
             );
-            \Log::info('UserID:'. Auth::user()->id .' LINEユーザ更新 終了');
+            // \Log::info('UserID:'. Auth::user()->id .' LINEユーザ更新 終了');
             return redirect(route('owner.line_users'));
         }
         catch (\Exception $e) {

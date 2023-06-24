@@ -167,6 +167,23 @@
     modal_add_schedule.find('.title_color')[0].checked = true
     modal_add_schedule.find('.title_color')[0].dispatchEvent(new Event('change'));
     modal_add_schedule.modal('hide');
+
+    // const img = e.event.extendedProps.images[0];
+    //     // console.log('aaaa')
+    //     // console.log(e.event.extendedProps.images[0])
+
+    //     if (typeof img !== "undefined")
+    //     { 
+    //       has_image = "1"
+    //       const imgElem = document.createElement('img')
+    //       imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
+    //       preview.appendChild(imgElem);
+    //       text_form.val(img.org_name)
+    //     }
+    //     modal_edit_schedule.find('.has_file').val(has_image)
+    //   })
+
+
     return false; 
   };
 
@@ -426,6 +443,8 @@
         text_form.val(null);
 
         const img = e.event.extendedProps.images[0];
+        console.log(e.event.title)
+
         if (typeof img !== "undefined")
         { 
           has_image = "1"

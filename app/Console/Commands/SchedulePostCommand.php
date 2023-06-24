@@ -43,7 +43,8 @@ class SchedulePostCommand extends Command
             $date_down = $now->subMinutes($now->minute % $sep_time);
             $date_down = date('Y-m-d H:i', strtotime($date_down));
 
-            Log::info('スケジュール配信 開始');
+            // Log::info('スケジュール配信 開始');
+            Log::info($date_down);
 
             // 配信対象メッセージ抽出
             $messages = DB::table('schedules')
@@ -127,8 +128,6 @@ class SchedulePostCommand extends Command
             }
             ini_set("max_execution_time",0);
 
-            // sleep(600);
-            // Log::info('★★★【要削除】スケジュール配信時の処理時間チェックタイムアウト設定してるよ!!【要削除】');
 
             $client = new Client();
             $requests = function ($requests_param) use ($client, $API) {
@@ -203,7 +202,7 @@ class SchedulePostCommand extends Command
                         'updated_at'=> Carbon::now()
                     ]);
             }
-            Log::info('スケジュール配信 終了');
+            // Log::info('スケジュール配信 終了');
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());
