@@ -26,6 +26,7 @@ class AdminController extends Controller
             'stores.id as store_id',
             'stores.name',
             'stores.url_name',
+            // DB::raw('DATE_FORMAT(DATE_ADD(schedules.plan_at, INTERVAL 1 DAY), "%Y-%m-%d 00:00:00") as url_name'),
             'users.id as user_id',
             'users.login_id',
             'stores.client_id',

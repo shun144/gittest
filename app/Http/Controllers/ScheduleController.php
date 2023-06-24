@@ -64,172 +64,172 @@ class ScheduleController extends Controller
     }
 
 
-    public function dummy()
-    {
+    // public function dummy()
+    // {
 
-        $sep_time = 10;
-        $API = 'https://notify-api.line.me/api/notify';
-        $now = Carbon::now();
+    //     $sep_time = 10;
+    //     $API = 'https://notify-api.line.me/api/notify';
+    //     $now = Carbon::now();
 
-        // 10分単位で切り捨て
-        $date_down = $now->subMinutes($now->minute % $sep_time);
-        $date_down = date('Y-m-d H:i', strtotime($date_down));
+    //     // 10分単位で切り捨て
+    //     $date_down = $now->subMinutes($now->minute % $sep_time);
+    //     $date_down = date('Y-m-d H:i', strtotime($date_down));
 
-        // 配信対象メッセージ抽出
-        $messages = DB::table('schedules')
-        // ->where('plan_at', $date_down)
-        ->join('messages','schedules.message_id','=','messages.id')
-        ->leftjoin('images','messages.id','=','images.message_id')
-        ->select(
-            'messages.store_id as store_id',
-            'messages.id as message_id',
-            'messages.title as title',
-            'messages.content as content',
-            'images.save_name as save_name',
-            )
-        ->get();
+    //     // 配信対象メッセージ抽出
+    //     $messages = DB::table('schedules')
+    //     // ->where('plan_at', $date_down)
+    //     ->join('messages','schedules.message_id','=','messages.id')
+    //     ->leftjoin('images','messages.id','=','images.message_id')
+    //     ->select(
+    //         'messages.store_id as store_id',
+    //         'messages.id as message_id',
+    //         'messages.title as title',
+    //         'messages.content as content',
+    //         'images.save_name as save_name',
+    //         )
+    //     ->get();
 
         
-        // 非同期リクエスト用パラメータリスト作成
-        $requests_param = [];
-        foreach($messages as $msg)
-        {
+    //     // 非同期リクエスト用パラメータリスト作成
+    //     $requests_param = [];
+    //     foreach($messages as $msg)
+    //     {
 
-            $history_id = DB::table('histories')
-            ->insertGetId(
-                [
-                    'store_id' => $msg->store_id,
-                    'title'=> $msg->title,
-                    'content'=> $msg->content,
-                    'status'=> '配信中',
-                    'start_at'=> Carbon::now(),
-                    'img_url' => $msg->save_name == Null ? Null: url(config('app.access_storage.image').'/'.$msg->save_name),
-                    'created_at'=> Carbon::now()
-                ]
-            );
+    //         $history_id = DB::table('histories')
+    //         ->insertGetId(
+    //             [
+    //                 'store_id' => $msg->store_id,
+    //                 'title'=> $msg->title,
+    //                 'content'=> $msg->content,
+    //                 'status'=> '配信中',
+    //                 'start_at'=> Carbon::now(),
+    //                 'img_url' => $msg->save_name == Null ? Null: url(config('app.access_storage.image').'/'.$msg->save_name),
+    //                 'created_at'=> Carbon::now()
+    //             ]
+    //         );
             
-            $lines = DB::table('lines')
-            ->select('id','token', 'user_name')
-            ->where('is_valid', true)
-            ->where('store_id', $msg->store_id
-            )->get();
+    //         $lines = DB::table('lines')
+    //         ->select('id','token', 'user_name')
+    //         ->where('is_valid', true)
+    //         ->where('store_id', $msg->store_id
+    //         )->get();
 
-            foreach($lines as $line)
-            {  
-                if($msg->save_name == null)
-                {
-                    array_push($requests_param,
-                    [
-                        // 非同期リクエストの結果を特定するためのキー
-                        'key' => $history_id. '_' . $msg->message_id . '_' . $line->id,
-                        'history_id' => $history_id,
-                        'user_name' => $line->user_name,
-                        'params' =>  [
-                            'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
-                            'http_errors' => false,
-                            'multipart' => [
-                                ['name' => 'message','contents' => $msg->content]
-                            ]
-                        ]
-                    ]
-                );
-                } else {
+    //         foreach($lines as $line)
+    //         {  
+    //             if($msg->save_name == null)
+    //             {
+    //                 array_push($requests_param,
+    //                 [
+    //                     // 非同期リクエストの結果を特定するためのキー
+    //                     'key' => $history_id. '_' . $msg->message_id . '_' . $line->id,
+    //                     'history_id' => $history_id,
+    //                     'user_name' => $line->user_name,
+    //                     'params' =>  [
+    //                         'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
+    //                         'http_errors' => false,
+    //                         'multipart' => [
+    //                             ['name' => 'message','contents' => $msg->content]
+    //                         ]
+    //                     ]
+    //                 ]
+    //             );
+    //             } else {
 
-                    array_push($requests_param,
-                    [
-                        'key' => $history_id. '_' . $msg->message_id . '_' . $line->id,
-                        'history_id' => $history_id,
-                        'user_name' => $line->user_name,
-                        'params' =>  [
-                            'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
-                            'http_errors' => false,
-                            'multipart' => [
-                                ['name' => 'message','contents' => $msg->content],
-                                ['name' => 'imageFile','contents' => Psr7\Utils::tryFopen(config('app.access_storage.image').'/'.$msg->save_name, 'r')]
-                            ]
-                        ]
-                    ]);
-                }
-            }
-        }
+    //                 array_push($requests_param,
+    //                 [
+    //                     'key' => $history_id. '_' . $msg->message_id . '_' . $line->id,
+    //                     'history_id' => $history_id,
+    //                     'user_name' => $line->user_name,
+    //                     'params' =>  [
+    //                         'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
+    //                         'http_errors' => false,
+    //                         'multipart' => [
+    //                             ['name' => 'message','contents' => $msg->content],
+    //                             ['name' => 'imageFile','contents' => Psr7\Utils::tryFopen(config('app.access_storage.image').'/'.$msg->save_name, 'r')]
+    //                         ]
+    //                     ]
+    //                 ]);
+    //             }
+    //         }
+    //     }
 
-        ini_set("max_execution_time",0);
-        $client = new Client();
-        $requests = function ($requests_param) use ($client, $API) {
-            foreach ($requests_param as $param) {
-                yield function() use ($client, $API, $param) {
-                    return $client->requestAsync('POST', $API, $param['params']);
-                };
-            }
-        };
+    //     ini_set("max_execution_time",0);
+    //     $client = new Client();
+    //     $requests = function ($requests_param) use ($client, $API) {
+    //         foreach ($requests_param as $param) {
+    //             yield function() use ($client, $API, $param) {
+    //                 return $client->requestAsync('POST', $API, $param['params']);
+    //             };
+    //         }
+    //     };
 
-        $contents = [];
-        $pool = new Pool($client, $requests($requests_param), [
-            'concurrency' => 10,
-            'fulfilled' => function ($response, $index) use ($requests_param, &$contents) {
-                $contents[$requests_param[$index]['key']] = [
-                  'html'             => $response->getBody()->getContents(),
-                  'status_code'      => $response->getStatusCode(),
-                  'response_header'  => $response->getHeaders()
-                ];
+    //     $contents = [];
+    //     $pool = new Pool($client, $requests($requests_param), [
+    //         'concurrency' => 10,
+    //         'fulfilled' => function ($response, $index) use ($requests_param, &$contents) {
+    //             $contents[$requests_param[$index]['key']] = [
+    //               'html'             => $response->getBody()->getContents(),
+    //               'status_code'      => $response->getStatusCode(),
+    //               'response_header'  => $response->getHeaders()
+    //             ];
 
-                $contents[$requests_param[$index]['key']]['history_id'] = $requests_param[$index]['history_id'];
-                $contents[$requests_param[$index]['key']]['user_name'] = $requests_param[$index]['user_name'];
-            },
-            'rejected' => function ($reason, $index) use ($requests_param, &$contents) {
-                $contents[$requests_param[$index]['key']] = [
-                  'html'   => '',
-                  'reason' => $reason
-                ];
-                $contents[$requests_param[$index]['key']]['history_id'] = $requests_param[$index]['history_id'];
-                $contents[$requests_param[$index]['key']]['user_name'] = $requests_param[$index]['user_name'];
-            },
-        ]);
-        $promise = $pool->promise();
-        $promise->wait();
+    //             $contents[$requests_param[$index]['key']]['history_id'] = $requests_param[$index]['history_id'];
+    //             $contents[$requests_param[$index]['key']]['user_name'] = $requests_param[$index]['user_name'];
+    //         },
+    //         'rejected' => function ($reason, $index) use ($requests_param, &$contents) {
+    //             $contents[$requests_param[$index]['key']] = [
+    //               'html'   => '',
+    //               'reason' => $reason
+    //             ];
+    //             $contents[$requests_param[$index]['key']]['history_id'] = $requests_param[$index]['history_id'];
+    //             $contents[$requests_param[$index]['key']]['user_name'] = $requests_param[$index]['user_name'];
+    //         },
+    //     ]);
+    //     $promise = $pool->promise();
+    //     $promise->wait();
 
 
 
-        function group_by(array $table, string $key): array
-        {
-            $groups = [];
-            foreach ($table as $row) {
-                $groups[$row[$key]][] = $row;
-            }
-            return $groups;
-        }
+    //     function group_by(array $table, string $key): array
+    //     {
+    //         $groups = [];
+    //         foreach ($table as $row) {
+    //             $groups[$row[$key]][] = $row;
+    //         }
+    //         return $groups;
+    //     }
 
-        $history_group = group_by($contents, 'history_id');
+    //     $history_group = group_by($contents, 'history_id');
 
-        foreach ($history_group as $key => $value)
-        {
-            $result = 'OK';
-            $err = 'ー';
+    //     foreach ($history_group as $key => $value)
+    //     {
+    //         $result = 'OK';
+    //         $err = 'ー';
             
-            $res = array_map(function ($col) {
-                $json = json_decode($col['html']);
-                return '['.$col['user_name'].']'.$json->status.'::'.$json->message;
-            }, array_filter($value, function ($col) {
-                return $col['status_code'] != '200';
-            }));
+    //         $res = array_map(function ($col) {
+    //             $json = json_decode($col['html']);
+    //             return '['.$col['user_name'].']'.$json->status.'::'.$json->message;
+    //         }, array_filter($value, function ($col) {
+    //             return $col['status_code'] != '200';
+    //         }));
 
-            if ($res)
-            {
-                $result = 'NG';
-                $err = join('/', $res);
-            }
+    //         if ($res)
+    //         {
+    //             $result = 'NG';
+    //             $err = join('/', $res);
+    //         }
             
-            DB::table('histories')->where('id',$key)
-            ->update(
-                [
-                    'status'=> $result,
-                    'end_at'=> Carbon::now(),
-                    'err_info' => $err,
-                    'updated_at'=> Carbon::now()
-                ]);
-        }
-        return redirect(route('owner.schedule'));
-    }
+    //         DB::table('histories')->where('id',$key)
+    //         ->update(
+    //             [
+    //                 'status'=> $result,
+    //                 'end_at'=> Carbon::now(),
+    //                 'err_info' => $err,
+    //                 'updated_at'=> Carbon::now()
+    //             ]);
+    //     }
+    //     return redirect(route('owner.schedule'));
+    // }
 
 
 
@@ -248,7 +248,6 @@ class ScheduleController extends Controller
                 'messages.title as title',
                 'schedules.plan_at as start',
                 DB::raw('DATE_FORMAT(DATE_ADD(schedules.plan_at, INTERVAL 1 DAY), "%Y-%m-%d 00:00:00") as end'),
-                // DB::raw('DATE_FORMAT(schedules.plan_at, "%Y%m%d") as end'),
                 'messages.title_color as backgroundColor',
                 'messages.title_color as borderColor',
                 DB::raw("'true' as allDay"),

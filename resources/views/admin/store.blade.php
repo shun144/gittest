@@ -11,25 +11,13 @@
   <div class="card">
     <div class="card-header">
       <a href="{{route('store.add.view')}}" class="btn btn-success">店舗追加</a>
-      
-      {{-- <div class="card-tools">
-        <div class="input-group input-group-sm" style="width:150px;">
-          <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-          <div class="input-group-append">
-            <button type="submit" class="btn btn-default">
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-        </div>
-      </div> --}}
-
     </div>
 
     <div class="card-body">
       <table id="store_table" class="table table-striped table-bordered" style="table-layout:fixed;">
         <thead>
           <tr>
-            @foreach (array("操作","店舗名","店舗URL","ログインID","LINEサービスID","LINEサービスパスワード") as $col)
+            @foreach (array("操作","店舗名","公式LINE連携ページ","ログインID","LINEサービスID","LINEサービスパスワード") as $col)
             <th class="text-center">{{$col}}</th>
             @endforeach
           </tr>
@@ -58,7 +46,7 @@
               </div>
             </td>
             <td class="omit_text">{{$store->name}}</td>
-            <td class="omit_text">{{$store->url_name}}</td>
+            <td class="omit_text">{{url($store->url_name).'/register'}}</td>
             <td>{{$store->login_id}}</td>
             <td class="omit_text">{{$store->client_id}}</td>
             <td class="omit_text">{{$store->client_secret}}</td>
@@ -78,9 +66,6 @@
 @vite(['resources/sass/component.scss'])
 
 <style>
-
-
-
 </style>
 
 @stop

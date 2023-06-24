@@ -12,12 +12,12 @@ class MessagesTableSeeder extends Seeder
      */
     public function run(): void
     {
-        \DB::table('messages')->insert([            
-            'title'  => '定型メッセージタイトル',
-            'title_color' => '#E60012',
-            'content'  => '定型メッセージ内容',
-            'store_id' => 1,
-            'user_id' => 1
-        ]);
+        // \DB::table('messages')->insert([            
+        //     'title'  => '定型メッセージタイトル',
+        //     'title_color' => '#E60012',
+        //     'content'  => '定型メッセージ内容',
+        //     'store_id' => 1,
+        //     'user_id' => 1
+        // ]);
     }
 }

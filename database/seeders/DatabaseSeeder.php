@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             StoresTableSeeder::class,
             UsersTableSeeder::class,
-            MessagesTableSeeder::class,
-            TemplatesTableSeeder::class,
-            LineTableSeeder::class,
+            // MessagesTableSeeder::class,
+            // TemplatesTableSeeder::class,
+            // LineTableSeeder::class,
         ]);
     }
 }

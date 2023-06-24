@@ -14,7 +14,6 @@ Auth::routes([
     'register' => false // ユーザ登録機能をオフに切替
 ]);
 
-
 Route::group(['middleware'=>['auth']], function() {
     Route::get('/', [HomeController::class,'viewLogin']);
 });

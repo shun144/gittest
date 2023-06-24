@@ -1,7 +1,8 @@
 @extends('adminlte::page')
 
+{{-- @section('title', 'Dashboard') --}}
 
-@section('title', 'Dashboard')
+@section('title', '配信')
 
 @section('content_header')
     <h1>配信</h1>
@@ -177,14 +178,10 @@
     const msg = 'スケジュールを更新してよろしいですか?'
     if(window.confirm(msg)){
       tmp_schedule_date.data('isChange','true')
-      // console.log(tmp_schedule_date.data('isChange'))
-      // is_change_schedule.text('true')
       const csrf = $('#editScheduleCsrfToken').val();
       let $form = $('#form_edit_schedule');
       let fd = new FormData($form.get(0));
       let event = calendar.getEventById(fd.get('message_id'))
-      
-
 
       $.ajax({
         headers: {'X-CSRF-TOKEN': csrf},
@@ -195,13 +192,9 @@
         data: fd
       })
       .done(function (data) {
-        // console.log(new Date(data.end))
-        const st_date = new Date(data.start.split(' ')[0]  + ' 00:00:00')
-        // const end_date = new Date(st_date.getFullYear(),st_date.getMonth(),st_date.getDate()+1);
-        
+        const st_date = new Date(data.start.split(' ')[0]  + ' 00:00:00') 
         const end_date = new Date(data.end)
         event.setStart(st_date);
-
         // setEndでendを指定しないと想定しないendが自動設定される
         event.setEnd(end_date); 
 

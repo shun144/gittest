@@ -13,8 +13,8 @@ class TemplatesTableSeeder extends Seeder
      */
     public function run(): void
     {
-        \DB::table('templates')->insert([           
-            'message_id' => 1,
-        ]);
+        // \DB::table('templates')->insert([           
+        //     'message_id' => 1,
+        // ]);
     }
 }

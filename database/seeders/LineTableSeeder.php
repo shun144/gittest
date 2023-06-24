@@ -10,20 +10,20 @@ class LineTableSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('lines')->insert([
-            [
-                'store_id'  => 2,
-                'user_name' => '駿',
-                'token' => 'PQ13bmsLpTrxqjK2sNlZ2juPtgrrYNkhZ9waLWFGi12',
-                'is_valid' => true
-            ],
-            // [
-            //     'store_id'  => 2,
-            //     'user_name' => 'NG',
-            //     'token' => 'aaaaa',
-            //     'is_valid' => true
-            // ]
-        ]);
+        // DB::table('lines')->insert([
+        //     [
+        //         'store_id'  => 2,
+        //         'user_name' => '駿',
+        //         'token' => 'PQ13bmsLpTrxqjK2sNlZ2juPtgrrYNkhZ9waLWFGi12',
+        //         'is_valid' => true
+        //     ],
+        //     // [
+        //     //     'store_id'  => 2,
+        //     //     'user_name' => 'NG',
+        //     //     'token' => 'aaaaa',
+        //     //     'is_valid' => true
+        //     // ]
+        // ]);
 
         // $params = [];
         // for($i = 2; $i < 10; $i++){

@@ -16,27 +16,27 @@ class UsersTableSeeder extends Seeder
             [
                 'name'  => 'adminShun',
                 'login_id' => 'admin',
-                'password'  => Hash::make('admin'),
+                'password'  => Hash::make('password'),
                 'role' => 'admin',
                 'store_id' => 1,
                 'email' => 'admin@example.com'
             ],
         ]);
 
-        $params = [];
-        for($i = 2; $i < 4; $i++){
-            array_push($params,
-                [
-                    'name'  => 'owner'. '_' . $i,
-                    'login_id' => 'ownerlogin'.$i,
-                    'password'  => Hash::make('password'),
-                    'role' => 'owner',
-                    'store_id' =>  $i,
-                    'email' => 'user@example.com'
-                ]
-            );   
-        };
-        DB::table('users')->insert($params);
+        // $params = [];
+        // for($i = 2; $i < 4; $i++){
+        //     array_push($params,
+        //         [
+        //             'name'  => 'owner'. '_' . $i,
+        //             'login_id' => 'ownerlogin'.$i,
+        //             'password'  => Hash::make('password'),
+        //             'role' => 'owner',
+        //             'store_id' =>  $i,
+        //             'email' => 'user@example.com'
+        //         ]
+        //     );   
+        // };
+        // DB::table('users')->insert($params);
 
 
 
