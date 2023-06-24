@@ -77,7 +77,7 @@ class PostMessageJob implements ShouldQueue
                 array_push($multipart,[ 'name'=> 'imageFile','contents' => Psr7\Utils::tryFopen($img_path, 'r')]);
             }
 
-            \Log::info('送信対象LINE数: '. $lines);
+            \Log::info('送信対象LINE数: '. $lines->count());
 
             foreach($lines as $line)
             {
