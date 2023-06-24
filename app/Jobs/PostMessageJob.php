@@ -72,13 +72,6 @@ class PostMessageJob implements ShouldQueue
 
             ini_set("max_execution_time",0);
 
-            // $multipart = [
-            //     [ 
-            //         'name' => 'message',
-            //         'contents' => $message
-            //     ]
-            // ];
-
             if ($img_path != '') {
                 foreach($lines as $line)
                 {    
@@ -93,6 +86,28 @@ class PostMessageJob implements ShouldQueue
                             [ 
                                 'name'=> 'imageFile',
                                 'contents' => Psr7\Utils::tryFopen($img_path, 'r')
+                            ]
+                        ]
+                    ]);
+                    
+                    $res_body = json_decode($res->getBody());  
+                    if ($res_body->status != 200){                    
+                        $result = 'NG';
+                        array_push($err_list, '['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);
+                        \Log::error('['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                      
+                    }
+                }
+            }
+            else {
+                foreach($lines as $line)
+                {    
+                    $res = $client->request('POST', $API, [
+                        'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
+                        'http_errors' => false,
+                        'multipart' => [
+                            [ 
+                                'name' => 'message',
+                                'contents' => $message
                             ]
                         ]
                     ]);
