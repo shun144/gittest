@@ -24,6 +24,12 @@ class StoresTableSeeder extends Seeder
                 'url_name' => 'ownerUrl2',
                 'client_id' => '9A4DqqT4ssrl39CAZ9JyxG',
                 'client_secret' => 'UDN5p3nA5sN3P580oa57YFzcf8GFrdKrJAAF5Uv530B',
+            ],
+            [
+                'name'  => 'オーナ店舗3',
+                'url_name' => 'ownerUrl3',
+                'client_id' => '9A4DqqT4ssrl39CAZ9JyxG',
+                'client_secret' => 'UDN5p3nA5sN3P580oa57YFzcf8GFrdKrJAAF5Uv530B',
             ]
         ]);
 

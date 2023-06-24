@@ -242,10 +242,13 @@ class ScheduleController extends Controller
             $start_date = date('Y-m-d 00:00:00', $request->input('start_date') / 1000);
             $end_date = date('Y-m-d 23:59:59', $request->input('end_date') / 1000);
 
+            // $event_end_date = '2023-06-14 00:00:00';
             $data = Message::select(
                 'messages.id as id',
                 'messages.title as title',
                 'schedules.plan_at as start',
+                DB::raw('DATE_FORMAT(DATE_ADD(schedules.plan_at, INTERVAL 1 DAY), "%Y-%m-%d 00:00:00") as end'),
+                // DB::raw('DATE_FORMAT(schedules.plan_at, "%Y%m%d") as end'),
                 'messages.title_color as backgroundColor',
                 'messages.title_color as borderColor',
                 DB::raw("'true' as allDay"),
@@ -419,6 +422,7 @@ class ScheduleController extends Controller
             'messages.id as id',
             'messages.title as title',
             'schedules.plan_at as start',
+            DB::raw('DATE_FORMAT(DATE_ADD(schedules.plan_at, INTERVAL 1 DAY), "%Y-%m-%d 00:00:00") as end'),
             'messages.title_color as backgroundColor',
             'messages.title_color as borderColor',
             DB::raw("'true' as allDay"),
@@ -501,17 +505,12 @@ class ScheduleController extends Controller
     // }
 
 
-
-
     public function updateSchedule(Request $request)
     {          
         $post = $request->only(['message_id', 'title', 'content','title_color','has_file', 'date', 'hh', 'mm']);
         $datatime = sprintf('%s %s:%s:00', $post['date'], $post['hh'], $post['mm']);           
         $images = $request->file('imagefile');
         
-        // dd($post);
-        // \Log::info('Something happends');
-
         DB::transaction(function() use($post, $datatime, $images){
             DB::table('messages')
             ->where('id',$post['message_id'])
@@ -533,9 +532,6 @@ class ScheduleController extends Controller
                 if ($images) {
                     $dt_images->delete();
                     foreach ($images as $img){
-                        // $save_path = Storage::putFile(config('app.save_storage.image'), $img);
-                        // $save_name = basename($save_path);
-                        // $org_name = $img->getClientOriginalName();
                         $save_name = Storage::disk('owner')->put('', $img);
                         $org_name = $img->getClientOriginalName();             
                         DB::table('images')->insert([
@@ -554,8 +550,83 @@ class ScheduleController extends Controller
                 }
             }
         });
-        return redirect(route('owner.schedule'));
+
+        $data = Message::select(
+            'messages.id as id',
+            'messages.title as title',
+            'schedules.plan_at as start',
+            DB::raw('DATE_FORMAT(DATE_ADD(schedules.plan_at, INTERVAL 1 DAY), "%Y-%m-%d 00:00:00") as end'),
+            'messages.title_color as backgroundColor',
+            'messages.title_color as borderColor',
+            DB::raw("'true' as allDay"),
+            'messages.content as content',
+            'schedules.plan_at as plan_at',
+        )->where('messages.id', $post['message_id'])
+        ->join('schedules','schedules.message_id','=','messages.id')
+        ->with(['images' => function ($query) {
+            $query->select('message_id','images.id as image_id', 'save_name', 'org_name');
+        }])
+        ->first();
+        return $data;
+
+        // return redirect(route('owner.schedule'));
     }
+
+
+
+    // public function updateSchedule(Request $request)
+    // {          
+    //     $post = $request->only(['message_id', 'title', 'content','title_color','has_file', 'date', 'hh', 'mm']);
+    //     $datatime = sprintf('%s %s:%s:00', $post['date'], $post['hh'], $post['mm']);           
+    //     $images = $request->file('imagefile');
+        
+    //     // dd($post);
+    //     // \Log::info('Something happends');
+
+    //     DB::transaction(function() use($post, $datatime, $images){
+    //         DB::table('messages')
+    //         ->where('id',$post['message_id'])
+    //         ->update([
+    //             'title' => $post['title'],
+    //             'content' => $post['content'],
+    //             'title_color' => $post['title_color'],
+    //         ]);
+
+    //         DB::table('schedules')
+    //         ->where('message_id',$post['message_id'])
+    //         ->update(['plan_at' => $datatime, ]);
+    
+    //         $dt_images = DB::table('images')->where('message_id', $post['message_id']);
+        
+    //         // ファイル保持フラグあり
+    //         if ($post['has_file'] == '1'){
+                
+    //             if ($images) {
+    //                 $dt_images->delete();
+    //                 foreach ($images as $img){
+    //                     // $save_path = Storage::putFile(config('app.save_storage.image'), $img);
+    //                     // $save_name = basename($save_path);
+    //                     // $org_name = $img->getClientOriginalName();
+    //                     $save_name = Storage::disk('owner')->put('', $img);
+    //                     $org_name = $img->getClientOriginalName();             
+    //                     DB::table('images')->insert([
+    //                         'message_id' => $post['message_id'],
+    //                         'save_name' => $save_name,
+    //                         'org_name' => $org_name
+    //                     ]);
+    //                 }
+    //             }
+    //         // ファイル保持フラグなし
+    //         } else {    
+    //             // 既に登録されている画像を削除
+    //             if ($dt_images->count())
+    //             {
+    //                 $dt_images->delete();
+    //             }
+    //         }
+    //     });
+    //     return redirect(route('owner.schedule'));
+    // }
 
     public function deleteSchedule(Request $request)
     {

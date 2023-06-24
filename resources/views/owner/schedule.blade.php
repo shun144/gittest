@@ -95,9 +95,31 @@
   let checkbox = document.getElementById('drop-remove');
   let calendarEl = document.getElementById('calendar');
   let viewMonth = null
+  let tmp_schedule_date = $('#tmp_schedule_date')
+  let modal_edit_schedule = $('#edit_schedule')
 
 
+  // /_/_/_/_/_/_/_/_/_/_/_
+  // 編集モーダル閉じる前
+  // /_/_/_/_/_/_/_/_/_/_/_
+  modal_edit_schedule.on('hide.bs.modal', function(){
+    // 編集されずにモーダルが閉じた場合、元の位置に戻す
+    // dropイベントのrevertは、モーダルを閉じる際に実行できないため
+    // 以下のようにイベント単位で実行している。
+    if (tmp_schedule_date.data('isChange').toLowerCase() != 'true')
+    {
+      const msg_id = modal_edit_schedule.find('.msg_id').val()
+      let event = calendar.getEventById(msg_id)
+      event.setStart(tmp_schedule_date.data('oldStart'))
+      event.setEnd(tmp_schedule_date.data('oldEnd'))
+    }
+  });
+
+  // /_/_/_/_/_/_/_/_/_/_/_
+  // スケジュール追加
+  // /_/_/_/_/_/_/_/_/_/_/_
   function submitAddSchedule(e){
+
     e.preventDefault();
     const msg = 'スケジュールを作成してよろしいですか?'
     if(window.confirm(msg)){
@@ -117,27 +139,97 @@
           id: data.id,
           title: data.title,
           start: data.start,
-          backgroundColor: data.title_color,
-          borderColor: data.title_color,
+          backgroundColor: data.backgroundColor,
+          borderColor: data.borderColor,
           allDay: data.allDay,
           content: data.content,
           plan_at: data.plan_at,
           images:data.images
         });
-        toastr.success('追加しました。');
+        toastr.success('スケジュールを追加しました。');
       })
       .fail(function () {
         toastr.error('スケジュール追加に失敗しました。');
       });
     }
-    $('#add_schedule').modal('hide');
+    let modal = $('#add_schedule');
+    modal.modal('hide');
+    modal.find('input[name=date]').val('');
+    modal.find('select[name=hh]').val('00');
+    modal.find('select[name=mm]').val('00');
+    modal.find('input[name=title]').val('');
+    modal.find('input[name=message_id]').val('');
+    modal.find('textarea[name=content]').val('');
+    modal.find('input[name=has_file]').val("0");
+    modal.find('input.filename_view').val('');
+    modal.find('p.image_preview').empty();
+    modal.find('input[name=image_id]').val('');
+    modal.find('.title_color')[0].checked = true
+    modal.find('.title_color')[0].dispatchEvent(new Event('change'));
     return false; 
   };
 
 
+  // /_/_/_/_/_/_/_/_/_/_/_
+  // スケジュール編集
+  // /_/_/_/_/_/_/_/_/_/_/_
+  function submitEditSchedule(e){
+    const msg = 'スケジュールを更新してよろしいですか?'
+    if(window.confirm(msg)){
+      tmp_schedule_date.data('isChange','true')
+      // console.log(tmp_schedule_date.data('isChange'))
+      // is_change_schedule.text('true')
+      const csrf = $('#editScheduleCsrfToken').val();
+      let $form = $('#form_edit_schedule');
+      let fd = new FormData($form.get(0));
+      let event = calendar.getEventById(fd.get('message_id'))
+      
+
+
+      $.ajax({
+        headers: {'X-CSRF-TOKEN': csrf},
+        url: '{{route('schedule.edit')}}',
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        data: fd
+      })
+      .done(function (data) {
+        // console.log(new Date(data.end))
+        const st_date = new Date(data.start.split(' ')[0]  + ' 00:00:00')
+        // const end_date = new Date(st_date.getFullYear(),st_date.getMonth(),st_date.getDate()+1);
+        
+        const end_date = new Date(data.end)
+        event.setStart(st_date);
+
+        // setEndでendを指定しないと想定しないendが自動設定される
+        event.setEnd(end_date); 
+
+        event.setProp('title', data.title);        
+        event.setProp('backgroundColor', data.backgroundColor);
+        event.setProp('borderColor', data.borderColor);
+        event.setAllDay(data.allDay);
+        event.setExtendedProp ('content', data.content);
+        event.setExtendedProp('plan_at', data.plan_at);
+        event.setExtendedProp('images', data.images);
+        toastr.success('スケジュールを更新しました。');
+      })
+      .fail(function () {
+        toastr.error('スケジュール更新に失敗しました。');
+      });
+    }
+    // $('#edit_schedule').modal('hide');
+    modal_edit_schedule.modal('hide');
+
+
+    return false;
+  };
+
+  // /_/_/_/_/_/_/_/_/_/_/_
+  // スケジュール削除
+  // /_/_/_/_/_/_/_/_/_/_/_
   function submitDeleteSchedule(e){
     e.preventDefault();
-
     const msg = 'スケジュールを削除してよろしいですか?'
     if(window.confirm(msg)){
       const csrf = $('#delScheduleCsrfToken').val();
@@ -162,40 +254,11 @@
     }
     $('#edit_schedule').modal('hide');
     return false;
-
-
-    // const csrf = $('#delScheduleCsrfToken').val();
-    // let $form = $('#form_del_schedule');
-    // let fd = new FormData($form.get(0));
-    // const event_id = fd.get('message_id');
-    // let event = calendar.getEventById(event_id)
-    // event.remove();
-
-
-    // console.log(event);
-    // for (const key of fd.keys())
-    // {
-    //   console.log(key);
-    // }
-    // console.log(e)
-
-    // modal.find('.eventid').text(event_id)
-    // const msg = 'スケジュールを削除してよろしいですか?'
-    // if(window.confirm(msg)){
-    //   return true;
-    // }
-    // else {
-    //   return false;
-    // }
   };  
-
-
 
   @if (session('edit_template_complate_flushMsg'))
   $(function () {toastr.success('{{ session('edit_template_complate_flushMsg') }}');});
   @endif
-
-
 
 
   // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -247,7 +310,6 @@
     modal.modal('toggle');
   })
 
-
   new Draggable(containerEl, {
     itemSelector: '.external-event',
     eventData: function(eventEl) {
@@ -265,8 +327,8 @@
     ele.each(function () {
       $(this).draggable({
         zIndex:1070,
-        revert:true, // will cause the event to go back to its
-        revertDuration:0  //  original position after the drag
+        revert:true,
+        revertDuration:0
       })
     })
   }
@@ -301,6 +363,7 @@
           }
         })
         .done(function (data) {
+          calendar.removeAllEvents();
           calendar.setOption('events', data);
         });
       }
@@ -321,163 +384,162 @@
       modal.modal('toggle');
     },
 
-      // 登録スケジュールクリックイベント
-      eventClick:(e)=>{
-        const modal = $('#edit_schedule')
-        // const event_id = e.event.id;
-        const start_str = e.event.extendedProps.plan_at
-        const calendarDate = start_str.split(' ')[0]
-        const hhmmss = start_str.split(' ')[1]
-        const calendarHh = hhmmss.split(':')[0]
-        const calendarMm = hhmmss.split(':')[1]
+    // 登録スケジュールクリックイベント
+    eventClick:(e)=>{
+      
+      const start_str = e.event.extendedProps.plan_at
+      const calendarDate = start_str.split(' ')[0]
+      const hhmmss = start_str.split(' ')[1]
+      const calendarHh = hhmmss.split(':')[0]
+      const calendarMm = hhmmss.split(':')[1]
 
-        modal.on('show.bs.modal', function(){
-          // modal.find('.eventid').val(event_id)
-          modal.find('.datetime_form').val(calendarDate)
-          modal.find('.hh_form').val(calendarHh)
-          modal.find('.mm_form').val(calendarMm)
-          modal.find('.msg_id').val(e.event.id)
-          modal.find('.title_form').val(e.event.title)
-          modal.find('.content_form').val(e.event.extendedProps.content)
-          $.each(modal.find('.title_color'), function(index, elem) {
-            if (elem.value == e.event.backgroundColor)
-            { 
-              elem.checked = true
-              elem.dispatchEvent(new Event('change'));
-            }
-          })
-          let preview = modal.find('.image_preview').get(0);
-          let text_form = modal.find('.filename_view');
-          let has_image = "0"
-          preview.innerHTML = '';
-          text_form.val(null);
-
-          const img = e.event.extendedProps.images[0];
-          if (typeof img !== "undefined")
+      modal_edit_schedule.on('show.bs.modal', function(){
+        tmp_schedule_date.data('isChange','false')
+        tmp_schedule_date.data('oldStart',e.event.start)
+        tmp_schedule_date.data('oldEnd',e.event.end)
+  
+        modal_edit_schedule.find('.datetime_form').val(calendarDate)
+        modal_edit_schedule.find('.hh_form').val(calendarHh)
+        modal_edit_schedule.find('.mm_form').val(calendarMm)
+        modal_edit_schedule.find('.msg_id').val(e.event.id)
+        modal_edit_schedule.find('.title_form').val(e.event.title)
+        modal_edit_schedule.find('.content_form').val(e.event.extendedProps.content)
+        $.each(modal_edit_schedule.find('.title_color'), function(index, elem) {
+          if (elem.value == e.event.backgroundColor)
           { 
-            has_image = "1"
+            elem.checked = true
+            elem.dispatchEvent(new Event('change'));
+          }
+        })
+        let preview = modal_edit_schedule.find('.image_preview').get(0);
+        let text_form = modal_edit_schedule.find('.filename_view');
+        let has_image = "0"
+        preview.innerHTML = '';
+        text_form.val(null);
+
+        const img = e.event.extendedProps.images[0];
+        if (typeof img !== "undefined")
+        { 
+          has_image = "1"
+          const imgElem = document.createElement('img')
+          imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
+          preview.appendChild(imgElem);
+          text_form.val(img.org_name)
+        }
+        modal_edit_schedule.find('.has_file').val(has_image)
+      })
+      modal_edit_schedule.modal('show');
+    },
+
+    // カレンダー内ドロップイベント
+    eventDrop:(e)=>{
+      const start_str = e.oldEvent.extendedProps.plan_at
+      const hhmmss = start_str.split(' ')[1]
+      const calendarHh = hhmmss.split(':')[0]
+      const calendarMm = hhmmss.split(':')[1]
+
+      const start = e.event.start;
+      const stYYYY = start.getFullYear();
+      const stMonth = ('00'+(Number(start.getMonth())+1)).slice(-2);
+      const stDate = ('00'+start.getDate()).slice(-2);
+      const calendarDate = `${stYYYY}-${stMonth}-${stDate}`
+
+      modal_edit_schedule.on('show.bs.modal', function(){
+
+        tmp_schedule_date.data('isChange','false')
+        tmp_schedule_date.data('oldStart',e.oldEvent.start)
+        tmp_schedule_date.data('oldEnd',e.oldEvent.end)
+
+
+        modal_edit_schedule.find('.datetime_form').val(calendarDate)
+        modal_edit_schedule.find('.hh_form').val(calendarHh)
+        modal_edit_schedule.find('.mm_form').val(calendarMm)
+        modal_edit_schedule.find('.msg_id').val(e.event.id)
+        modal_edit_schedule.find('.title_form').val(e.event.title)
+        modal_edit_schedule.find('.content_form').val(e.event.extendedProps.content)
+        $.each(modal_edit_schedule.find('.title_color'), function(index, elem) {
+          if (elem.value == e.event.backgroundColor)
+          { 
+            elem.checked = true
+            elem.dispatchEvent(new Event('change'));
+          }
+        })
+        let preview = modal_edit_schedule.find('.image_preview').get(0);
+        let text_form = modal_edit_schedule.find('.filename_view');
+        let has_image = "0"
+        preview.innerHTML = '';
+        text_form.val(null);
+        const images = e.event.extendedProps.images;
+        if (images.length)
+        { 
+          has_image = "1"
+          let file_list = []
+          let img_id_list = []
+          $.each(images, function(index,img) {
             const imgElem = document.createElement('img')
             imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
             preview.appendChild(imgElem);
-            text_form.val(img.org_name)
+            file_list.push(img.org_name)
+          })
+          text_form.val(file_list.join(' '))
+        }
+        modal_edit_schedule.find('.has_file').val(has_image)
+      });
+      modal_edit_schedule.modal('show');
+    },
+
+    // 外部イベントのカレンダードロップイベント
+    eventReceive: function(info) {     
+      const data = templateMessages.find((v) => v.id == info.draggedEl.getAttribute('data-msgid'));
+      const start = info.event.start;
+      const stYYYY = start.getFullYear();
+      const stMonth = ('00'+(Number(start.getMonth())+1)).slice(-2);
+      const stDate = ('00'+start.getDate()).slice(-2);
+      const calendarDate = `${stYYYY}-${stMonth}-${stDate}`
+      const modal = $('#add_schedule');
+      modal.on('show.bs.modal', function(){
+        modal.find('.msg_id').val(data.id)
+        modal.find('.datetime_form').val(calendarDate)
+        modal.find('.title_form').val(data.title)
+        modal.find('.content_form').val(data.content)
+        $.each(modal.find('.title_color'), function(index, elem) {
+          if (elem.value == data.title_color)
+          { 
+            elem.checked = true
+            elem.dispatchEvent(new Event('change'));
           }
-          modal.find('.has_file').val(has_image)
         })
-        modal.modal('toggle');
-      },
-      
-      // カレンダー内ドロップイベント
-      eventDrop:(e)=>{
-
-        const modal = $('#edit_schedule')
-        const start_str = e.oldEvent.extendedProps.plan_at
-        const hhmmss = start_str.split(' ')[1]
-        const calendarHh = hhmmss.split(':')[0]
-        const calendarMm = hhmmss.split(':')[1]
-
-        const start = e.event.start;
-        const stYYYY = start.getFullYear();
-        const stMonth = ('00'+(Number(start.getMonth())+1)).slice(-2);
-        const stDate = ('00'+start.getDate()).slice(-2);
-        const calendarDate = `${stYYYY}-${stMonth}-${stDate}`
-
-
-        modal.on('show.bs.modal', function(){
-          modal.find('.datetime_form').val(calendarDate)
-          modal.find('.hh_form').val(calendarHh)
-          modal.find('.mm_form').val(calendarMm)
-          modal.find('.msg_id').val(e.event.id)
-          modal.find('.title_form').val(e.event.title)
-          modal.find('.content_form').val(e.event.extendedProps.content)
-          $.each(modal.find('.title_color'), function(index, elem) {
-            if (elem.value == e.event.backgroundColor)
-            { 
-              elem.checked = true
-              elem.dispatchEvent(new Event('change'));
-            }
+        let preview = modal.find('.image_preview').get(0);
+        let text_form = modal.find('.filename_view');
+        let img_id_form = modal.find('.img_id');
+        let has_image = "0"
+        preview.innerHTML = '';
+        text_form.val(null);
+        if (data.images.length)
+        { 
+          has_image = "1"
+          let file_list = []
+          let img_id_list = []
+          $.each(data.images, function(index,img) {
+            const imgElem = document.createElement('img')
+            imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
+            preview.appendChild(imgElem);
+            file_list.push(img.org_name)
+            img_id_list.push(img.image_id)
           })
-          let preview = modal.find('.image_preview').get(0);
-          let text_form = modal.find('.filename_view');
-          let has_image = "0"
-          preview.innerHTML = '';
-          text_form.val(null);
-          const images = e.event.extendedProps.images;
-          if (images.length)
-          { 
-            has_image = "1"
-            let file_list = []
-            let img_id_list = []
-            $.each(images, function(index,img) {
-              const imgElem = document.createElement('img')
-              imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
-              preview.appendChild(imgElem);
-              file_list.push(img.org_name)
-            })
-            text_form.val(file_list.join(' '))
-          }
-          modal.find('.has_file').val(has_image)
-        });
-        modal.on('hide.bs.modal', function(){
-          e.revert();
-        });
-        modal.modal('toggle');
+          text_form.val(file_list.join(' '))
+          img_id_form.val(img_id_list.join(','))
+        }
+        modal.find('.has_file').val(has_image)
+      });
+      modal.on('hide.bs.modal', function(){
+        info.event.remove()
+      });
+      modal.modal('toggle');
+    },
+  });
 
-      },
-
-      // 外部イベントのカレンダードロップイベント
-      eventReceive: function(info) {     
-        console.log(info.draggedEl);
-
-        const data = templateMessages.find((v) => v.id == info.draggedEl.getAttribute('data-msgid'));
-        const start = info.event.start;
-        const stYYYY = start.getFullYear();
-        const stMonth = ('00'+(Number(start.getMonth())+1)).slice(-2);
-        const stDate = ('00'+start.getDate()).slice(-2);
-        const calendarDate = `${stYYYY}-${stMonth}-${stDate}`
-        const modal = $('#add_schedule');
-        modal.on('show.bs.modal', function(){
-          modal.find('.msg_id').val(data.id)
-          modal.find('.datetime_form').val(calendarDate)
-          modal.find('.title_form').val(data.title)
-          modal.find('.content_form').val(data.content)
-          $.each(modal.find('.title_color'), function(index, elem) {
-            if (elem.value == data.title_color)
-            { 
-              elem.checked = true
-              elem.dispatchEvent(new Event('change'));
-            }
-          })
-          let preview = modal.find('.image_preview').get(0);
-          let text_form = modal.find('.filename_view');
-          let img_id_form = modal.find('.img_id');
-          let has_image = "0"
-          preview.innerHTML = '';
-          text_form.val(null);
-          if (data.images.length)
-          { 
-            has_image = "1"
-            let file_list = []
-            let img_id_list = []
-            $.each(data.images, function(index,img) {
-              const imgElem = document.createElement('img')
-              imgElem.src = '{{url(config('storage.owner.image.template'))}}/' + img.save_name
-              preview.appendChild(imgElem);
-              file_list.push(img.org_name)
-              img_id_list.push(img.image_id)
-            })
-            text_form.val(file_list.join(' '))
-            img_id_form.val(img_id_list.join(','))
-          }
-          modal.find('.has_file').val(has_image)
-        });
-        modal.on('hide.bs.modal', function(){
-          info.event.remove()
-        });
-        modal.modal('toggle');
-      },
-    });
-
-    calendar.render();
+  calendar.render();
 
 
 </script>

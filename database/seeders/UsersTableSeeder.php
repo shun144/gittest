@@ -24,7 +24,7 @@ class UsersTableSeeder extends Seeder
         ]);
 
         $params = [];
-        for($i = 2; $i < 3; $i++){
+        for($i = 2; $i < 4; $i++){
             array_push($params,
                 [
                     'name'  => 'owner'. '_' . $i,
