@@ -102,7 +102,7 @@ class SchedulePostCommand extends Command
                                 'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
                                 'http_errors' => false,
                                 'multipart' => [
-                                    ['name' => 'message','contents' => $msg->content]
+                                    ['name' => 'message','contents' => PHP_EOL . $msg->content]
                                 ]
                             ]
                         ]
@@ -118,7 +118,7 @@ class SchedulePostCommand extends Command
                                 'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
                                 'http_errors' => false,
                                 'multipart' => [
-                                    ['name' => 'message','contents' => $msg->content],
+                                    ['name' => 'message','contents' => PHP_EOL . $msg->content],
                                     ['name' => 'imageFile','contents' => Psr7\Utils::tryFopen(Storage::disk('owner')->url($msg->save_name), 'r')]
                                 ]
                             ]
