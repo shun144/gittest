@@ -72,9 +72,19 @@ class PostMessageJob implements ShouldQueue
 
             ini_set("max_execution_time",0);
 
-            $multipart = [[ 'name' => 'message','contents' => $message]];
+            $multipart = [
+                [ 
+                    'name' => 'message',
+                    'contents' => $message
+                ]
+            ];
+
+            \Log::info('画像パス: '. $img_path);
             if ($img_path != '') {
-                array_push($multipart,[ 'name'=> 'imageFile','contents' => Psr7\Utils::tryFopen($img_path, 'r')]);
+                array_push($multipart,[ 
+                    'name'=> 'imageFile',
+                    'contents' => Psr7\Utils::tryFopen($img_path, 'r')
+                ]);
             }
 
             // \Log::info('送信対象LINE数: '. $lines->count());
