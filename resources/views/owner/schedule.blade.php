@@ -190,7 +190,7 @@
         file_name_view.val(img.org_name)
         img_id_form.val(img.image_id)
       }
-      modal_add_schedule.find('.has_file').val(has_image)
+      // modal_add_schedule.find('.has_file').val(has_image)
 
     } else {
       modal_add_schedule.find('.msg_id').val('')
@@ -200,7 +200,9 @@
       let select_color = modal_add_schedule.find("[data-color='#E60012']").get(0)
       select_color.checked = true
       select_color.dispatchEvent(new Event('change'));
+      
     }
+    modal_add_schedule.find('.has_file').val(has_image)
 
   });
 

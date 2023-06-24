@@ -386,17 +386,20 @@ class ScheduleController extends Controller
                 ]
             );
 
-            \Log::info($images);
+            
 
             if($images)
             {
+                \Log::info('★1');
                 $img = $images[0];
                 $save_name = Storage::disk('owner')->put('', $img);
                 $org_name = $img->getClientOriginalName();                         
                 Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
             }
             else {
+                
                 if ($post['has_file'] == '1'){
+                    \Log::info('★2');
                     $imgIdList = explode(",",$post['image_id']);
                     if ($imgIdList)
                     {
