@@ -33,7 +33,6 @@ class SchedulePostJob implements ShouldQueue
         ->select(
             'schedules.id as schedule_id',
             'message_id')
-
         ->get();
 
         // \Log::info('UserID:'. Auth::user()->id .' スケジュール投稿 開始');

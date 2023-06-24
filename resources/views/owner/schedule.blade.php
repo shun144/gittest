@@ -170,58 +170,6 @@
     return false; 
   };
 
-  // function submitAddSchedule(e){
-
-  //   e.preventDefault();
-  //   const msg = 'スケジュールを作成してよろしいですか?'
-  //   if(window.confirm(msg)){
-  //     const csrf = $('#addTemplateCsrfToken').val();
-  //     let $form = $('#form_add_schedule');
-  //     let fd = new FormData($form.get(0));
-  //     $.ajax({
-  //       headers: {'X-CSRF-TOKEN': csrf},
-  //       url: '{{route('schedule.add')}}',
-  //       method: 'POST',
-  //       contentType: false,
-  //       processData: false,
-  //       data: fd
-  //     })
-  //     .done(function (data) {
-  //       calendar.addEvent({
-  //         id: data.id,
-  //         title: data.title,
-  //         start: data.start,
-  //         backgroundColor: data.backgroundColor,
-  //         borderColor: data.borderColor,
-  //         allDay: data.allDay,
-  //         content: data.content,
-  //         plan_at: data.plan_at,
-  //         images:data.images
-  //       });
-  //       toastr.success('スケジュールを追加しました。');
-  //     })
-  //     .fail(function () {
-  //       toastr.error('スケジュール追加に失敗しました。');
-  //     });
-  //   }
-  //   let modal = $('#add_schedule');
-
-  //   modal.find('input[name=date]').val('');
-  //   modal.find('select[name=hh]').val('00');
-  //   modal.find('select[name=mm]').val('00');
-  //   modal.find('input[name=title]').val('');
-  //   modal.find('input[name=message_id]').val('');
-  //   modal.find('textarea[name=content]').val('');
-  //   modal.find('input[name=has_file]').val("0");
-  //   modal.find('input.filename_view').val('');
-  //   modal.find('p.image_preview').empty();
-  //   modal.find('input[name=image_id]').val('');
-  //   modal.find('.title_color')[0].checked = true
-  //   modal.find('.title_color')[0].dispatchEvent(new Event('change'));
-  //   modal.modal('hide');
-  //   return false; 
-  // };
-
 
   // /_/_/_/_/_/_/_/_/_/_/_
   // スケジュール編集

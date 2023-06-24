@@ -68,7 +68,6 @@ class SchedulePostCommand extends Command
             $requests_param = [];
             foreach($messages as $msg)
             {
-
                 $history_id = DB::table('histories')
                 ->insertGetId(
                     [
