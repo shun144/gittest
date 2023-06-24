@@ -390,6 +390,7 @@
     themeSystem: 'bootstrap',
     locale: 'ja',
     businessHours:true,
+    // editable:true,
     editable:true,
     droppable: true,
     eventOrderStrict: true,
@@ -412,6 +413,11 @@
           calendar.setOption('events', data);
         });
       }
+    },
+
+    // イベントのリサイズを不可にする
+    eventResize: (info) => {
+      info.event.setEnd(info.oldEvent.end);
     },
 
     // カレンダー日付クリックイベント
