@@ -106,8 +106,7 @@
   // /_/_/_/_/_/_/_/_/_/_/_
   modal_edit_schedule.on('hide.bs.modal', function(){
     // 編集されずにモーダルが閉じた場合、元の位置に戻す
-    // dropイベントのrevertは、モーダルを閉じる際に実行できないため
-    // 以下のようにイベント単位で実行している。
+    // dropイベントのrevertは、モーダルを閉じる際に実行できないため以下のようにイベント単位で実行している。
     if (tmp_schedule_date.data('isChange').toLowerCase() != 'true')
     {
       const msg_id = modal_edit_schedule.find('.msg_id').val()
@@ -411,7 +410,6 @@
 
     // 登録スケジュールクリックイベント
     eventClick:(e)=>{
-      
       const start_str = e.event.extendedProps.plan_at
       const calendarDate = start_str.split(' ')[0]
       const hhmmss = start_str.split(' ')[1]
