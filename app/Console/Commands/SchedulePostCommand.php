@@ -49,7 +49,7 @@ class SchedulePostCommand extends Command
             // 配信対象メッセージ抽出
             $messages = DB::table('schedules')
             ->where('plan_at', $date_down)
-            ->whereNotNull('schedules.deleted_at')
+            ->whereNull('schedules.deleted_at')
             ->join('messages','schedules.message_id','=','messages.id')
             ->leftjoin('images','messages.id','=','images.message_id')
             ->select(
