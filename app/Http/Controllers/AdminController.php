@@ -143,17 +143,17 @@ class AdminController extends Controller
     public function deleteStore(Request $request)
     {        
         $post = $request->only(['user_id','store_id']);
+    
+        DB::table('schedules')
+        ->join('messages','schedules.message_id','=','messages.id')
+        ->where('messages.store_id',$post['store_id'])
+        ->update([
+            'schedules.updated_at' => Carbon::now(),
+            'schedules.deleted_at' => Carbon::now()
+        ]);
 
         Store::find($post['store_id'])->delete();
         User::find($post['user_id'])->delete();
-        DB::table('schedules')
-        ->where('schedules.store_id',$post['store_id'])
-        ->update([
-            [
-                'updated_at' => Carbon::now(),
-                'deleted_at' => Carbon::now()
-            ]
-        ]);
 
         return redirect(route('admin.store'))->with('flash_message','店舗削除が完了しました');
     }
