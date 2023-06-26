@@ -13,7 +13,8 @@ class CustomizeFormatter
 {
     public function __invoke($logger)
     {
-        $format = "%datetime% [%level_name%] - %message%-%extra.class%(L.%extra.line%)"  . PHP_EOL;
+        // $format = "%datetime% [%level_name%] - %message%-%extra.class%"  . PHP_EOL;
+        $format = "%datetime% [%level_name%] - %message%"  . PHP_EOL;
         $dateFormat = "Y-m-d H:i:s.v";
         $lineFormatter = new LineFormatter($format, $dateFormat, true, true);
 

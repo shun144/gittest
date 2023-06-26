@@ -1,5 +1,5 @@
 <div class="title_component" style="width:100%">
-  <label class="form-label">タイトル</label>
+  <label class="form-label">スケジュール用タイトル</label>
     <ul class="fc-color-picker">
       <li>
         <label style="cursor:pointer">

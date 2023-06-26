@@ -34,10 +34,6 @@ Route::group(['prefix' => 'admin','middleware' => ['auth','can:isAdmin']], funct
 Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], function () {
     Route::get('/schedule', [OwnerController::class, 'viewSchedule'])->name('owner.schedule');
     
-    // //★dummy
-    // Route::get('/dummy', [ScheduleController::class, 'dummy'])->name('dummy');
-    
-    
     Route::get('/line-users', [OwnerController::class, 'viewLineUsers'])->name('owner.line_users');
     Route::post('/line-users-edit', [OwnerController::class, 'updateLineUser'])->name('line_users.edit');
 
@@ -49,7 +45,6 @@ Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], fu
     Route::patch('/template-edit', [ScheduleController::class, 'updateTemplate'])->name('template.edit');
     Route::post('/template-del', [ScheduleController::class, 'deleteTemplate'])->name('template.del');
 
-    // Route::get('/schedule-get', [ScheduleController::class, 'getSchedule'])->name('schedule.get');
     Route::post('/schedule-get', [ScheduleController::class, 'getSchedule'])->name('schedule.get');
     
     Route::post('/schedule-add', [ScheduleController::class, 'insertSchedule'])->name('schedule.add');
@@ -67,7 +62,4 @@ Route::group(['prefix'=>'{url_name}'], function () {
     Route::get('/register', [LineNotifyController::class, 'register'])->name('line.register');
     Route::get('/auth', [LineNotifyController::class, 'viewLineAuth'])->name('line.auth');
     Route::post('/callback', [LineNotifyController::class, 'auth_callback']);
-    // Route::post('/send', [LineNotifyController::class, 'send']);
-    // Route::get('/aaa', [LineNotifyController::class, 'broadcastSend']);
-    // Route::post('/image', [LineNotifyController::class, 'sendImage']);
 });

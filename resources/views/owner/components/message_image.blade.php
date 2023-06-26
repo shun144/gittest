@@ -1,4 +1,4 @@
-<label for="input_file">画像</label>
+<label for="input_file">配信画像</label>
 <div class="image_component" style="width:100%">
   <div class="input-group">
     <div class="btn-group">

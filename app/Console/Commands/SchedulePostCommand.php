@@ -129,7 +129,6 @@ class SchedulePostCommand extends Command
             }
             ini_set("max_execution_time",0);
 
-
             $client = new Client();
             $requests = function ($requests_param) use ($client, $API) {
                 foreach ($requests_param as $param) {
@@ -203,7 +202,6 @@ class SchedulePostCommand extends Command
                         'updated_at'=> Carbon::now()
                     ]);
             }
-            // Log::info('スケジュール配信 終了');
         }
         catch (\Exception $e) {
             Log::error($e->getMessage());

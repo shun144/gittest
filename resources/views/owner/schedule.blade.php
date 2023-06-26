@@ -304,7 +304,8 @@
         });
         toastr.success('スケジュールを追加しました。');
       })
-      .fail(function () {
+      .fail(function (data) {
+        // toastr.error(data.responseJSON.message)
         toastr.error('スケジュール追加に失敗しました。');
       });
     }
@@ -315,7 +316,7 @@
 
 
   // /_/_/_/_/_/_/_/_/_/_/_
-  // スケジュール編集
+  // スケジュール更新
   // /_/_/_/_/_/_/_/_/_/_/_
   function submitEditSchedule(e){
     const msg = 'スケジュールを更新してよろしいですか?'
@@ -350,7 +351,8 @@
         event.setExtendedProp('images', data.images);
         toastr.success('スケジュールを更新しました。');
       })
-      .fail(function () {
+      .fail(function (data) {
+        // toastr.error(data.responseJSON.message)
         toastr.error('スケジュール更新に失敗しました。');
       });
     }
@@ -382,7 +384,7 @@
         calendar.getEventById(message_id).remove();
         toastr.success('スケジュールを削除しました。');
       })
-      .fail(function () {
+      .fail(function(data){
         toastr.error('スケジュール削除に失敗しました。');
       });
     }
@@ -390,13 +392,35 @@
     return false;
   };  
 
-  @if (session('edit_template_complate_flushMsg'))
-  $(function () {toastr.success('{{ session('edit_template_complate_flushMsg') }}');});
+  // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+  // 定型メッセージ関連ポップアップ
+  // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+  @if (session('add_template_success_flushMsg'))
+  $(function () {toastr.success('{{ session('add_template_success_flushMsg') }}');});
   @endif
+  @if (session('add_template_error_flushMsg'))
+  $(function () {toastr.error('{{ session('add_template_error_flushMsg') }}');});
+  @endif
+
+  @if (session('edit_template_success_flushMsg'))
+  $(function () {toastr.success('{{ session('edit_template_success_flushMsg') }}');});
+  @endif
+  @if (session('edit_template_error_flushMsg'))
+  $(function () {toastr.error('{{ session('edit_template_error_flushMsg') }}');});
+  @endif
+
+  @if (session('del_template_success_flushMsg'))
+  $(function () {toastr.success('{{ session('del_template_success_flushMsg') }}');});
+  @endif
+  @if (session('del_template_error_flushMsg'))
+  $(function () {toastr.error('{{ session('del_template_error_flushMsg') }}');});
+  @endif
+
 
 
   // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
   // 定型メッセージ取得
+  // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
   let templateMessages = null;
   $.ajax(
     {url: '{{route('template.get')}}', type:'get'})
@@ -415,36 +439,36 @@
     modal_edit_template.modal('show');
   })
 
-  function test(){
-    console.log('テスト実行');
-    new Draggable(containerEl, {
-      itemSelector: '.external-event',
-      eventData: function(eventEl) {
-        return {
-          id:eventEl.dataset.msgid,
-          title: eventEl.innerText,
-          backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-          borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-          textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
-        };
-      }
-    });
-  }
+  // function test(){
+  //   console.log('テスト実行');
+  //   new Draggable(containerEl, {
+  //     itemSelector: '.external-event',
+  //     eventData: function(eventEl) {
+  //       return {
+  //         id:eventEl.dataset.msgid,
+  //         title: eventEl.innerText,
+  //         backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
+  //         borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
+  //         textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
+  //       };
+  //     }
+  //   });
+  // }
 
-  test()
+  // test()
 
-  // new Draggable(containerEl, {
-  //   itemSelector: '.external-event',
-  //   eventData: function(eventEl) {
-  //     return {
-  //       id:eventEl.dataset.msgid,
-  //       title: eventEl.innerText,
-  //       backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-  //       borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-  //       textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
-  //     };
-  //   }
-  // });
+  new Draggable(containerEl, {
+    itemSelector: '.external-event',
+    eventData: function(eventEl) {
+      return {
+        id:eventEl.dataset.msgid,
+        title: eventEl.innerText,
+        backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
+        borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
+        textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
+      };
+    }
+  });
 
   function ini_events(ele) {
     ele.each(function () {

@@ -1,76 +1,81 @@
+
 @extends('adminlte::master')
 
-{{-- <nav class="navbar navbar-dark bg-primary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">TOP</a>
-  </div>
-</nav> --}}
 
-<div class="d-flex h-100 align-items-start">
-    <div class="card card-info mx-auto" style="width:45rem; margin:5rem">
-        <div class="card-header h2">
-            【{{$store->name}}】公式LINE連携
+<div class="d-flex align-items-start">
+    <div class="card card-light mx-auto my-5" style="width:50rem">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6 h2 d-flex align-items-center mb-0">【{{$store->name}}】公式LINE連携</div>
+                <div class="col-6 text-right">
+                    <button  form='lineAuthForm' type="submit" class="btn btn-success btn-lg">LINE 連携</button>
+                </div>
+            </div>
+
         </div>
-        <div class="d-flex justify-content-center">
-            <img class="card-img-top" src="{{ url(config('app.storage.register.image').'/line_notify.png')}}" alt="Card image cap" style="max-width:25rem; margin-top:1rem">
-        </div>
-        
+
         <div class="card-body mt-1">
-            <div class="px-5">
-                <p class="card-text">LINE連携ボタンをクリックすると↑のような画面が表示されます。<br>
-                <span class="text-md font-weight-bold">1:1でLINE Notifyから通知を受け取る</span>を選択すると連携することができます。</p>
-                <div class="mt-4 w-100 text-right">
-                    <form action="{{ route('line.auth', ['url_name'=>$store->url_name]) }}" method="get" enctype="multipart/form-data">
-                        <button type="submit" class="btn btn-success btn-lg">LINE 連携</button>
-                        <input type="hidden" name="url_name" value="{{ $store->url_name}}" />
-                        <input type="hidden" name="client_id" value="{{ $store->client_id}}" />
-                    </form>
+            <form id='lineAuthForm' action="{{ route('line.auth', ['url_name'=>$store->url_name]) }}" method="get" enctype="multipart/form-data">                    
+                <input type="hidden" name="url_name" value="{{ $store->url_name}}" />
+                <input type="hidden" name="client_id" value="{{ $store->client_id}}" />
+            </form>
+
+            <div class="mx-5">
+                <div class="row pb-4 border-bottom ">
+                    <h3 class="font-weight-bold mb-3">▶LINE連携方法</h3>
+                    <div class="pl-5 mb-4">
+                        <p class="card-text">右上のLINE連携ボタンをクリックすると↓のような画面が表示されます。
+                            <span class="text-md font-weight-bold">1:1でLINE Notifyから通知を受け取る</span>を選択し、 <span class="text-md font-weight-bold">同意して連携する</span>をクリックしてください。
+                        </p>
+                    </div>
+                    <div class="d-flex justify-content-center w-100">
+                        <img class="card-img-top" src="{{ url(config('storage.user.image.register').'/line_notify.png')}}" alt="Card image cap" style="max-width:25rem;">
+                    </div>
+                </div>
+
+
+                <div class="row pb-3 border-bottom mt-5">
+                    <h3 class="font-weight-bold mb-3">▶LINE連携時のログインエラー</h3>
+                    <div class="pl-5 mb-4">
+                        <p class="card-text"><span class="text-md font-weight-bold">▶LINE連携方法</span>を実行し↓のような画面が出る場合は、メールアドレスとパスワードを入力し、ログインしてください。</p>
+                    </div>
+                    <div class="d-flex justify-content-center w-100">
+                        <img class="card-img-top" src="{{ url(config('storage.user.image.register').'/login_error.png')}}" alt="Card image cap" style="max-width:25rem;">
+                    </div>
+                </div>
+
+
+                <div class="row pb-1 mt-5">
+                    <h3 class="font-weight-bold mb-3">▶LINE連携の解除</h3>
+                    <div class="pl-5 mb-4">
+                        <p class="card-text">LINE連携を解除されたい場合は、<a href="https://notify-bot.line.me/my/">LINE NOTIFYのマイページ</a>へアクセスし、<span class="text-md font-weight-bold">解除</span>をクリックしてください。</p>
+                        
+                    </div>
+                    <div class="d-flex justify-content-center w-100">
+                        <img class="card-img-top" src="{{ url(config('storage.user.image.register').'/lift.png')}}" alt="Card image cap" style="max-width:40rem;">
+                    </div>
                 </div>
 
             </div>
+
+
+
+            {{-- <div class="row">
+                <div class="px-5">
+                    <p class="card-text">右上のLINE連携ボタンをクリックすると↑のような画面が表示されます。<br>
+                    <span class="text-md font-weight-bold">1:1でLINE Notifyから通知を受け取る</span>を選択すると連携することができます。</p>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <img class="card-img-top" src="{{ url(config('storage.user.image.register').'/line_notify.png')}}" alt="Card image cap" style="max-width:25rem; margin-top:1rem">
+                </div>
+            </div> --}}
+
+            
+
         </div>
     </div>
 </div>
 
-
-{{-- <div class="mx-auto" style="width:50rem; height:100%">
-
-    <div class="card card-info">
-        <div class="card-header h2">
-            【{{$store->name}}】公式LINE連携
-        </div>
-        <div class="card-body">
-            <div class="row mb-3">
-                <form action="{{ route('line.auth', ['url_name'=>$store->url_name]) }}" method="get" enctype="multipart/form-data">
-                    <button type="submit" class="btn btn-success btn-lg">LINE 連携</button>
-                    <input type="hidden" name="url_name" value="{{ $store->url_name}}" />
-                    <input type="hidden" name="client_id" value="{{ $store->client_id}}" />
-                </form>
-            </div>
-        </div>
-    </div>
-
-</div> --}}
-
-{{-- <div class="container container-fluid mt-4">
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <div class="card-title text-center">
-                    <h2>公式LINE連携</h2>
-                    <h3>{{$store->name}}</h3>
-                </div>           
-               
-                <div class="card-body text-center">
-                    <form action="{{ route('line.auth', ['url_name'=>$store->url_name]) }}" method="get" enctype="multipart/form-data">
-                        <button type="submit" class="btn btn-success btn-lg">LINE 連携</button>
-                        <input type="hidden" name="url_name" value="{{ $store->url_name}}" />
-                        <input type="hidden" name="client_id" value="{{ $store->client_id}}" />
-                    </form>
-                </div>
-        </div>
-    </div>
-</div> --}}
 
 @section('adminlte_css')
     <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
@@ -80,10 +85,11 @@
     <script src="{{ asset('vendor/adminlte/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
     <script>
-        @if (session('flash_message'))
-            $(function () {
-                toastr.success('{{ session('flash_message') }}');
-            });
+        @if (session('success_flash_message'))
+        $(function () {toastr.success('{{ session('success_flash_message') }}');});
+        @endif
+        @if (session('error_flash_message'))
+        $(function () {toastr.success('{{ session('error_flash_message') }}');});
         @endif
     </script>
 @stop
