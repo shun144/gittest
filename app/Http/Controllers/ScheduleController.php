@@ -30,8 +30,7 @@ class ScheduleController extends Controller
     public function postMessage(Request $request)
     {
         try {
-
-
+            $now = Carbon::now();
             $inputs = $request->only(['content']);
             $inputs['title'] = $request->has('title') ? $request->only(['title']):'ー';
             $inputs['store_id'] = Auth::user()->store_id;
@@ -52,7 +51,8 @@ class ScheduleController extends Controller
                     'content'=> $inputs['content'],
                     'status'=> '配信待',
                     'img_url' => $img_path,
-                    'created_at'=> Carbon::now()
+                    'created_at'=> $now,
+                    'updated_at'=> $now
                 ]
             );
             $inputs['history_id'] = $history_id;
@@ -136,10 +136,11 @@ class ScheduleController extends Controller
         $images = $request->file('imagefile');
         
         try {
-            throw new \Exception();
+            $now = Carbon::now();
+
             $para = array_merge($post,array('images'=>$images));
             $user = Auth::user();
-            DB::transaction(function() use($para, $user)
+            DB::transaction(function() use($para, $user, $now)
             {
                 $msg_id = Message::insertGetId(
                     [
@@ -147,20 +148,32 @@ class ScheduleController extends Controller
                         'store_id' => $user->store_id,
                         'title'=> $para['title'],
                         'title_color' => strtoupper($para['title_color']),
-                        'content'=> $para['content']
+                        'content'=> $para['content'],
+                        'created_at'=> $now,
+                        'updated_at'=> $now
                     ]
                 );
-                DB::table('templates')->insert(['message_id' => $msg_id]);
+                DB::table('templates')->insert(
+                    [
+                        'message_id' => $msg_id,
+                        'created_at'=> $now,
+                        'updated_at'=> $now
+                    ]);
                 
                 if ($para['images'])
                 {
                     $img = $para['images'][0];
                     $save_name = Storage::disk('owner')->put('', $img);
                     $org_name = $img->getClientOriginalName();                                   
-                    Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
+                    Image::insert(
+                        [
+                            'message_id' => $msg_id,
+                            'save_name' => $save_name,
+                            'org_name' => $org_name,
+                            'created_at'=> $now
+                        ]);
                 }
             });
-            // return redirect(route('owner.schedule'));
             return redirect(route('owner.schedule'))->with('add_template_success_flushMsg','定型メッセージの追加が完了しました');
         }
         catch (\Exception $e) {
@@ -181,15 +194,24 @@ class ScheduleController extends Controller
         $post = $request->only(['message_id', 'title', 'content','title_color','has_file']);           
         $images = $request->file('imagefile');
         try {    
-            DB::transaction(function() use($post, $images){
+
+            $now = Carbon::now();
+            DB::transaction(function() use($post, $images, $now){
                 DB::table('messages')
                 ->where('id', $post['message_id'])
                 ->update([
                     'title' => $post['title'],
                     'content' => $post['content'],
                     'title_color' => $post['title_color'],
+                    'updated_at' => $now
                 ]);
-        
+
+                DB::table('templates')
+                ->where('message_id', $post['message_id'])
+                ->update([
+                    'updated_at' => $now
+                ]);
+
                 $dt_images = DB::table('images')->where('message_id', $post['message_id']);
             
                 // ファイル保持フラグあり
@@ -197,6 +219,7 @@ class ScheduleController extends Controller
                     
                     if ($images) {
                         $dt_images->delete();
+
                         foreach ($images as $img){
                             $save_name = Storage::disk('owner')->put('', $img);
                             $org_name = $img->getClientOriginalName();             
@@ -204,13 +227,14 @@ class ScheduleController extends Controller
                             DB::table('images')->insert([
                                 'message_id' => $post['message_id'],
                                 'save_name' => $save_name,
-                                'org_name' => $org_name
+                                'org_name' => $org_name,
+                                'created_at' => $now
                             ]);
                         }
                     }
                 // ファイル保持フラグなし
                 } else {    
-                    // 既に登録されている画像を削除
+                    // 既に登録されている画像レコードを削除
                     if ($dt_images->count())
                     {
                         $dt_images->delete();
@@ -237,12 +261,14 @@ class ScheduleController extends Controller
     {
         $post = $request->only(['message_id']);
         try {
-            DB::transaction(function () use($post){
+            $now = Carbon::now();
+            DB::transaction(function () use($post, $now){
                 DB::table('messages')
                 ->where('id', $post['message_id'])
                 ->update(
                     [
-                        'deleted_at' => Carbon::now()
+                        'updated_at' => $now,
+                        'deleted_at' => $now
                     ]
                 );
     
@@ -250,7 +276,8 @@ class ScheduleController extends Controller
                 ->where('message_id', $post['message_id'])
                 ->update(
                     [
-                        'deleted_at' => Carbon::now()
+                        'updated_at' => $now,
+                        'deleted_at' => $now
                     ]
                 );
             });
@@ -277,8 +304,9 @@ class ScheduleController extends Controller
         $datatime = sprintf('%s %s:%s:00', $post['date'], $post['hh'], $post['mm']);
 
         try {
+            $now = Carbon::now();
             $user = Auth::user();
-            $message_id = DB::transaction(function() use($post, $images, $user, $datatime)
+            $message_id = DB::transaction(function() use($post, $images, $user, $datatime, $now)
             {
                 $msg_id = Message::insertGetId(
                     [
@@ -286,13 +314,17 @@ class ScheduleController extends Controller
                         'store_id' => $user->store_id,
                         'title'=> $post['title'],
                         'title_color' => strtoupper($post['title_color']),
-                        'content'=> $post['content']
+                        'content'=> $post['content'],
+                        'created_at'=> $now,
+                        'updated_at'=> $now
                     ]
                 );
                 DB::table('schedules')->insert(
                     [
                         'message_id' => $msg_id,
-                        'plan_at' => $datatime
+                        'plan_at' => $datatime,
+                        'created_at'=> $now,
+                        'updated_at'=> $now
                     ]
                 );
 
@@ -301,7 +333,12 @@ class ScheduleController extends Controller
                     $img = $images[0];
                     $save_name = Storage::disk('owner')->put('', $img);
                     $org_name = $img->getClientOriginalName();                         
-                    Image::insert(['message_id' => $msg_id, 'save_name' => $save_name, 'org_name' => $org_name]);
+                    Image::insert([
+                        'message_id' => $msg_id, 
+                        'save_name' => $save_name, 
+                        'org_name' => $org_name,
+                        'created_at'=> $now,
+                    ]);
                 }
                 else {
                     
@@ -319,7 +356,8 @@ class ScheduleController extends Controller
                                     [
                                         'message_id' => $msg_id,
                                         'save_name' => $get_img->save_name,
-                                        'org_name' => $get_img->org_name
+                                        'org_name' => $get_img->org_name,
+                                        'created_at'=> $now
                                     ]);
                             }
                         }
@@ -370,20 +408,23 @@ class ScheduleController extends Controller
         $images = $request->file('imagefile');
         
         try {
-            
-
-            DB::transaction(function() use($post, $datatime, $images){
+            $now = Carbon::now();
+            DB::transaction(function() use($post, $datatime, $images, $now){
                 DB::table('messages')
                 ->where('id',$post['message_id'])
                 ->update([
                     'title' => $post['title'],
                     'content' => $post['content'],
                     'title_color' => $post['title_color'],
+                    'updated_at' => $now
                 ]);
     
                 DB::table('schedules')
                 ->where('message_id',$post['message_id'])
-                ->update(['plan_at' => $datatime, ]);
+                ->update([
+                    'plan_at' => $datatime,
+                    'updated_at' => $now
+                ]);
         
                 $dt_images = DB::table('images')->where('message_id', $post['message_id']);
             
@@ -398,7 +439,8 @@ class ScheduleController extends Controller
                             DB::table('images')->insert([
                                 'message_id' => $post['message_id'],
                                 'save_name' => $save_name,
-                                'org_name' => $org_name
+                                'org_name' => $org_name,
+                                'created_at' => $now
                             ]);
                         }
                     }
@@ -449,20 +491,23 @@ class ScheduleController extends Controller
     {        
         $post = $request->only(['message_id']);
         try {
+            $now = Carbon::now();
 
-            DB::transaction(function () use($post){
+            DB::transaction(function () use($post, $now){
                 DB::table('messages')
                 ->where('id', $post['message_id'])
                 ->update(
                     [
-                        'deleted_at' => Carbon::now()
+                        'updated_at' => $now,
+                        'deleted_at' => $now
                     ]
                 );
                 DB::table('schedules')
                 ->where('message_id', $post['message_id'])
                 ->update(
                     [
-                        'deleted_at' => Carbon::now()
+                        'updated_at' => $now,
+                        'deleted_at' => $now
                     ]
                 );
             });

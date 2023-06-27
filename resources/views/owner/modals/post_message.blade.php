@@ -5,7 +5,7 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="submit" class="btn btn-primary btnPostImi">即時配信</button>
+          <button type="submit" class="btn btn-success btnPostImi">即時配信</button>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -37,9 +37,7 @@
     const csrf_token = document.getElementById('postImiCsrfToken').value;
     let $form = $('#form_post_message');
     let fd = new FormData($form.get(0));
-    // fd.append("upfile", $upfile.prop('files')[0]);
 
-    // console.log($form);
 
     $.ajax({
       headers: {'X-CSRF-TOKEN': csrf_token},

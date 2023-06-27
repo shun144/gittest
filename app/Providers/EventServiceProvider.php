@@ -33,15 +33,15 @@ class EventServiceProvider extends ServiceProvider
             // 管理者メニュー
             if (Gate::allows('isAdmin')){
                 $event->menu->add(
-                    ['text' => '店舗情報一覧','url' => route('admin.store'), 'icon' => 'fas fa-fw fa-user',],
+                    ['text' => '店舗情報一覧','url' => route('admin.store'), 'icon' => 'fas fa-fw fa-store',],
                 );
             }
             // 管理者以外メニュー
             else {
                 $event->menu->add(
-                    ['text' => '配信', 'url' => route('owner.schedule'), 'icon' => 'fas fa-fw fa-user'],
+                    ['text' => '配信', 'url' => route('owner.schedule'), 'icon' => 'fab fa-fw fa-line'],
                     ['text' => '連携LINEユーザ一覧', 'url' => route('owner.line_users'), 'icon' => 'fas fa-fw fa-user'],
-                    ['text' => '配信履歴一覧','url' => route('owner.history'),'icon' => 'fas fa-fw fa-user']
+                    ['text' => '配信履歴一覧','url' => route('owner.history'),'icon' => 'fas fa-fw fa-history']
                 ); 
             }
         });

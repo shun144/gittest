@@ -26,14 +26,14 @@ class SchedulePostJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $API = 'https://notify-api.line.me/api/notify';
+        // $API = 'https://notify-api.line.me/api/notify';
   
-        $schedules = DB::table('schedules')
-        ->join('messages','schedules.message_id','=','messages.id')
-        ->select(
-            'schedules.id as schedule_id',
-            'message_id')
-        ->get();
+        // $schedules = DB::table('schedules')
+        // ->join('messages','schedules.message_id','=','messages.id')
+        // ->select(
+        //     'schedules.id as schedule_id',
+        //     'message_id')
+        // ->get();
 
         // \Log::info('UserID:'. Auth::user()->id .' スケジュール投稿 開始');
         // \Log::info('スケジュール投稿 開始');

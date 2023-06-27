@@ -23,11 +23,23 @@ class Handler extends ExceptionHandler
     // セッションが切れている状態でログアウトを実行した際に
     // ログイン画面に遷移させる
     // これがないと419エラー画面となる
-    public function render($request, Throwable $e) {
+    // public function render($request, Throwable $e) {
+
+    //     if ($e instanceof TokenMismatchException) {
+    //         if (url()->current() == route('logout')) {
+    //             return redirect()->route('login');
+    //         }
+    //     }
+    //     return parent::render($request, $e);
+    // }
+
+    public function render($request, Throwable $e)
+    {
+        // \Log::info('URL確認テスト');
+        // \Log::info(url()->current());
+
         if ($e instanceof TokenMismatchException) {
-            if (url()->current() == route('logout')) {
-                return redirect()->route('login');
-            }
+            return redirect()->route('login');
         }
         return parent::render($request, $e);
     }

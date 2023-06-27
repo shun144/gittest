@@ -40,16 +40,19 @@ class PostMessageJob implements ShouldQueue
      */
     public function handle(): void
     {
+        $title = $this->inputs['title'];
+        $message = PHP_EOL . $this->inputs['content'];
+        $img_path = $this->inputs['img_path'];
+        $store_id = $this->inputs['store_id'];
+        $history_id = $this->inputs['history_id'];
+
         try {
 
-            // \Log::info('UserID:'. Auth::user()->id .' 即時投稿 開始');
-
-
-            $title = $this->inputs['title'];
-            $message = PHP_EOL . $this->inputs['content'];
-            $img_path = $this->inputs['img_path'];
-            $store_id = $this->inputs['store_id'];
-            $history_id = $this->inputs['history_id'];
+            // $title = $this->inputs['title'];
+            // $message = PHP_EOL . $this->inputs['content'];
+            // $img_path = $this->inputs['img_path'];
+            // $store_id = $this->inputs['store_id'];
+            // $history_id = $this->inputs['history_id'];
 
             DB::table('histories') ->where('id', $history_id )
             ->update([
@@ -59,7 +62,7 @@ class PostMessageJob implements ShouldQueue
             ]);
 
             $API = 'https://notify-api.line.me/api/notify';
-            $store_id = $store_id;
+            // $store_id = $store_id;
             $lines = DB::table('lines')
             ->select('id','token', 'user_name')
             ->where('is_valid', true)
@@ -121,42 +124,6 @@ class PostMessageJob implements ShouldQueue
                 }
             }
 
-            // $multipart = [
-            //     [ 
-            //         'name' => 'message',
-            //         'contents' => $message
-            //     ]
-            // ];
-
-            // \Log::info('画像パス: '. $img_path);
-            // if ($img_path != '') {
-            //     array_push($multipart,[ 
-            //         'name'=> 'imageFile',
-            //         'contents' => Psr7\Utils::tryFopen($img_path, 'r')
-            //     ]);
-            // }
-
-            // \Log::info('送信対象LINE数: '. $lines->count());
-
-            // foreach($lines as $line)
-            // {
-            //     // \Log::info('送信対象LINE: '. $line->user_name);
-
-            //     $res = $client->request('POST', $API, [
-            //         'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
-            //         'http_errors' => false,
-            //         'multipart' => $multipart
-            //     ]);
-                
-            //     $res_body = json_decode($res->getBody());  
-            //     if ($res_body->status != 200){                    
-            //         $result = 'NG';
-            //         array_push($err_list, '['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);
-            //         \Log::error('['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                      
-            //     }
-            // }
-
-            // \Log::info('ループからは抜けている');
 
             DB::table('histories')->where('id',$history_id )
             ->update(
@@ -166,10 +133,11 @@ class PostMessageJob implements ShouldQueue
                     'err_info' => empty($err_list) ? 'ー' : join('/', $err_list),
                     'updated_at'=> Carbon::now()
                 ]);
-            // \Log::info('UserID:'. Auth::user()->id .' 即時投稿 終了');
         } 
         catch (\Exception $e) {
-            \Log::error($e->getMessage());
+            \Log::error('エラー機能:即時実行 【店舗ID:'.$store_id.'】');
+            \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+            \Log::error('エラー内容:'.$e->getMessage());
         }
     }
 }

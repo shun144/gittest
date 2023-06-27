@@ -20,13 +20,14 @@
                 <input type="text" class="form-control bg-light" readonly value="{{$posts->status}}">
             </div>
             <div class="row mb-3">
-                <label class="form-label">開始日時</label>
-                <input type="text" class="form-control bg-light" readonly value="{{$posts->start_at}}">
+                <label class="form-label">配信日時</label>
+                <input type="text" class="form-control bg-light" readonly value="{{$posts->start_at}}" aria-describedby="startAtHelp">
+                <small id="startAtHelp" class="form-text text-muted">配信日時はシステムがLINE配信処理を開始した時間です。ネットワークの影響により実際にLINE配信される時間とは異なる場合があります。</small>
             </div>
-            <div class="row mb-3">
+            {{-- <div class="row mb-3">
                 <label class="form-label">終了日時</label>
                 <input type="text" class="form-control bg-light" readonly value="{{$posts->end_at}}">
-            </div>
+            </div> --}}
 
             <div class="row mb-3">
                 <label class="form-label">タイトル</label>

@@ -33,18 +33,25 @@ class SchedulePostCommand extends Command
      */
     public function handle()
     {
+        $sep_time = 10;
+        $API = 'https://notify-api.line.me/api/notify';
+        $now = Carbon::now();
+
+        // 10分単位で切り捨て(15分→10分)
+        $date_down = $now->subMinutes($now->minute % $sep_time);
+        $date_down = date('Y-m-d H:i', strtotime($date_down));
+
         try {
-            $sep_time = 10;
-            $API = 'https://notify-api.line.me/api/notify';
-            $now = Carbon::now();
+            // $sep_time = 10;
+            // $API = 'https://notify-api.line.me/api/notify';
+            // $now = Carbon::now();
 
-
-            // 10分単位で切り捨て(15分→10分)
-            $date_down = $now->subMinutes($now->minute % $sep_time);
-            $date_down = date('Y-m-d H:i', strtotime($date_down));
+            // // 10分単位で切り捨て(15分→10分)
+            // $date_down = $now->subMinutes($now->minute % $sep_time);
+            // $date_down = date('Y-m-d H:i', strtotime($date_down));
 
             // Log::info('スケジュール配信 開始');
-            Log::info($date_down.' スケジュール配信');
+            // Log::info($date_down.' スケジュール配信');
 
             // 配信対象メッセージ抽出
             $messages = DB::table('schedules')
@@ -62,7 +69,7 @@ class SchedulePostCommand extends Command
             ->get();
 
             if ($messages->count() == 0){
-                Log::info($date_down.' スケジュール配信 0件終了');
+                // Log::info($date_down.' スケジュール配信 0件終了');
                 return;
             }
 
@@ -85,6 +92,7 @@ class SchedulePostCommand extends Command
                 
                 $lines = DB::table('lines')
                 ->select('id','token', 'user_name')
+                ->whereNull('deleted_at')
                 ->where('is_valid', true)
                 ->where('store_id', $msg->store_id
                 )->get();
@@ -106,8 +114,7 @@ class SchedulePostCommand extends Command
                                     ['name' => 'message','contents' => PHP_EOL . $msg->content]
                                 ]
                             ]
-                        ]
-                    );
+                        ]);
                     } else {
 
                         array_push($requests_param,
@@ -140,7 +147,7 @@ class SchedulePostCommand extends Command
 
             $contents = [];
             $pool = new Pool($client, $requests($requests_param), [
-                'concurrency' => 10,
+                'concurrency' => 50,
                 'fulfilled' => function ($response, $index) use ($requests_param, &$contents) {
                     $contents[$requests_param[$index]['key']] = [
                     'html'             => $response->getBody()->getContents(),
@@ -204,7 +211,9 @@ class SchedulePostCommand extends Command
             }
         }
         catch (\Exception $e) {
-            Log::error($e->getMessage());
+            \Log::error('エラー機能:スケジュール配信 【配信時間:'.$date_down.'】');
+            \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+            \Log::error('エラー内容:'.$e->getMessage());
         }
     }
 }

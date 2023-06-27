@@ -7,8 +7,7 @@ return [
   'owner' => [
     'top' => 'storage\owner',
     'image' => [
-      'template' => 'storage/owner/image/template'
-      // 'template' => 'storage\owner\image\template'
+      'template' => 'storage/owner/image/template',
     ]
   ],
 

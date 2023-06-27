@@ -108,6 +108,9 @@ $(function () {
       { targets:1, width:90},
       { targets:3, width:120},
     ],
+    drawCallback: function(){
+      $(".dataTables_info").appendTo("#store_table_wrapper>.row:first-of-type>div:first-of-type");
+    },
   });
 });
 

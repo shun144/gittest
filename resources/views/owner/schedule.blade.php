@@ -34,8 +34,8 @@
             </div>
 
             <div class="card-body">
-              
-              <div id="external-events">
+
+              <div id="external-events" style="max-height:50rem; overflow-x:hidden;">
                 @foreach ($templates as $item)
                 <div class="external-event" data-msgid="{{ $item->id }}" style="color:white; background-color:{{$item->title_color}}">
                   {{$item->title}}
@@ -43,8 +43,6 @@
                 @endforeach
               </div>
             </div>
-
-
           </div>
         </div>
       </div>
@@ -473,12 +471,24 @@
   function ini_events(ele) {
     ele.each(function () {
       $(this).draggable({
-        zIndex:1070,
-        revert:true,
-        revertDuration:0
+        scroll: true,
+        helper: 'clone',
+        zIndex: 999,
+        revert: true,
+        revertDuration: 0
       })
     })
   }
+
+  // function ini_events(ele) {
+  //   ele.each(function () {
+  //     $(this).draggable({
+  //       zIndex:1070,
+  //       revert:true,
+  //       revertDuration:0
+  //     })
+  //   })
+  // }
  
   ini_events($('#external-events div.external-event'));
 

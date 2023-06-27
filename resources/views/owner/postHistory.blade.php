@@ -15,7 +15,7 @@
       <table id="history_table" class="table table-striped table-bordered" style="table-layout:fixed;">
         <thead>
           <tr>
-            @foreach (["参照","状態","配信開始","配信完了","タイトル","内容","画像","エラー"] as $col)
+            @foreach (["参照","状態","配信日時","タイトル","内容","画像","エラー"] as $col)
             <th class="text-center">{{$col}}</th>
             @endforeach
           </tr>
@@ -33,7 +33,7 @@
             </td>
             <td class="omit_text">{{$post->status}}</td>
             <td class="omit_text">{{$post->start_at}}</td>
-            <td class="omit_text">{{$post->end_at}}</td>
+            {{-- <td class="omit_text">{{$post->end_at}}</td> --}}
             <td class="omit_text">{{$post->title}}</td>
             <td class="omit_text">{{$post->content}}</td>
             <td class="omit_text">{{$post->img_url == Null ? '無し' : '有り'}}</td>
@@ -91,11 +91,21 @@ $(function () {
       { targets:0, width:35},
       { targets:1, width:40},
       { targets:2, width:115},
-      { targets:3, width:115},
-      { targets:4, width:120},
-      { targets:6, width:40},
-      { targets:7, width:120},
+      // { targets:3, width:115},
+      { targets:3, width:120},
+      { targets:5, width:40},
+      { targets:6, width:200},
+      // { targets:0, width:35},
+      // { targets:1, width:40},
+      // { targets:2, width:115},
+      // { targets:3, width:115},
+      // { targets:4, width:120},
+      // { targets:6, width:40},
+      // { targets:7, width:120},
     ],
+    drawCallback: function(){
+      $(".dataTables_info").appendTo("#history_table_wrapper>.row:first-of-type>div:first-of-type");
+    }
   }); 
 });
 

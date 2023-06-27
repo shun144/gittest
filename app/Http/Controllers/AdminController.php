@@ -19,6 +19,9 @@ use Carbon\Carbon;
 
 class AdminController extends Controller
 {
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 店舗一覧表示
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function viewStore()
     {
         try {
@@ -46,7 +49,9 @@ class AdminController extends Controller
         }
     }
 
-
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 店舗追加画面表示
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function viewAddStore()
     {
         try {
@@ -60,7 +65,9 @@ class AdminController extends Controller
     }
 
 
-    
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 店舗追加
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function insertStore(StoreRequest $request)
     {      
         $post = $request->only(['name', 'url_name', 'login_id', 'login_password', 'client_id', 'client_secret']);
@@ -98,6 +105,10 @@ class AdminController extends Controller
         }
     }
 
+
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 店舗編集画面表示
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function viewEditStore(Request $request)
     {
         $store_id = $request->query('store_id');
@@ -125,6 +136,9 @@ class AdminController extends Controller
     }
 
 
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 店舗編集
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function updateStore(StoreRequest $request)
     {        
         $post = $request->only(['user_id','store_id', 'name', 'url_name', 'login_id', 
@@ -173,20 +187,52 @@ class AdminController extends Controller
     }
 
 
-
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 店舗削除
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function deleteStore(Request $request)
     {        
         $post = $request->only(['user_id','store_id']);
         try {
-            DB::table('schedules')
-            ->join('messages','schedules.message_id','=','messages.id')
-            ->where('messages.store_id',$post['store_id'])
-            ->update([
-                'schedules.updated_at' => Carbon::now(),
-                'schedules.deleted_at' => Carbon::now()
-            ]);    
-            Store::find($post['store_id'])->delete();
-            User::find($post['user_id'])->delete();
+            $now = Carbon::now();
+
+            DB::transaction(function () use($post, $now){
+
+                DB::table('schedules')
+                ->join('messages','schedules.message_id','=','messages.id')
+                ->where('messages.store_id',$post['store_id'])
+                ->update([
+                    'schedules.updated_at' => $now,
+                    'schedules.deleted_at' => $now
+                ]);
+
+                DB::table('stores')
+                ->where('id', $post['store_id'])
+                ->update([
+                    'updated_at' => $now,
+                    'deleted_at' => $now
+                ]);
+
+                DB::table('users')
+                ->where('id', $post['user_id'])
+                ->update([
+                    'updated_at' => $now,
+                    'deleted_at' => $now
+                ]);
+            });
+
+            // DB::table('schedules')
+            // ->join('messages','schedules.message_id','=','messages.id')
+            // ->where('messages.store_id',$post['store_id'])
+            // ->update([
+            //     'schedules.updated_at' => $now,
+            //     'schedules.deleted_at' => $now
+            // ]);    
+            // Store::find($post['store_id'])->delete();
+            // User::find($post['user_id'])->delete();
+
+
+
             return redirect(route('admin.store'))->with('flash_message','店舗削除が完了しました');
         }
         catch (\Exception $e) {

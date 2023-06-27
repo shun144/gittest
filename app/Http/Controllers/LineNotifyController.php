@@ -77,6 +77,8 @@ class LineNotifyController extends Controller
         $redirect_url = url($url_name . '/callback');
 
         try {
+            $now = Carbon::now();
+
             $store = Store::where('url_name', '=', $url_name)->first();
             $uri = 'https://notify-bot.line.me/oauth/token';
             $client = new Client();
@@ -109,7 +111,7 @@ class LineNotifyController extends Controller
                 'token' => $access_token,
                 'is_valid' => ($status_json->status == 200) ? true : false,
                 'store_id' => $store->id,
-                'created_at' => Carbon::now()
+                'created_at' => $now
             ]);
             return redirect(url($url_name . '/register'))->with('success_flash_message', 'LINE連携が完了しました。');
         }
