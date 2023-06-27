@@ -11,6 +11,13 @@
 
 
 <div class="mx-auto pb-5" style="width:60rem">
+
+  <div class="text-left">
+    <a href="{{route('admin.store')}}" class="h5">
+        <i class="fas fa-arrow-left"></i>
+        <span>店舗情報一覧に戻る</span>
+    </a>
+  </div>
   <div class="card card-info">
     <div class="card-header">
       <h3 class="card-title">店舗情報編集フォーム</h3>
@@ -84,12 +91,12 @@
       <button form="formEditStore" type="submit" class="btn btn-primary">更新</button>
     </div>
   </div>
-  <div class="text-right">
+  {{-- <div class="text-right">
     <a href="{{route('admin.store')}}" class="h5">
         <i class="fas fa-arrow-left"></i>
         <span>店舗情報一覧に戻る</span>
     </a>
-  </div>
+  </div> --}}
 </div>
 
 

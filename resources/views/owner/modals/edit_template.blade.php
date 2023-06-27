@@ -2,8 +2,38 @@
   <div class="modal fade text-left" id="edit_template" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
+
         <div class="modal-header">
-          <button form="form_edit_template" type="button" class="btn btn-success btn_edit_template">定型メッセージ編集</button>
+          <div class="row w-100">
+            <div class="col-10">
+              <button form="form_edit_template" type="submit" class="btn btn-success btn_edit_template">定型メッセージ更新</button>
+            </div>
+
+            <div class="col-2">
+
+              <div class="row">
+                <div class="col-10 text-right">
+                  <form id="form_del_template" action="{{route('template.del')}}" method="post" onSubmit="return submitDeleteTemplate(event)" class="">
+                    @csrf
+                    <button form="form_del_template" type="submit" class="btn btn_del">
+                      <input type="hidden" name='message_id' class='msg_id'>
+                      <i style="font-size:20px" class="fas fa-trash-alt text-muted"></i>
+                    </button>
+                  </form>
+                </div>
+
+                <div class="col-2">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{-- <div class="modal-header">
+          <button form="form_edit_template" type="button" class="btn btn-success btn_edit_template">定型メッセージ更新</button>
           
           <form id="form_del_template" action="{{route('template.del')}}" method="post" onSubmit="return submitDeleteTemplate(event)" class="">
             @csrf
@@ -16,7 +46,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-        </div>
+        </div> --}}
         
         <div class="modal-body">
           <form id="form_edit_template" action="{{ route('template.edit') }}" method="post" enctype="multipart/form-data" onSubmit="return submitEditTemplate(event)">

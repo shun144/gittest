@@ -280,6 +280,7 @@
       const csrf = $('#addTemplateCsrfToken').val();
       let $form = $('#form_add_schedule');
       let fd = new FormData($form.get(0));
+      modal_add_schedule.modal('hide');
       $.ajax({
         headers: {'X-CSRF-TOKEN': csrf},
         url: '{{route('schedule.add')}}',
@@ -307,8 +308,6 @@
         toastr.error('スケジュール追加に失敗しました。');
       });
     }
-
-    modal_add_schedule.modal('hide');
     return false; 
   };
 
@@ -325,6 +324,7 @@
       let fd = new FormData($form.get(0));
       let event = calendar.getEventById(fd.get('message_id'))
 
+      modal_edit_schedule.modal('hide');
       $.ajax({
         headers: {'X-CSRF-TOKEN': csrf},
         url: '{{route('schedule.edit')}}',
@@ -354,9 +354,6 @@
         toastr.error('スケジュール更新に失敗しました。');
       });
     }
-    modal_edit_schedule.modal('hide');
-
-
     return false;
   };
 
@@ -370,6 +367,7 @@
       const csrf = $('#delScheduleCsrfToken').val();
       let $form = $('#form_del_schedule');
       let fd = new FormData($form.get(0));
+      $('#edit_schedule').modal('hide');
       $.ajax({
         headers: {'X-CSRF-TOKEN': csrf},
         url: '{{route('schedule.del')}}',
@@ -386,7 +384,7 @@
         toastr.error('スケジュール削除に失敗しました。');
       });
     }
-    $('#edit_schedule').modal('hide');
+    
     return false;
   };  
 

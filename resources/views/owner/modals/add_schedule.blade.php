@@ -2,6 +2,7 @@
   <div class="modal fade text-left" id="add_schedule" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
+
         <div class="modal-header">
           <button form="form_add_schedule" type="submit" class="btn btn-primary btn_add_schedule">スケジュール作成</button>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">

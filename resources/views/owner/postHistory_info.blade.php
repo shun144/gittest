@@ -9,6 +9,12 @@
 @section('content')
 
 <div class="mx-auto pb-5" style="width:70rem">
+    <div class="text-left">
+        <a href="{{route('owner.history')}}" class="h5">
+            <i class="fas fa-arrow-left"></i>
+            <span>配信履歴一覧に戻る</span>
+        </a>
+    </div>
     <div class="card card-info">
         <div class="card-header">
           <h3 class="card-title">配信履歴詳細表示</h3>
@@ -53,12 +59,12 @@
             </div>
         </div>
       </div>
-      <div class="text-right">
+      {{-- <div class="text-right">
         <a href="{{route('owner.history')}}" class="h5">
             <i class="fas fa-arrow-left"></i>
             <span>配信履歴一覧に戻る</span>
         </a>
-      </div>
+      </div> --}}
 </div>
 
 
