@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title','Dashboard')
+@section('title','連携LINEユーザ一覧')
 
 @section('content_header')
     <h1>連携LINEユーザ一覧</h1>

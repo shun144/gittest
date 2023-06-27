@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title','Dashboard')
+@section('title','店舗情報一覧')
 
 @section('content_header')
     <h1>店舗情報一覧</h1>
