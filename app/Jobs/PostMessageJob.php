@@ -48,14 +48,31 @@ class PostMessageJob implements ShouldQueue
 
         try {
 
-            // $title = $this->inputs['title'];
-            // $message = PHP_EOL . $this->inputs['content'];
-            // $img_path = $this->inputs['img_path'];
-            // $store_id = $this->inputs['store_id'];
-            // $history_id = $this->inputs['history_id'];
             $start_time = Carbon::now();
 
-            DB::table('histories') ->where('id', $history_id )
+            $lines = DB::table('lines')
+            ->select('id','token', 'user_name')
+            ->where('is_valid', true)
+            ->where('store_id', $store_id
+            )->get();
+
+            if ($lines->count() == 0)
+            {
+                DB::table('histories')
+                ->where('id', $history_id )
+                ->update(
+                    [
+                        'status'=> '対象0件',
+                        'start_at'=> $start_time,
+                        'end_at'=> $start_time,
+                        'updated_at'=> $start_time
+                    ]
+                );
+                return;
+            }
+
+
+            DB::table('histories')->where('id', $history_id )
             ->update([
                 'status'=> '配信中',
                 'start_at'=> $start_time,
@@ -63,12 +80,6 @@ class PostMessageJob implements ShouldQueue
             ]);
 
             $API = 'https://notify-api.line.me/api/notify';
-            // $store_id = $store_id;
-            $lines = DB::table('lines')
-            ->select('id','token', 'user_name')
-            ->where('is_valid', true)
-            ->where('store_id', $store_id
-            )->get();
 
             $result = "OK"; 
             $client = new Client();
@@ -124,6 +135,8 @@ class PostMessageJob implements ShouldQueue
                     }
                 }
             }
+
+            
 
             $end_time = Carbon::now();
             DB::table('histories')->where('id',$history_id )

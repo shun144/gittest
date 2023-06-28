@@ -77,7 +77,9 @@ class SchedulePostCommand extends Command
                 ->where('store_id', $msg->store_id
                 )->get();
 
-                $now = Carbon::now();
+                $start_time = Carbon::now();
+
+                \Log::info('★★'.$lines->count());
                 if ($lines->count() == 0)
                 {
                     DB::table('histories')
@@ -87,10 +89,11 @@ class SchedulePostCommand extends Command
                             'title'=> $msg->title,
                             'content'=> $msg->content,
                             'status'=> '対象0件',
-                            'start_at'=> $now,
+                            'start_at'=> $start_time,
                             'img_url' => $msg->save_name == Null ? Null: Storage::disk('owner')->url($msg->save_name),
                             'err_info' => '―',
-                            'created_at'=> $now
+                            'created_at'=> $start_time,
+                            'updated_at'=> $start_time
                         ]
                     );
                     continue;
@@ -195,6 +198,8 @@ class SchedulePostCommand extends Command
             }
             $history_group = group_by($contents, 'history_id');
 
+            $end_time = Carbon::now();
+
             // historyテーブルの更新
             foreach ($history_group as $key => $value)
             {
@@ -218,9 +223,9 @@ class SchedulePostCommand extends Command
                 ->update(
                     [
                         'status'=> $result,
-                        'end_at'=> Carbon::now(),
+                        'end_at'=> $end_time,
                         'err_info' => $err,
-                        'updated_at'=> Carbon::now()
+                        'updated_at'=> $end_time
                     ]);
             }
         }
