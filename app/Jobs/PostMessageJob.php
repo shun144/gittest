@@ -53,12 +53,13 @@ class PostMessageJob implements ShouldQueue
             // $img_path = $this->inputs['img_path'];
             // $store_id = $this->inputs['store_id'];
             // $history_id = $this->inputs['history_id'];
+            $start_time = Carbon::now();
 
             DB::table('histories') ->where('id', $history_id )
             ->update([
                 'status'=> '配信中',
-                'start_at'=> Carbon::now(),
-                'updated_at'=> Carbon::now()
+                'start_at'=> $start_time,
+                'updated_at'=> $start_time
             ]);
 
             $API = 'https://notify-api.line.me/api/notify';
@@ -97,7 +98,7 @@ class PostMessageJob implements ShouldQueue
                     if ($res_body->status != 200){                    
                         $result = 'NG';
                         array_push($err_list, '['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);
-                        \Log::error('['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                      
+                        // \Log::error('['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                      
                     }
                 }
             }
@@ -119,19 +120,19 @@ class PostMessageJob implements ShouldQueue
                     if ($res_body->status != 200){                    
                         $result = 'NG';
                         array_push($err_list, '['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);
-                        \Log::error('['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                      
+                        // \Log::error('['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                      
                     }
                 }
             }
 
-
+            $end_time = Carbon::now();
             DB::table('histories')->where('id',$history_id )
             ->update(
                 [
                     'status'=> $result,
-                    'end_at'=> Carbon::now(),
+                    'end_at'=> $end_time,
                     'err_info' => empty($err_list) ? 'ー' : join('/', $err_list),
-                    'updated_at'=> Carbon::now()
+                    'updated_at'=> $end_time
                 ]);
         } 
         catch (\Exception $e) {

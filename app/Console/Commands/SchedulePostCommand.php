@@ -42,16 +42,7 @@ class SchedulePostCommand extends Command
         $date_down = date('Y-m-d H:i', strtotime($date_down));
 
         try {
-            // $sep_time = 10;
-            // $API = 'https://notify-api.line.me/api/notify';
-            // $now = Carbon::now();
 
-            // // 10分単位で切り捨て(15分→10分)
-            // $date_down = $now->subMinutes($now->minute % $sep_time);
-            // $date_down = date('Y-m-d H:i', strtotime($date_down));
-
-            // Log::info('スケジュール配信 開始');
-            // Log::info($date_down.' スケジュール配信');
 
             // 配信対象メッセージ抽出
             $messages = DB::table('schedules')
