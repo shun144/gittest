@@ -67,7 +67,6 @@ class SchedulePostCommand extends Command
             // 非同期リクエスト用パラメータリスト作成
             $requests_param = [];
 
-            \Log::info('★★');
             foreach($messages as $msg)
             {
                 $lines = DB::table('lines')
@@ -79,7 +78,6 @@ class SchedulePostCommand extends Command
 
                 $start_time = Carbon::now();
 
-                \Log::info('★★'.$lines->count());
                 if ($lines->count() == 0)
                 {
                     DB::table('histories')
