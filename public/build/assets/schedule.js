@@ -14,11 +14,14 @@ let edit_temp = $('#tmp_edit_template_data')
 
 const URL_ROOT = $(location).attr('origin');
 const URL_STORAGE = URL_ROOT + '/storage/owner/image/template';
-const URL_SCHEDULE_GET = URL_ROOT + '/dashboard/schedule-get';
-const URL_SCHEDULE_ADD = URL_ROOT + '/dashboard/schedule-add';
-const URL_SCHEDULE_EDIT = URL_ROOT + '/dashboard/schedule-edit';
-const URL_SCHEDULE_DEL = URL_ROOT + '/dashboard/schedule-del';
-const URL_TEMPLATE_GET = URL_ROOT + '/dashboard/template-get';
+
+const URL_DASHBOARD = URL_ROOT + '/dashboard';
+const URL_MEDSSAGE_POST = URL_DASHBOARD + '/post';
+const URL_SCHEDULE_GET = URL_DASHBOARD + '/schedule-get';
+const URL_SCHEDULE_ADD = URL_DASHBOARD + '/schedule-add';
+const URL_SCHEDULE_EDIT = URL_DASHBOARD + '/schedule-edit';
+const URL_SCHEDULE_DEL = URL_DASHBOARD + '/schedule-del';
+const URL_TEMPLATE_GET = URL_DASHBOARD + '/template-get';
 
 // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // 定型メッセージ更新モーダル開く前イベント
@@ -186,6 +189,52 @@ modal_edit_schedule.on('hide.bs.modal', function(){
 
 
 // /_/_/_/_/_/_/_/_/_/_/_
+// 即時配信
+// /_/_/_/_/_/_/_/_/_/_/_
+function postImmediately(e){
+  e.preventDefault();
+  const msg = '即時配信を開始してよろしいですか?'
+  if(!window.confirm(msg))
+  {
+    return false;
+  }
+  const csrf_token = document.getElementById('postImiCsrfToken').value;
+  let $form = $('#form_post_message');
+  let fd = new FormData($form.get(0));
+  $.ajax({
+    headers: {'X-CSRF-TOKEN': csrf_token},
+    url: URL_MEDSSAGE_POST,
+    // url: '{{route('post')}}',
+    method: 'POST',
+    contentType: false,
+    processData: false,
+    data: fd
+  })
+
+  const modal_post_message =  $('#post_message');
+  modal_post_message.find('.content_form').val('');
+  modal_post_message.find('.has_file').val('0');
+  modal_post_message.find('input[type=file]').val('');
+
+  modal_post_message.find('.image_preview').get(0).innerHTML = '';
+  modal_post_message.find('.filename_view').val('');
+
+
+  // .done(function (data) {
+  //   toastr.success('即時配信が完了しました。<br/> 実行結果は配信履歴一覧をご確認ください');
+  // })
+  // //通信失敗した時の処理
+  // .fail(function (data) {
+  //   toastr.error('即時配信が失敗しました。<br/> 実行結果は配信履歴一覧をご確認ください');
+  // });
+  
+  modal_post_message.modal('hide');
+  toastr.info('即時配信を開始しました。<br/> 状況は配信履歴一覧をご確認ください');
+
+};
+
+
+// /_/_/_/_/_/_/_/_/_/_/_
 // スケジュール追加
 // /_/_/_/_/_/_/_/_/_/_/_
 function submitAddSchedule(e){
@@ -303,7 +352,6 @@ function submitDeleteSchedule(e){
       toastr.error('スケジュール削除に失敗しました。');
     });
   }
-  
   return false;
 };  
 
