@@ -67,7 +67,7 @@ class SchedulePostCommand extends Command
             // 非同期リクエスト用パラメータリスト作成
             $requests_param = [];
 
-            
+            \Log::info('★★');
             foreach($messages as $msg)
             {
                 $lines = DB::table('lines')
