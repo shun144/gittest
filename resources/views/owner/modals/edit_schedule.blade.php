@@ -31,21 +31,6 @@
             </div>
           </div>
         </div>
-
-
-          {{-- <button form="form_edit_schedule" type="submit" class="btn btn-success btn_edit_schedule">スケジュール更新</button>
-
-          <form id="form_del_schedule" action="{{route('schedule.del')}}" method="post" onSubmit="return submitDeleteSchedule(event)" class="">
-            <input id="delScheduleCsrfToken" type="hidden" name="_token" value="{{csrf_token()}}">
-            <button form="form_del_schedule" type="submit" class="btn btn_del">
-              <input type="hidden" name='message_id' class='msg_id'>
-              <i class="fas fa-trash-alt text-muted"></i>
-            </button>
-          </form>
-          
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button> --}}
         
 
         <div class="modal-body">

@@ -91,12 +91,6 @@
       <button form="formEditStore" type="submit" class="btn btn-primary">更新</button>
     </div>
   </div>
-  {{-- <div class="text-right">
-    <a href="{{route('admin.store')}}" class="h5">
-        <i class="fas fa-arrow-left"></i>
-        <span>店舗情報一覧に戻る</span>
-    </a>
-  </div> --}}
 </div>
 
 

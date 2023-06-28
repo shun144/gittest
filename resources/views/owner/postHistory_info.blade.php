@@ -59,12 +59,6 @@
             </div>
         </div>
       </div>
-      {{-- <div class="text-right">
-        <a href="{{route('owner.history')}}" class="h5">
-            <i class="fas fa-arrow-left"></i>
-            <span>配信履歴一覧に戻る</span>
-        </a>
-      </div> --}}
 </div>
 
 
@@ -72,9 +66,10 @@
 @stop
 
 @section('css')
-@vite(['resources/sass/component.scss'])
+<link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}">
+{{-- @vite(['resources/sass/component.scss']) --}}
 @stop
 
 @section('js')
-@vite(['resources/js/component.js'])
+{{-- @vite(['resources/js/component.js']) --}}
 @stop

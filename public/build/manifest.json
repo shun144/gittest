@@ -4,10 +4,10 @@
     "isEntry": true,
     "src": "resources/js/app.js"
   },
-  "resources/js/component.js": {
-    "file": "assets/component-6b53ad74.js",
+  "resources/js/schedule.js": {
+    "file": "assets/schedule-2474e4e8.js",
     "isEntry": true,
-    "src": "resources/js/component.js"
+    "src": "resources/js/schedule.js"
   },
   "resources/sass/app.scss": {
     "file": "assets/app-3ea8b221.css",

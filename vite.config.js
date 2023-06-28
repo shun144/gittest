@@ -9,8 +9,8 @@ export default defineConfig({
                 'resources/js/app.js',
                 
                 'resources/sass/component.scss',
-                'resources/js/component.js',
-                // 'resources/js/schedule.js',
+                // 'resources/js/component.js',
+                'resources/js/schedule.js',
             ],
             refresh: true,
         }),

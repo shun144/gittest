@@ -32,21 +32,6 @@
           </div>
         </div>
 
-        {{-- <div class="modal-header">
-          <button form="form_edit_template" type="button" class="btn btn-success btn_edit_template">定型メッセージ更新</button>
-          
-          <form id="form_del_template" action="{{route('template.del')}}" method="post" onSubmit="return submitDeleteTemplate(event)" class="">
-            @csrf
-            <button type="submit" class="btn btn_del">
-              <input type="hidden" name='message_id' class='msg_id'>
-              <i class="fas fa-trash-alt text-muted"></i>
-            </button>
-          </form>
-          
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div> --}}
         
         <div class="modal-body">
           <form id="form_edit_template" action="{{ route('template.edit') }}" method="post" enctype="multipart/form-data" onSubmit="return submitEditTemplate(event)">
@@ -97,6 +82,5 @@ function submitDeleteTemplate(e){
     return false;
   }
 };
-
 
 </script>

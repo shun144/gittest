@@ -63,7 +63,8 @@
 <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
-@vite(['resources/sass/component.scss'])
+<link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}">
+{{-- @vite(['resources/sass/component.scss']) --}}
 
 <style>
 </style>
@@ -76,7 +77,7 @@
   <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
   <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
   <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
-  @vite(['resources/js/component.js'])
+  {{-- @vite(['resources/js/component.js']) --}}
 
 <script>      
 @if (session('flash_message'))

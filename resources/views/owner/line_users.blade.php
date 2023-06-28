@@ -67,7 +67,8 @@
 <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
-@vite(['resources/sass/component.scss'])
+<link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}">
+{{-- @vite(['resources/sass/component.scss']) --}}
 @stop
 
 @section('js')

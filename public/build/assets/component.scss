@@ -1,0 +1,42 @@
+.image_preview {
+	img {
+		max-width:200px;
+		border:transparent 2px solid;
+	}
+}
+
+.filename_view {
+	font-size: 80%;
+}
+
+.external-event {
+	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	// transition: all .5s;
+	
+	// &:hover {
+	// 	top:-3px;
+  // 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+	// }
+}
+
+.btn_del:hover i{
+	color: red !important;
+}
+
+.btn_edit:hover i{
+	color: blue!important;
+}
+
+.omit_text {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+td {
+	vertical-align: middle !important;
+}
+

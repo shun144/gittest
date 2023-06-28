@@ -1,0 +1,33 @@
+.image_preview img {
+  max-width: 200px;
+  border: transparent 2px solid;
+}
+
+.filename_view {
+  font-size: 80%;
+}
+
+.external-event {
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.btn_del:hover i {
+  color: red !important;
+}
+
+.btn_edit:hover i {
+  color: blue !important;
+}
+
+.omit_text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+td {
+  vertical-align: middle !important;
+}/*# sourceMappingURL=component.css.map */
