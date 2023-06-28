@@ -98,7 +98,7 @@ class PostMessageJob implements ShouldQueue
                             'multipart' => [
                                 [ 
                                     'name' => 'message',
-                                    'contents' => $message
+                                    'contents' => $message.$i
                                 ],
                                 [ 
                                     'name'=> 'imageFile',
@@ -123,7 +123,7 @@ class PostMessageJob implements ShouldQueue
                             'multipart' => [
                                 [ 
                                     'name' => 'message',
-                                    'contents' => $message
+                                    'contents' => $message.$i
                                 ]
                             ]
                         ]);
