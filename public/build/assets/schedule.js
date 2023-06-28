@@ -227,7 +227,7 @@ function postImmediately(e){
   // .fail(function (data) {
   //   toastr.error('即時配信が失敗しました。<br/> 実行結果は配信履歴一覧をご確認ください');
   // });
-  
+
   modal_post_message.modal('hide');
   toastr.info('即時配信を開始しました。<br/> 状況は配信履歴一覧をご確認ください');
 
@@ -377,6 +377,7 @@ function () {
 
 // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 //  定型メッセージクリックイベント
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 $('.external-event').click(function() {
   edit_temp.data('tempId', $(this).data('msgid'));
   modal_edit_template.modal('show');
@@ -538,24 +539,31 @@ function preview_image(event)
   let input_file =  parent.find('.image_form')
   let has_file = parent.find('.has_file')
 
-  $.each(target.files, function (idx, file) {
-    if (['image/jpeg','image/png'].indexOf(file.type) !== -1) {
-      fileList.push(file)
-      filesNameList.push(file.name)
-    }
-  });
+  // $.each(target.files, function (idx, file) {
+  //   if (['image/jpeg','image/png'].indexOf(file.type) !== -1) {
+  //     fileList.push(file)
+  //     filesNameList.push(file.name)
+  //   }
+  // });
 
   // プレビュー初期化
   preview.empty();
 
   if (target.files.length == 1) {
-    has_file.val('1');
-    $.each(fileList, function (idx, file) {
+
+    const file = target.files[0];
+    if (['image/jpeg','image/png'].indexOf(file.type) !== -1) {
       let reader = new FileReader();
       reader.onload = (function (elem) { preview.append('<img src="' + elem.target.result + '">');});
       reader.readAsDataURL(file);
-    });
-    text_form.val(filesNameList.join(' '));
+      text_form.val(file.name);
+      has_file.val('1');
+    } 
+    else {
+      text_form.val('');
+      has_file.val('0');
+      input_file.val('');
+    }
   }
   else {
     has_file.val('0');
@@ -563,6 +571,23 @@ function preview_image(event)
     input_file.val('');
     return false;
   }
+
+
+  // if (target.files.length == 1) {
+  //   has_file.val('1');
+  //   $.each(fileList, function (idx, file) {
+  //     let reader = new FileReader();
+  //     reader.onload = (function (elem) { preview.append('<img src="' + elem.target.result + '">');});
+  //     reader.readAsDataURL(file);
+  //   });
+  //   text_form.val(filesNameList.join(' '));
+  // }
+  // else {
+  //   has_file.val('0');
+  //   text_form.val('');
+  //   input_file.val('');
+  //   return false;
+  // }
 }
 
 
