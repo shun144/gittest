@@ -36,11 +36,15 @@
             <div class="card-body">
 
               <div id="external-events" style="max-height:50rem; overflow-x:hidden;">
-                @foreach ($templates as $item)
-                <div class="external-event" data-msgid="{{ $item->id }}" style="color:white; background-color:{{$item->title_color}}">
-                  {{$item->title}}
-                </div>
-                @endforeach
+
+                @if (isset($templates))
+
+                  @foreach ($templates as $item)
+                  <div class="external-event" data-msgid="{{ $item->id }}" style="color:white; background-color:{{$item->title_color}}">
+                    {{$item->title}}
+                  </div>
+                  @endforeach
+                @endif
               </div>
             </div>
           </div>
@@ -90,10 +94,14 @@
   
   <script>
 
-    // console.log($(location).attr('origin'));
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     // 定型メッセージ関連ポップアップ
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    @if (isset($get_template_error_flushMsg))
+    $(function () {toastr.error('{{ $get_template_error_flushMsg }}');});
+    @endif
+
+    
     @if (session('add_template_success_flushMsg'))
     $(function () {toastr.success('{{ session('add_template_success_flushMsg') }}');});
     @endif

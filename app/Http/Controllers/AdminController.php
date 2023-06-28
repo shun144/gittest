@@ -25,6 +25,7 @@ class AdminController extends Controller
     public function viewStore()
     {
         try {
+
             $stores = DB::table('stores')
             ->select(
                 'stores.id as store_id',
@@ -46,6 +47,10 @@ class AdminController extends Controller
             \Log::error('エラー機能:店舗一覧表示');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+
+            $get_store_error_flushMsg = '店舗一覧取得に失敗しました';
+
+            return view('admin.store', compact('get_store_error_flushMsg'));
         }
     }
 
@@ -61,6 +66,7 @@ class AdminController extends Controller
             \Log::error('エラー機能:店舗追加画面表示');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+            return view('admin.add_store');
         }
     }
 
@@ -102,6 +108,7 @@ class AdminController extends Controller
             \Log::error('パラメータ:'.join('/', $post));
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+            return redirect(route('admin.store'))->with('error_flash_message','店舗登録に失敗しました');
         }
     }
 
@@ -113,6 +120,7 @@ class AdminController extends Controller
     {
         $store_id = $request->query('store_id');
         try {
+
             $store = DB::table('stores')
             ->select(
                 'stores.id as store_id',
@@ -132,6 +140,10 @@ class AdminController extends Controller
             \Log::error('エラー機能:店舗編集画面表示【対象店舗ID:'.$store_id.'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+
+
+            $edit_store_error_flushMsg = '店舗情報取得に失敗しました';
+            return view('admin.edit_store', compact('edit_store_error_flushMsg'));
         }
     }
 
@@ -145,6 +157,8 @@ class AdminController extends Controller
         'login_password','client_id','client_secret']);
 
         try {
+        
+
             $now = Carbon::now();
             DB::transaction(function () use($post, $now){
                 DB::table('stores')
@@ -183,6 +197,9 @@ class AdminController extends Controller
             \Log::error('パラメータ:'.join('/', $post));
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+
+            return redirect(route('store.edit.view'))
+            ->with('error_flash_message','店舗情報更新に失敗しました');
         }
     }
 
@@ -239,6 +256,8 @@ class AdminController extends Controller
             \Log::error('エラー機能:店舗削除【対象店舗ID:'.$post['store_id'].'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+
+            return redirect(route('admin.store'))->with('error_flash_message','店舗削除に失敗しました');
         }
     }
 }   

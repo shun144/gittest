@@ -22,18 +22,50 @@
         <div class="card-body">
             <div class="row mb-3">
                 <label class="form-label">状態</label>
-                {{-- <input type="text" class="form-control bg-light" readonly value="配信待"> --}}
-                <input type="text" class="form-control bg-light" readonly value="{{$posts->status}}">
+                <input type="text" class="form-control bg-light" readonly value="{{isset($post) ? $post->status : 'ー'}}">
+            </div>
+
+            <div class="row mb-3">
+                <label class="form-label">配信日時</label>
+                <input type="text" class="form-control bg-light" readonly value="{{isset($post) ? $post->start_at : 'ー'}}" aria-describedby="startAtHelp">
+                <small id="startAtHelp" class="form-text text-muted">配信日時はシステムがLINE配信処理を開始した時間です。ネットワークの影響により実際にLINE配信される時間とは異なる場合があります。</small>
+            </div>
+
+            <div class="row mb-3">
+                <label class="form-label">タイトル</label>
+                <input type="text" class="form-control bg-light" readonly value="{{isset($post) ? $post->title : 'ー'}}">
             </div>
             <div class="row mb-3">
+                <label class="form-label">内容</label>
+                <textarea type="text" style="height:30vh; overflow-y: scroll;" class="form-control bg-light" readonly>{{isset($post) ? $post->content : 'ー'}}</textarea>
+            </div>
+            <div class="row mb-3">
+                @if(isset($post))
+                    @if($post->img_url == Null)
+                        <label class="form-label">画像なし</label>
+                    @else
+                        <label class="form-label">画像あり</label>
+                        <p class="col-12 m-0 p-0 image_preview">
+                            <img src="{{$post->img_url}}" alt="画像のリンクが切れています">
+                        </p>
+                    @endif
+                @else
+                    <label class="form-label">画像なし</label>
+                @endif
+            </div>
+            <div class="row mb-3">
+                <label class="form-label">エラー</label>
+                <textarea type="text" style="height:10vh; overflow-y: scroll;" class="form-control bg-light" readonly>{{isset($post) ? $post->err_info : 'ー'}}</textarea>
+            </div>
+
+
+
+
+            {{-- <div class="row mb-3">
                 <label class="form-label">配信日時</label>
                 <input type="text" class="form-control bg-light" readonly value="{{$posts->start_at}}" aria-describedby="startAtHelp">
                 <small id="startAtHelp" class="form-text text-muted">配信日時はシステムがLINE配信処理を開始した時間です。ネットワークの影響により実際にLINE配信される時間とは異なる場合があります。</small>
             </div>
-            {{-- <div class="row mb-3">
-                <label class="form-label">終了日時</label>
-                <input type="text" class="form-control bg-light" readonly value="{{$posts->end_at}}">
-            </div> --}}
 
             <div class="row mb-3">
                 <label class="form-label">タイトル</label>
@@ -56,7 +88,9 @@
             <div class="row mb-3">
                 <label class="form-label">エラー</label>
                 <textarea type="text" style="height:10vh; overflow-y: scroll;" class="form-control bg-light" readonly>{{$posts->err_info}}</textarea>
-            </div>
+            </div> --}}
+
+
         </div>
       </div>
 </div>
@@ -67,9 +101,7 @@
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}">
-{{-- @vite(['resources/sass/component.scss']) --}}
 @stop
 
 @section('js')
-{{-- @vite(['resources/js/component.js']) --}}
 @stop

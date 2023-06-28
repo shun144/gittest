@@ -52,6 +52,8 @@ class OwnerController extends Controller
             \Log::error('エラー機能:配信履歴表示 【店舗ID:'.Auth::user()->store_id.'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+            
+            return view('owner.postHistory');
         }
     }
 
@@ -62,8 +64,9 @@ class OwnerController extends Controller
     public function viewPostHistoryInfo(Request $request)
     {
         try {
+
             $history_id = $request->query('history_id');
-            $posts = DB::table('histories')
+            $post = DB::table('histories')
             ->where('id',$history_id)
             ->select(
                 'start_at',
@@ -75,12 +78,13 @@ class OwnerController extends Controller
                 'err_info'
             )
             ->first();
-            return view('owner.postHistory_info', compact('posts'));
+            return view('owner.postHistory_info', compact('post'));
         }
         catch (\Exception $e) {
             \Log::error('エラー機能:配信履歴詳細表示 【店舗ID:'.Auth::user()->store_id.'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+            return view('owner.postHistory_info');
         }
     }
 
@@ -107,6 +111,9 @@ class OwnerController extends Controller
             \Log::error('エラー機能:配信スケジュール表示 【店舗ID:'.Auth::user()->store_id.'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+
+            $get_template_error_flushMsg = '定型メッセージ取得に失敗しました';
+            return view('owner.schedule', compact('get_template_error_flushMsg'));
         }
     }
 
@@ -117,6 +124,7 @@ class OwnerController extends Controller
     public function viewLineUsers()
     {
         try {
+
             $store_id = Auth::user()->store_id;
             $lines = DB::table('lines')
             ->select('id','user_name', 'is_valid','created_at')
@@ -139,6 +147,9 @@ class OwnerController extends Controller
             \Log::error('エラー機能:連携LINEユーザ一覧表示 【店舗ID:'.Auth::user()->store_id.'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+
+            $get_lineuser_error_flushMsg = '連携LINEユーザ取得に失敗しました';
+            return view('owner.line_users', compact('get_lineuser_error_flushMsg'));
         }
     }
 
@@ -159,13 +170,14 @@ class OwnerController extends Controller
                 'updated_at' => $now
                 ]
             );
-
             return redirect(route('owner.line_users'));
         }
         catch (\Exception $e) {
             \Log::error('エラー機能:連携LINEユーザ更新 【店舗ID:'.Auth::user()->store_id.'/LINEユーザID:'.$post['line_user_id'].'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+
+            return redirect(route('owner.line_users'))->with('edit_lineuser_error_flushMsg','連携LINEユーザ更新に失敗しました');
         }
     }
 

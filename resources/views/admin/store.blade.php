@@ -23,35 +23,40 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($stores as $store)
-          <tr>
-            <td>
-              <div class="row justify-content-around">
-                <form action="{{route('store.del')}}" method="post" onSubmit="return confirmStoreDelete(event)">
-                  @csrf
-                  <button type="submit" class="btn btn_del">
-                    <input type="hidden" name="user_id" value={{$store->user_id}}>
-                    <input type="hidden" name="store_id" value={{$store->store_id}}>
-                    <input type="hidden" class="hid_store_name" value={{$store->name}}>
-                    <i class="fas fa-trash-alt text-muted"></i>
-                  </button>
-                </form>
 
-                <form action="{{route('store.edit.view')}}" method="get">
-                  <button type="submit" class="btn btn_edit">
-                    <input type="hidden" name="store_id" value={{$store->store_id}}>
-                    <i class="fas fa-edit text-muted"></i>
-                  </button>
-                </form>
-              </div>
-            </td>
-            <td class="omit_text">{{$store->name}}</td>
-            <td class="omit_text">{{url($store->url_name).'/register'}}</td>
-            <td>{{$store->login_id}}</td>
-            <td class="omit_text">{{$store->client_id}}</td>
-            <td class="omit_text">{{$store->client_secret}}</td>
-          </tr>
-        @endforeach
+          
+          @if (isset($stores))
+            @foreach ($stores as $store)
+            <tr>
+              <td>
+                <div class="row justify-content-around">
+                  <form action="{{route('store.del')}}" method="post" onSubmit="return confirmStoreDelete(event)">
+                    @csrf
+                    <button type="submit" class="btn btn_del">
+                      <input type="hidden" name="user_id" value={{$store->user_id}}>
+                      <input type="hidden" name="store_id" value={{$store->store_id}}>
+                      <input type="hidden" class="hid_store_name" value={{$store->name}}>
+                      <i class="fas fa-trash-alt text-muted"></i>
+                    </button>
+                  </form>
+
+                  <form action="{{route('store.edit.view')}}" method="get">
+                    <button type="submit" class="btn btn_edit">
+                      <input type="hidden" name="store_id" value={{$store->store_id}}>
+                      <i class="fas fa-edit text-muted"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+              <td class="omit_text">{{$store->name}}</td>
+              <td class="omit_text">{{url($store->url_name).'/register'}}</td>
+              <td>{{$store->login_id}}</td>
+              <td class="omit_text">{{$store->client_id}}</td>
+              <td class="omit_text">{{$store->client_secret}}</td>
+            </tr>
+            @endforeach
+          @endif
+
         </tbody>
       </table>
     </div>
@@ -83,6 +88,17 @@
 @if (session('flash_message'))
   $(function () {toastr.success('{{ session('flash_message') }}');});
 @endif
+
+@if (session('error_flash_message'))
+  $(function () {toastr.error('{{ session('error_flash_message') }}');});
+@endif
+
+@if (isset($get_store_error_flushMsg))
+  $(function () {toastr.error('{{ $get_store_error_flushMsg }}');});
+@endif
+
+
+
 
 function confirmStoreDelete(e){
   const del_store_name = e.submitter.querySelector('.hid_store_name').value

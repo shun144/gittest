@@ -105,11 +105,12 @@ class ScheduleController extends Controller
 
 
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-    // 定型メッセージ取得
+    // 定型メッセージ詳細取得
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function getTemplateDetail()
     {
         try {
+
             $data = Message::select('messages.id', 'title', 'title_color', 'content')
             ->join('templates','templates.message_id','=','messages.id')
             ->where('store_id', Auth::user()->store_id)
@@ -121,9 +122,12 @@ class ScheduleController extends Controller
             return $data;
         }
         catch (\Exception $e) {
-            \Log::error('エラー機能:定型メッセージ取得 【店舗ID:'.Auth::user()->store_id.'】');
+            \Log::error('エラー機能:定型メッセージ詳細取得 【店舗ID:'.Auth::user()->store_id.'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
+            return response()->json([
+                'message' => '定型メッセージ詳細取得エラー'
+            ], 500);
         }
     }
 
@@ -194,7 +198,6 @@ class ScheduleController extends Controller
         $post = $request->only(['message_id', 'title', 'content','title_color','has_file']);           
         $images = $request->file('imagefile');
         try {    
-
             $now = Carbon::now();
             DB::transaction(function() use($post, $images, $now){
                 DB::table('messages')
@@ -249,7 +252,7 @@ class ScheduleController extends Controller
             \Log::error('パラメータ:'.join('/', $post).'/画像:'.$img_info);
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
-            return redirect(route('owner.schedule'))->with('edit_template_error_flushMsg','定型メッセージ追加に失敗しました');
+            return redirect(route('owner.schedule'))->with('edit_template_error_flushMsg','定型メッセージ更新に失敗しました');
         }
     }
 
@@ -289,7 +292,7 @@ class ScheduleController extends Controller
             \Log::error('パラメータ:'.join('/', $post));
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
-            return redirect(route('owner.schedule'))->with('del_template_error_flushMsg','定型メッセージ追加に失敗しました');
+            return redirect(route('owner.schedule'))->with('del_template_error_flushMsg','定型メッセージ削除に失敗しました');
         }
     }
 
@@ -304,6 +307,7 @@ class ScheduleController extends Controller
         $datatime = sprintf('%s %s:%s:00', $post['date'], $post['hh'], $post['mm']);
 
         try {
+
             $now = Carbon::now();
             $user = Auth::user();
             $message_id = DB::transaction(function() use($post, $images, $user, $datatime, $now)
@@ -408,6 +412,8 @@ class ScheduleController extends Controller
         $images = $request->file('imagefile');
         
         try {
+
+
             $now = Carbon::now();
             DB::transaction(function() use($post, $datatime, $images, $now){
                 DB::table('messages')

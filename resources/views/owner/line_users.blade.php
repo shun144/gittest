@@ -15,7 +15,7 @@
         <div class="input-group-prepend">
           <span class="input-group-text">LINE連携URL</span>
         </div>
-        <input id="input_reg_url" type="text" class="form-control bg-light" value="{{$reg_url}}" readonly>
+        <input id="input_reg_url" type="text" class="form-control bg-light" value="{{isset($reg_url) ? $reg_url:'―'}}" readonly>
         <div class="input-group-prepend">
           <span class="btn btn-outline-secondary" onclick="copyToClipboard()"><i class="far fa-copy"></i></span>
         </div>
@@ -25,7 +25,7 @@
 
     <div class="card">
       <div class="card-body">
-        <div id="infotop"><span class="text-blue">有効LINEユーザ数</span>：{{number_format($valid_count)}}人</div>
+        <div id="infotop"><span class="text-blue">有効LINEユーザ数</span>：{{isset($valid_count) ? number_format($valid_count):'0'}}人</div>
         <table id="line_user_table" class="table table-striped table-bordered" style="table-layout:fixed;">
           <thead>
             <tr>
@@ -35,27 +35,34 @@
             </tr>
           </thead>
           <tbody>
-            @foreach ($lines as $line)
-            <tr>
-              <td class="omit_td">
-                <form action="{{route('line_users.edit')}}" method="post" onSubmit="return confirmEditLineUser(event)">
-                  @csrf
-                  <button type="submit" class="btn btn_edit">
-                    @if ($line->is_valid == 1)
-                      <span class="text-blue">有効</span>
-                    @else
-                      <span class="text-red">無効</span>
-                    @endif
-                    <input type="hidden" name="line_user_id" value={{$line->id}}>
-                    <input type="hidden" name="new_valid" value={{$line->is_valid == 1 ? 0 : 1}}>
-                    <input type="hidden" class="hid_line_user_name" value={{$line->user_name}}>
-                  </button>
-                </form>
-              </td>
-              <td class="omit_td">{{$line->created_at}}</td>
-              <td class="omit_td">{{$line->user_name}}</td>
-            </tr>
-          @endforeach
+
+            @if(isset($lines))
+              @foreach ($lines as $line)
+              <tr>
+                <td class="omit_td">
+                  <form action="{{route('line_users.edit')}}" method="post" onSubmit="return confirmEditLineUser(event)">
+                    @csrf
+                    <button type="submit" class="btn btn_edit">
+                      @if ($line->is_valid == 1)
+                        <span class="text-blue">有効</span>
+                      @else
+                        <span class="text-red">無効</span>
+                      @endif
+                      <input type="hidden" name="line_user_id" value={{$line->id}}>
+                      <input type="hidden" name="new_valid" value={{$line->is_valid == 1 ? 0 : 1}}>
+                      <input type="hidden" class="hid_line_user_name" value={{$line->user_name}}>
+                    </button>
+                  </form>
+                </td>
+                <td class="omit_td">{{$line->created_at}}</td>
+                <td class="omit_td">{{$line->user_name}}</td>
+              </tr>
+              @endforeach
+
+            @endif
+
+
+
           </tbody>
         </table>
       </div>
@@ -80,6 +87,14 @@
 {{-- <script src="{{ asset('vendor/popper/popper.min.js')}}"></script> --}}
 
 <script>
+
+@if (isset($get_lineuser_error_flushMsg))
+  $(function () {toastr.error('{{ $get_lineuser_error_flushMsg }}');});
+@endif
+
+@if (session('edit_lineuser_error_flushMsg'))
+  $(function () {toastr.error('{{ session('edit_lineuser_error_flushMsg') }}');});
+@endif
 
 function copyToClipboard() {
   var copyTarget = document.getElementById("input_reg_url");

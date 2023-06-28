@@ -21,25 +21,29 @@
           </tr>
         </thead>
         <tbody>
+
+        @if(isset($posts[0]))
           @foreach ($posts as $post)
-          <tr>
-            <td class="d-flex justify-content-center">
-              <form action="{{route('owner.history.info')}}" method="get">
-                <button type="submit" class="btn btn_show">
-                  <input type="hidden" name="history_id" value={{$post->id}}>
-                  <i class="fas fa-eye text-muted"></i>
-                </button>
-              </form>
-            </td>
-            <td class="omit_text">{{$post->status}}</td>
-            <td class="omit_text">{{$post->start_at}}</td>
-            {{-- <td class="omit_text">{{$post->end_at}}</td> --}}
-            <td class="omit_text">{{$post->title}}</td>
-            <td class="omit_text">{{$post->content}}</td>
-            <td class="omit_text">{{$post->img_url == Null ? '無し' : '有り'}}</td>
-            <td class="omit_text">{{$post->err_info}}</td>
-          </tr>
-        @endforeach
+            <tr>
+              <td class="d-flex justify-content-center">
+                <form action="{{route('owner.history.info')}}" method="get">
+                  <button type="submit" class="btn btn_show">
+                    <input type="hidden" name="history_id" value={{$post->id}}>
+                    <i class="fas fa-eye text-muted"></i>
+                  </button>
+                </form>
+              </td>
+              <td class="omit_text">{{$post->status}}</td>
+              <td class="omit_text">{{$post->start_at}}</td>
+
+              <td class="omit_text">{{$post->title}}</td>
+              <td class="omit_text">{{$post->content}}</td>
+              <td class="omit_text">{{$post->img_url == Null ? '無し' : '有り'}}</td>
+              <td class="omit_text">{{$post->err_info}}</td>
+            </tr>
+          @endforeach
+        @endif
+        
         </tbody>
       </table>
     </div>

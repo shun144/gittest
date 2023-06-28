@@ -371,8 +371,8 @@ $.ajax(
 function (data) {
   templateMessages = data;
 },
-function () {
-  console.error("読み込み失敗");
+function (data) {
+  toastr.error('定型メッセージ取得に失敗しました。');
 }); 
 
 // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
