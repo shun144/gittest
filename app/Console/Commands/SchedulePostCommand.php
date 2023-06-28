@@ -66,8 +66,36 @@ class SchedulePostCommand extends Command
 
             // 非同期リクエスト用パラメータリスト作成
             $requests_param = [];
+
+            
             foreach($messages as $msg)
             {
+                $lines = DB::table('lines')
+                ->select('id','token', 'user_name')
+                ->whereNull('deleted_at')
+                ->where('is_valid', true)
+                ->where('store_id', $msg->store_id
+                )->get();
+
+                $now = Carbon::now();
+                if ($lines->count() == 0)
+                {
+                    DB::table('histories')
+                    ->insert(
+                        [
+                            'store_id' => $msg->store_id,
+                            'title'=> $msg->title,
+                            'content'=> $msg->content,
+                            'status'=> '対象0件',
+                            'start_at'=> $now,
+                            'img_url' => $msg->save_name == Null ? Null: Storage::disk('owner')->url($msg->save_name),
+                            'err_info' => '―',
+                            'created_at'=> $now
+                        ]
+                    );
+                    continue;
+                }
+
                 $history_id = DB::table('histories')
                 ->insertGetId(
                     [
@@ -75,18 +103,13 @@ class SchedulePostCommand extends Command
                         'title'=> $msg->title,
                         'content'=> $msg->content,
                         'status'=> '配信中',
-                        'start_at'=> Carbon::now(),
+                        'start_at'=> $now,
                         'img_url' => $msg->save_name == Null ? Null: Storage::disk('owner')->url($msg->save_name),
-                        'created_at'=> Carbon::now()
+                        'created_at'=> $now
                     ]
                 );
                 
-                $lines = DB::table('lines')
-                ->select('id','token', 'user_name')
-                ->whereNull('deleted_at')
-                ->where('is_valid', true)
-                ->where('store_id', $msg->store_id
-                )->get();
+
 
                 foreach($lines as $line)
                 {  
