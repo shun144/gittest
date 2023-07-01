@@ -1,43 +1,67 @@
-.line_register {
-  background-color: #f1f0ea;
+@charset "UTF-8";
+body {
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
 }
+
 .line_register nav {
-  padding: 1rem;
+  padding: 2rem;
+  margin-bottom: 3rem;
 }
 .line_register nav .btn {
   font-size: 2.5rem;
   border-radius: 10px;
-  padding: 0.5rem 2.1rem;
+  padding: 1rem 2.1rem;
+}
+.line_register .description {
+  font-size: 3.3rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  line-height: 1.8;
+  color: #505050; /*文字色*/
+  padding: 0.5em; /*文字周りの余白*/
+  display: inline-block; /*おまじない*/
+  background: #ffd2c6; /*背景色*/
+  vertical-align: middle;
+  border-radius: 25px 0px 0px 25px; /*左側の角を丸く*/
+}
+.line_register .description:before {
+  content: "●";
+  color: white;
+  margin-right: 8px;
 }
 .line_register h2 {
   font-size: 4rem;
 }
 .line_register h3 {
   font-size: 3.5rem;
+  font-weight: bolder;
   background: #f7f7f7;
-  border-left: solid #f89174 5px;
-  padding: 14px 12px;
-  border-bottom: solid 3px #dadada;
+  border-left: solid #f89174 1rem;
+  padding: 3rem 2rem;
+  border-bottom: solid 0.4rem #dadada;
   width: 100%;
   clear: both;
   margin-bottom: 2rem;
 }
 .line_register img {
-  max-width: 60rem;
-  border: 2px solid gray;
+  max-width: 70rem;
+  border: 0.2rem solid #dadada;
 }
 .line_register p {
-  font-size: 2.2rem;
-  line-height: 1.5;
+  font-size: 3.3rem;
+  line-height: 1.8;
 }
 .line_register p span {
-  text-decoration: underline;
   font-weight: bold;
   font-size: inherit;
   list-style-type: inherit;
+  background: linear-gradient(transparent 0%, transparent 70%, #f89174 50%, #f89174 100%);
 }
 .line_register .section {
-  margin-bottom: 9rem;
+  margin-bottom: 15rem;
+}
+.line_register .section_last {
+  margin-bottom: 8rem;
 }
 
 @media screen and (min-width: 1025px) {

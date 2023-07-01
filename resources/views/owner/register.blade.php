@@ -7,7 +7,7 @@
 
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
         <div class="row w-100">
-            <h2 class="col-9 d-flex align-items-center mb-0">【LINE連携】{{$store->name}}</h2>
+            <h2 class="col-9 d-flex align-items-center mb-0">{{$store->name}}</h2>
             <div class="col-3 text-right">
                 <button  form='lineAuthForm' type="submit" class="btn btn-success">LINE 連携</button>
             </div>
@@ -23,6 +23,12 @@
                 </form>
 
                 <div class="mx-1">
+
+                    <div class="description">
+                        {{$store->name}} 公式LINE連携専用ページ
+                        {{-- <span>{{$store->name}} 公式LINE連携専用ページ</span> --}}
+                    </div>
+
                     <div class="row section">
                         <h3>LINE連携方法</h3>
                         <div class="mb-4">
@@ -57,10 +63,10 @@
                     </div>
 
 
-                    <div class="row section">
+                    <div class="row section_last">
                         <h3 class="regi_info_title">LINE連携の解除</h3>
                         <div class="mb-4">
-                            <p>LINE連携を解除されたい場合は、<a href="https://notify-bot.line.me/my/">LINE NOTIFYのマイページ</a>へアクセスし、<span>解除</span>をクリックしてください。</p>
+                            <p>LINE連携を解除されたい場合は、<a href="https://notify-bot.line.me/my/">LINE Notifyのマイページ</a>へアクセスし、<span>解除</span>をクリックしてください。</p>
                             
                         </div>
                         <div class="d-flex justify-content-center w-100">
