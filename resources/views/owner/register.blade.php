@@ -1,7 +1,7 @@
 
 @extends('adminlte::master')
 
-<div class="line_register">
+<div class="line_register" style="max-width: 100%;">
 
     <div class="mx-auto" style="width:75rem">
 
@@ -9,7 +9,7 @@
         <div class="row w-100">
             <h2 class="col-9 d-flex align-items-center mb-0">【LINE連携】{{$store->name}}</h2>
             <div class="col-3 text-right">
-                <button  form='lineAuthForm' type="submit" class="btn btn-success btn-lg">LINE 連携</button>
+                <button  form='lineAuthForm' type="submit" class="btn btn-success">LINE 連携</button>
             </div>
         </div>
     </nav>

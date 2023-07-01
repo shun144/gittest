@@ -34,15 +34,22 @@ $breakpoint: (
 
 .line_register {
 	background-color: #f1f0ea;
+	
 	nav {
 		padding: 1rem;
+
+		.btn {
+			font-size: 2.5rem;
+			border-radius: 10px;
+			padding:0.5rem 2.1rem;
+		}
 	}
 
 	h2 {
-		font-size: 2.5rem;
+		font-size: 4rem;
 	}
 	h3 {
-		font-size: 2.2rem;
+		font-size: 3.5rem;
 		background: #f7f7f7;
     border-left: solid #f89174 5px;
     padding: 14px 12px;
@@ -52,11 +59,11 @@ $breakpoint: (
 		margin-bottom: 2rem;
 	}
 	img {
-		max-width:70rem; 
+		max-width:60rem; 
 		border:2px solid gray;
 	}
 	p {
-		font-size: 1.8rem;
+		font-size: 2.2rem;
 		line-height: 1.5;
 
 		span {
