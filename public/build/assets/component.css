@@ -7,10 +7,9 @@ body {
   padding: 1rem;
 }
 .line_register nav h2 {
-  font-size: 20vw;
+  font-size: 8vw;
   word-wrap: break-word;
   margin-bottom: 0;
-  color: red;
 }
 .line_register nav .btn {
   font-size: 3.5vw;
