@@ -5,9 +5,12 @@
     <div class="mx-auto">
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
             <div class="row w-100">
-                <h2 class="col-9 d-flex align-items-center mb-0">{{$store->name}}</h2>
-                <div class="col-3 text-right">
-                    <button  form='lineAuthForm' type="submit" class="btn btn-success">LINE連携</button>
+                <div class="col-9 px-0 d-flex" >
+                    <h2 class="align-self-center">{{$store->name}}</h2>
+                </div>
+                
+                <div class="col-3 px-0 d-flex">
+                    <button form='lineAuthForm' type="submit" class="btn btn-success align-self-center ml-auto">LINE連携</button>
                 </div>
             </div>
         </nav>
@@ -23,7 +26,7 @@
                     <div class="mx-1">
 
                         <div class="description">
-                            {{$store->name}} 公式LINE連携ページ
+                            公式LINE連携ページ
                         </div>
 
                         <div class="row section">
