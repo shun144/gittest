@@ -26,9 +26,7 @@ body {
 }
 
 .line_register {
-	// background-color: #f1f0ea;
 
-	
 	nav {
 		padding: 1rem;
 		// margin-bottom: 1rem;
@@ -44,7 +42,7 @@ body {
 			border-radius: 10px;
 		}
 	}
-
+	
 	.description {
 		font-size: 1.2rem;
 		font-weight: bold;
@@ -105,8 +103,48 @@ body {
 
 @include mq(pc) {
 	.line_register {
+		width: 70vw;
+		margin: 0 auto;
+
+		nav {
+			padding: 1rem;
+	
+			h2 {
+				font-size:2.5vw;
+			}
+	
+			.btn {
+				font-size: 1.3vw;
+			}
+		}
+
+		.description {
+			font-size: 1.5rem;
+		}
+
+		h3 {
+			font-size: 1.8rem;
+			border-left: solid #f89174 0.3rem;
+			padding: 1rem 1rem;
+			border-bottom: solid 0.3rem #dadada;
+			margin-bottom: 1rem;
+		}
 		img {
 			max-width:40rem; 
+			border:0.1rem solid #dadada;
+		}
+		p {
+			font-size: 1.6rem;
+	
+			span {
+				background: linear-gradient(transparent 0%, transparent 75%, #f89174 50%, #f89174 100%);
+			}
+		}
+		.section {
+			margin-bottom: 8rem;
+		}
+		.section_last {
+			margin-bottom: 4rem;
 		}
 	}
 }

@@ -65,8 +65,44 @@ body {
 }
 
 @media screen and (min-width: 1025px) {
+  .line_register {
+    width: 70vw;
+    margin: 0 auto;
+  }
+  .line_register nav {
+    padding: 1rem;
+  }
+  .line_register nav h2 {
+    font-size: 2.5vw;
+  }
+  .line_register nav .btn {
+    font-size: 1.3vw;
+  }
+  .line_register .description {
+    font-size: 1.5rem;
+  }
+  .line_register h3 {
+    font-size: 1.8rem;
+    border-left: solid #f89174 0.3rem;
+    padding: 1rem 1rem;
+    border-bottom: solid 0.3rem #dadada;
+    margin-bottom: 1rem;
+  }
   .line_register img {
     max-width: 40rem;
+    border: 0.1rem solid #dadada;
+  }
+  .line_register p {
+    font-size: 1.6rem;
+  }
+  .line_register p span {
+    background: linear-gradient(transparent 0%, transparent 75%, #f89174 50%, #f89174 100%);
+  }
+  .line_register .section {
+    margin-bottom: 8rem;
+  }
+  .line_register .section_last {
+    margin-bottom: 4rem;
   }
 }
 .image_preview img {
