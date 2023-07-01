@@ -124,8 +124,6 @@ modal_add_schedule.on('show.bs.modal', function(){
 });
 
 
-
-
 // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 // スケジュール更新モーダル開く前イベント
 // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -137,7 +135,7 @@ modal_edit_schedule.on('show.bs.modal', function(){
   const view_dt = new Date(edit_data.data('viewDate'));
   const view_year = view_dt.getFullYear()
   const view_month = ( '00' + Number(view_dt.getMonth()+1)).slice(-2)
-  const view_date = view_dt.getDate()
+  const view_date = ( '00' + Number(view_dt.getDate())).slice(-2)
 
   const plan_dt = new Date(event.extendedProps.plan_at);
   const plan_hour = plan_dt.getHours().toString().padStart(2, '0');
