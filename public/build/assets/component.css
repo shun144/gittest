@@ -10,6 +10,7 @@ body {
   font-size: 20vw;
   word-wrap: break-word;
   margin-bottom: 0;
+  color: red;
 }
 .line_register nav .btn {
   font-size: 3.5vw;
