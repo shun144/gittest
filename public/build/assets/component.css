@@ -1,3 +1,45 @@
+.line_register {
+  background-color: #f1f0ea;
+}
+.line_register nav {
+  padding: 1rem;
+}
+.line_register h2 {
+  font-size: 2.5rem;
+}
+.line_register h3 {
+  font-size: 2.2rem;
+  background: #f7f7f7;
+  border-left: solid #f89174 5px;
+  padding: 14px 12px;
+  border-bottom: solid 3px #dadada;
+  width: 100%;
+  clear: both;
+  margin-bottom: 2rem;
+}
+.line_register img {
+  max-width: 70rem;
+  border: 2px solid gray;
+}
+.line_register p {
+  font-size: 1.8rem;
+  line-height: 1.5;
+}
+.line_register p span {
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: inherit;
+  list-style-type: inherit;
+}
+.line_register .section {
+  margin-bottom: 9rem;
+}
+
+@media screen and (min-width: 1025px) {
+  .line_register img {
+    max-width: 40rem;
+  }
+}
 .image_preview img {
   max-width: 200px;
   border: transparent 2px solid;
