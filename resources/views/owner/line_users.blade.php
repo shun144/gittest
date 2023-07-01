@@ -8,7 +8,7 @@
 
 @section('content')
 
-  <div class="mx-auto pb-5" style="width:60rem">
+  <div class="mx-auto pb-5" style="width:70rem">
 
     <div class="mb-3 w-75">
       <div class="input-group">
@@ -100,7 +100,6 @@ function copyToClipboard() {
   var copyTarget = document.getElementById("input_reg_url");
   copyTarget.select();
   document.execCommand("Copy");
-  // alert(copyTarget.value);
 }
 
 function confirmEditLineUser(e){
@@ -133,7 +132,7 @@ $(function () {
     order: [[1,"desc"]],
     columnDefs:[
       { targets:0, width:50},
-      { targets:1, width:130}, 
+      { targets:1, width:180}, 
     ],
     drawCallback: function(){
       $(".dataTables_info").appendTo("#line_user_table_wrapper>.row:first-of-type>div:first-of-type");
