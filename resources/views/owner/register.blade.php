@@ -6,7 +6,7 @@
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
             <div class="row w-100">
                 <div class="col-9 px-0 d-flex" >
-                    <h2 class="align-self-center">{{$store->name}}</h2>
+                    <h2 class="align-self-center">{{$store->name}}★</h2>
                 </div>
                 
                 <div class="col-3 px-0 d-flex">
