@@ -18,28 +18,8 @@ $breakpoint: (
   }
 }
 
-// body {
-// 	font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;
-// }
 
 
-// @include mq(sp) {
-// 	.line_register h2 {
-// 		color: green;
-// 	}
-// }
-
-// @include mq(tab) {
-// 	.line_register h2 {
-// 		color: red;
-// 	}
-// }
-
-// @include mq(pc) {
-// 	.line_register h2 {
-// 		color: blue;
-// 	}
-// }
 
 body {
 	font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;
@@ -68,7 +48,6 @@ body {
 		color: #505050;/*文字色*/
 		padding: 0.5em;/*文字周りの余白*/
 		display: inline-block;/*おまじない*/
-		// line-height: 1.3;/*行高*/
 		background: #ffd2c6;/*背景色*/
 		vertical-align: middle;
 		border-radius: 25px 0px 0px 25px;/*左側の角を丸く*/
@@ -79,16 +58,6 @@ body {
 			margin-right: 8px;
 		}
 	}
-
-	// .description {
-	// 	font-size: 3.3rem;
-	// 	font-weight: bold;
-	// 	margin-bottom: 3rem;
-	// 	line-height: 1.8;
-	// 	span {
-	// 		background: linear-gradient(transparent 0%, transparent 70%, #f89174 50%, #f89174 100%);
-	// 	}
-	// }
 
 	h2 {
 		font-size: 4rem;
@@ -113,12 +82,10 @@ body {
 		line-height: 1.8;
 
 		span {
-			// text-decoration:underline;
 			font-weight: bold;
 			font-size: inherit;
 			list-style-type: inherit;
 			background: linear-gradient(transparent 0%, transparent 70%, #f89174 50%, #f89174 100%);
-			// font-weight: bold;
 		}
 	}
 	.section {
@@ -127,8 +94,12 @@ body {
 	.section_last {
 		margin-bottom: 8rem;
 	}
-
 }
+
+
+
+
+
 
 @include mq(pc) {
 	.line_register {
@@ -137,6 +108,8 @@ body {
 		}
 	}
 }
+
+
 
 
 
@@ -159,12 +132,6 @@ body {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	// transition: all .5s;
-	
-	// &:hover {
-	// 	top:-3px;
-  // 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
-	// }
 }
 
 .btn_del:hover i{
@@ -184,6 +151,173 @@ body {
 td {
 	vertical-align: middle !important;
 }
+
+
+
+
+
+
+
+
+// // @font-face {
+// //   font-family: "Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;
+// //   src: local("Yu Gothic Medium");
+// //   font-weight: 100;
+// // }
+
+// $breakpoint: (
+// 	// 766px以下(767より下)
+//   sp: 'screen and (max-width: 767px)',
+// 	// 767px以上
+//   tab: 'screen and (min-width: 767px)',
+// 	// 1025px以上
+//   pc: 'screen and (min-width: 1025px)'
+// );
+// @mixin mq($bp) {
+//   @media #{map-get($breakpoint, $bp)} {
+//    @content;
+//   }
+// }
+
+
+
+
+// body {
+// 	font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;
+// }
+
+// .line_register {
+// 	// background-color: #f1f0ea;
+
+	
+// 	nav {
+// 		padding: 2rem;
+// 		margin-bottom: 3rem;
+
+// 		.btn {
+// 			font-size: 2.5rem;
+// 			border-radius: 10px;
+// 			padding:1rem 2.1rem;
+// 		}
+// 	}
+
+// 	.description {
+// 		font-size: 3.3rem;
+// 		font-weight: bold;
+// 		margin-bottom: 3rem;
+// 		line-height: 1.8;
+// 		color: #505050;/*文字色*/
+// 		padding: 0.5em;/*文字周りの余白*/
+// 		display: inline-block;/*おまじない*/
+// 		background: #ffd2c6;/*背景色*/
+// 		vertical-align: middle;
+// 		border-radius: 25px 0px 0px 25px;/*左側の角を丸く*/
+
+// 		&:before {
+// 			content: '●';
+// 			color: white;
+// 			margin-right: 8px;
+// 		}
+// 	}
+
+// 	h2 {
+// 		font-size: 4rem;
+// 	}
+// 	h3 {
+// 		font-size: 3.5rem;
+// 		font-weight: bolder;
+// 		background: #f7f7f7;
+//     border-left: solid #f89174 1rem;
+//     padding: 3rem 2rem;
+//     border-bottom: solid 0.4rem #dadada;
+// 		width:100%;
+//     clear: both;
+// 		margin-bottom: 2rem;
+// 	}
+// 	img {
+// 		max-width:70rem; 
+// 		border:0.2rem solid #dadada;
+// 	}
+// 	p {
+// 		font-size: 3.3rem;
+// 		line-height: 1.8;
+
+// 		span {
+// 			font-weight: bold;
+// 			font-size: inherit;
+// 			list-style-type: inherit;
+// 			background: linear-gradient(transparent 0%, transparent 70%, #f89174 50%, #f89174 100%);
+// 		}
+// 	}
+// 	.section {
+// 		margin-bottom: 15rem;
+// 	}
+// 	.section_last {
+// 		margin-bottom: 8rem;
+// 	}
+// }
+
+
+
+
+
+
+// @include mq(pc) {
+// 	.line_register {
+// 		img {
+// 			max-width:40rem; 
+// 		}
+// 	}
+// }
+
+
+
+
+
+
+
+
+// .image_preview {
+// 	img {
+// 		max-width:200px;
+// 		border:transparent 2px solid;
+// 	}
+// }
+
+// .filename_view {
+// 	font-size: 80%;
+// }
+
+// .external-event {
+// 	cursor: pointer;
+// 	overflow: hidden;
+// 	white-space: nowrap;
+// 	text-overflow: ellipsis;
+// 	// transition: all .5s;
+	
+// 	// &:hover {
+// 	// 	top:-3px;
+//   // 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+// 	// }
+// }
+
+// .btn_del:hover i{
+// 	color: red !important;
+// }
+
+// .btn_edit:hover i{
+// 	color: blue!important;
+// }
+
+// .omit_text {
+// 	overflow: hidden;
+// 	white-space: nowrap;
+// 	text-overflow: ellipsis;
+// }
+
+// td {
+// 	vertical-align: middle !important;
+// }
 
 
 
