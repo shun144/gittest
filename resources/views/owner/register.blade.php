@@ -42,23 +42,22 @@
                         </div>
 
                         <div class="row section">
-                            <h3>LINE通知について</h3>
-                            <div class="mb-4">
-                                <p>LINE Notifyの仕組みを利用しているため、実際のLINE通知は↓のようにLINE Notifyから来ます。</p>
-                            </div>
-                            <div class="d-flex justify-content-center w-100">
-                                <img class="card-img-top" src="{{ url(config('storage.user.image.register').'/notify.png')}}" alt="Card image cap">
-                            </div>
-                        </div>
-
-
-                        <div class="row section">
                             <h3>LINE連携時のログイン</h3>
                             <div class="mb-4">
                                 <p><span>LINE連携方法</span>を実行し↓のような画面が出る場合は、メールアドレスとパスワードを入力し、ログインしてください。</p>
                             </div>
                             <div class="d-flex justify-content-center w-100">
                                 <img class="card-img-top" src="{{ url(config('storage.user.image.register').'/line_login.png')}}" alt="Card image cap">
+                            </div>
+                        </div>
+
+                        <div class="row section">
+                            <h3>LINE通知について</h3>
+                            <div class="mb-4">
+                                <p>LINE Notifyの仕組みを利用しているため、実際のLINE通知は↓のようにLINE Notifyから来ます。</p>
+                            </div>
+                            <div class="d-flex justify-content-center w-100">
+                                <img class="card-img-top" src="{{ url(config('storage.user.image.register').'/notify.png')}}" alt="Card image cap">
                             </div>
                         </div>
 
