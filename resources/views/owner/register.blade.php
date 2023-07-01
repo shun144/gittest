@@ -4,10 +4,10 @@
 <div class="line_register">
     <div class="mx-auto">
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
-            <div class="row">
+            <div class="row w-100">
                 <h2 class="col-9 d-flex align-items-center mb-0">{{$store->name}}</h2>
                 <div class="col-3 text-right">
-                    <button  form='lineAuthForm' type="submit" class="btn btn-success">LINE 連携</button>
+                    <button  form='lineAuthForm' type="submit" class="btn btn-success">LINE連携</button>
                 </div>
             </div>
         </nav>
@@ -82,7 +82,8 @@
 
 @section('adminlte_css')
     <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('build/assets/component.css')}}">
+    {{-- <link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}"> --}}
 @stop
 
 @section('adminlte_js')

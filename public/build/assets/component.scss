@@ -30,20 +30,25 @@ body {
 
 	
 	nav {
-		padding: 2rem;
-		margin-bottom: 3rem;
+		padding: 1rem;
+		// margin-bottom: 1rem;
+
+		h2 {
+			font-size: 1.4rem;
+		}
 
 		.btn {
-			font-size: 2.5rem;
+			font-size: 0.4rem;
 			border-radius: 10px;
-			padding:1rem 2.1rem;
+			padding: 0px;
+			padding:0.2rem 1rem;
 		}
 	}
 
 	.description {
-		font-size: 3.3rem;
+		font-size: 1.2rem;
 		font-weight: bold;
-		margin-bottom: 3rem;
+		margin-bottom: 2.5rem;
 		line-height: 1.8;
 		color: #505050;/*文字色*/
 		padding: 0.5em;/*文字周りの余白*/
@@ -59,40 +64,37 @@ body {
 		}
 	}
 
-	h2 {
-		font-size: 4rem;
-	}
 	h3 {
-		font-size: 3.5rem;
+		font-size: 1.2rem;
 		font-weight: bolder;
 		background: #f7f7f7;
-    border-left: solid #f89174 1rem;
-    padding: 3rem 2rem;
-    border-bottom: solid 0.4rem #dadada;
+    border-left: solid #f89174 0.3rem;
+    padding: 1rem 1rem;
+    border-bottom: solid 0.3rem #dadada;
 		width:100%;
     clear: both;
-		margin-bottom: 2rem;
+		margin-bottom: 1rem;
 	}
 	img {
 		max-width:70rem; 
-		border:0.2rem solid #dadada;
+		border:0.1rem solid #dadada;
 	}
 	p {
-		font-size: 3.3rem;
+		font-size: 1.2rem;
 		line-height: 1.8;
 
 		span {
 			font-weight: bold;
 			font-size: inherit;
 			list-style-type: inherit;
-			background: linear-gradient(transparent 0%, transparent 70%, #f89174 50%, #f89174 100%);
+			background: linear-gradient(transparent 0%, transparent 75%, #f89174 50%, #f89174 100%);
 		}
 	}
 	.section {
-		margin-bottom: 15rem;
+		margin-bottom: 6rem;
 	}
 	.section_last {
-		margin-bottom: 8rem;
+		margin-bottom: 2rem;
 	}
 }
 
