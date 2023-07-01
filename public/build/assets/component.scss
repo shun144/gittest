@@ -100,7 +100,7 @@ body {
 
 
 
-
+// PC画面
 @include mq(pc) {
 	.line_register {
 		width: 70vw;
@@ -148,9 +148,6 @@ body {
 		}
 	}
 }
-
-
-
 
 
 
