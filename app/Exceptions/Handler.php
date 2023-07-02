@@ -20,9 +20,6 @@ class Handler extends ExceptionHandler
     ];
 
 
-    // セッションが切れている状態でログアウトを実行した際に
-    // ログイン画面に遷移させる
-    // これがないと419エラー画面となる
     // public function render($request, Throwable $e) {
 
     //     if ($e instanceof TokenMismatchException) {
@@ -35,9 +32,6 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        // \Log::info('URL確認テスト');
-        // \Log::info(url()->current());
-
         if ($e instanceof TokenMismatchException) {
             return redirect()->route('login');
         }

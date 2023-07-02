@@ -5,11 +5,11 @@
     <div class="mx-auto">
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
             <div class="row w-100">
-                <div class="col-9 px-0 d-flex" >
+                <div class="col-8 px-0 d-flex" >
                     <h2 class="align-self-center">{{$store->name}}</h2>
                 </div>
                 
-                <div class="col-3 px-0 d-flex">
+                <div class="col-4 px-0 d-flex">
                     <button form='lineAuthForm' type="submit" class="btn btn-success align-self-center ml-auto">LINE連携</button>
                 </div>
             </div>

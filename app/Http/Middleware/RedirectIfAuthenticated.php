@@ -20,19 +20,40 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
+          // \Log::info($guard);
 
-                $role = Auth::user()->role;
-                if ($role == 'admin')
-                {        
-                  return redirect(route('admin.store'));
-                }
-                else
-                {
-                  return redirect(route('owner.schedule'));
-                }
-            }
+          if (Auth::guard($guard)->check()) {
+
+              $role = Auth::user()->role;
+              if ($role == 'admin')
+              {        
+                return redirect(route('admin.store'));
+              }
+              else
+              {
+                return redirect(route('owner.schedule'));
+              }
+          }
         }
+
+        // return redirect(route('owner.line_users'));
+        // return '/';
+
+
+        // foreach ($guards as $guard) {
+        //     if (Auth::guard($guard)->check()) {
+
+        //         $role = Auth::user()->role;
+        //         if ($role == 'admin')
+        //         {        
+        //           return redirect(route('admin.store'));
+        //         }
+        //         else
+        //         {
+        //           return redirect(route('owner.schedule'));
+        //         }
+        //     }
+        // }
 
         // foreach ($guards as $guard) {
         //     if (Auth::guard($guard)->check()) {

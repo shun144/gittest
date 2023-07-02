@@ -37,12 +37,13 @@ class LoginController extends Controller
       return 'login_id';
     }
 
-    // ログイン後の遷移先を変更する
+
+    // 未ログインからのログイン後の遷移先を変更する
     public function redirectTo()
     { 
       if (Gate::allows('isAdmin')){
         return route('admin.store');
-      }
+      }      
       else {
         return route('owner.schedule');
       }

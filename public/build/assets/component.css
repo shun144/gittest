@@ -5,14 +5,15 @@ body {
 
 .line_register nav {
   padding: 1rem;
+  padding-right: 0;
 }
 .line_register nav h2 {
-  font-size: 7.5vw;
+  font-size: 5.5vw;
   word-wrap: break-word;
   margin-bottom: 0;
 }
 .line_register nav .btn {
-  font-size: 3.5vw;
+  font-size: 4.5vw;
   border-radius: 10px;
 }
 .line_register .description {
