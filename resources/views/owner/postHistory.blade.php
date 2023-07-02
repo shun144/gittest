@@ -2,6 +2,7 @@
 
 @section('title','配信履歴一覧')
 
+
 @section('content_header')
     <h1>配信履歴一覧</h1>
 @stop
