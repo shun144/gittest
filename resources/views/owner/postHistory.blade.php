@@ -95,18 +95,11 @@ $(function () {
     columnDefs:[
       { targets:0, width:35},
       { targets:1, width:40},
-      { targets:2, width:115},
+      { targets:2, width:140},
       // { targets:3, width:115},
-      { targets:3, width:120},
+      { targets:3, width:130},
       { targets:5, width:40},
       { targets:6, width:200},
-      // { targets:0, width:35},
-      // { targets:1, width:40},
-      // { targets:2, width:115},
-      // { targets:3, width:115},
-      // { targets:4, width:120},
-      // { targets:6, width:40},
-      // { targets:7, width:120},
     ],
     drawCallback: function(){
       $(".dataTables_info").appendTo("#history_table_wrapper>.row:first-of-type>div:first-of-type");

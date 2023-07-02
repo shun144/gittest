@@ -8,12 +8,14 @@ body {
   padding-right: 0;
 }
 .line_register nav h2 {
-  font-size: 5.5vw;
+  font-size: 4.2vw;
   word-wrap: break-word;
   margin-bottom: 0;
+  font-weight: normal;
 }
 .line_register nav .btn {
-  font-size: 4.5vw;
+  font-size: 5.2vw;
+  font-weight: bold;
   border-radius: 10px;
 }
 .line_register .description {

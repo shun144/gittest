@@ -28,16 +28,19 @@ body {
 	nav {
 		padding: 1rem;
 		padding-right: 0;
+
 		// margin-bottom: 1rem;
 
 		h2 {
-			font-size:5.5vw;
+			font-size:4.2vw;
 			word-wrap: break-word;
 			margin-bottom:0;
+			font-weight: normal;
 		}
 
 		.btn {
-			font-size: 4.5vw;
+			font-size: 5.2vw;
+			font-weight: bold;
 			border-radius: 10px;
 		}
 	}
