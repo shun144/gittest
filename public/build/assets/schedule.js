@@ -137,8 +137,6 @@ modal_edit_schedule.on('show.bs.modal', function(){
   const view_month = ( '00' + Number(view_dt.getMonth()+1)).slice(-2)
   const view_date = ( '00' + Number(view_dt.getDate())).slice(-2)
 
-  console.log('test')
-
   const plan_dt = new Date(event.extendedProps.plan_at);
   const plan_hour = plan_dt.getHours().toString().padStart(2, '0');
   const plan_min = plan_dt.getMinutes().toString().padStart(2, '0');

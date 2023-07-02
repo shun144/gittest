@@ -77,7 +77,6 @@
   <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.css') }}"> 
   <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
   <link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}">
-  {{-- <link rel="stylesheet" href="{{ asset('build/assets/component-ccd5ae91.css')}}"> --}}
   {{-- @vite(['resources/sass/component.scss']) --}}
 @stop
 
@@ -87,8 +86,9 @@
   <script src="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.js') }}"></script>
   {{-- <script src="{{ asset('vendor/adminlte/plugins/jquery/jquery.min.js') }}"></script> --}}
   <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
-  
-  <script src="{{ asset('build/assets/schedule.min.js')}}"></script>
+
+  <script src="{{ asset('build/assets/schedule.js')}}"></script>
+  {{-- <script src="{{ asset('build/assets/schedule.min.js')}}"></script> --}}
   {{-- @vite(['resources/js/schedule.js']) --}}
   {{-- @vite(['resources/js/component.js']) --}}
   
