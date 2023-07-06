@@ -140,7 +140,8 @@ class OwnerController extends Controller
             ->where('is_valid', true)
             ->count();
 
-            $reg_url = url($url_name) . '/register';
+            // $reg_url = url($url_name) . '/register';
+            $reg_url = url($url_name) . '/entry';
             return view('owner.line_users', compact('lines', 'reg_url', 'valid_count'));
         }
         catch (\Exception $e) {

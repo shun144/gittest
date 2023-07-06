@@ -49,7 +49,7 @@
                 </div>
               </td>
               <td class="omit_text">{{$store->name}}</td>
-              <td class="omit_text">{{url($store->url_name).'/register'}}</td>
+              <td class="omit_text">{{url($store->url_name).'/entry'}}</td>
               <td>{{$store->login_id}}</td>
               <td class="omit_text">{{$store->client_id}}</td>
               <td class="omit_text">{{$store->client_secret}}</td>
