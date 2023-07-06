@@ -60,7 +60,8 @@ return [
 
         'single' => [
             'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => publick_path('logs/laravel.log'),
+            // 'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],
@@ -68,9 +69,10 @@ return [
         'daily' => [
             'driver' => 'daily',
             'tap' => [App\Logging\CustomizeFormatter::class],
-            'path' => storage_path('logs/laravel.log'),
+            // 'path' => storage_path('logs/laravel.log'),
+            'path' => publick_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
+            'days' => 45,
             'replace_placeholders' => true,
         ],
         // 'daily' => [
@@ -132,7 +134,8 @@ return [
         ],
 
         'emergency' => [
-            'path' => storage_path('logs/laravel.log'),
+            'path' => public_path('logs/laravel.log'),
+            // 'path' => storage_path('logs/laravel.log'),
         ],
     ],
 
