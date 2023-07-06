@@ -25,6 +25,7 @@ class AdminController extends Controller
     public function viewLog()
     {
         try {
+            \Log::info('test');
 
             // $stores = DB::table('stores')
             // ->select(

@@ -60,8 +60,8 @@ return [
 
         'single' => [
             'driver' => 'single',
-            'path' => public_path('logs/laravel.log'),
-            // 'path' => storage_path('logs/laravel.log'),
+            'path' => public_path('logs/LineSchedulePost.log'),
+            // 'path' => storage_path('logs/LineSchedulePost.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],
@@ -69,15 +69,15 @@ return [
         'daily' => [
             'driver' => 'daily',
             'tap' => [App\Logging\CustomizeFormatter::class],
-            // 'path' => storage_path('logs/laravel.log'),
-            'path' => public_path('logs/laravel.log'),
+            // 'path' => storage_path('logs/LineSchedulePost.log'),
+            'path' => public_path('logs/LineSchedulePost.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => 45,
             'replace_placeholders' => true,
         ],
         // 'daily' => [
         //     'driver' => 'daily',
-        //     'path' => storage_path('logs/laravel.log'),
+        //     'path' => storage_path('logs/LineSchedulePost.log'),
         //     'level' => env('LOG_LEVEL', 'debug'),
         //     'days' => 14,
         //     'replace_placeholders' => true,
@@ -134,8 +134,8 @@ return [
         ],
 
         'emergency' => [
-            'path' => public_path('logs/laravel.log'),
-            // 'path' => storage_path('logs/laravel.log'),
+            'path' => public_path('logs/LineSchedulePost.log'),
+            // 'path' => storage_path('logs/LineSchedulePost.log'),
         ],
     ],
 
