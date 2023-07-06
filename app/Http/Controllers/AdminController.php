@@ -19,6 +19,42 @@ use Carbon\Carbon;
 
 class AdminController extends Controller
 {
+        // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 店舗一覧表示
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function viewLog()
+    {
+        try {
+
+            // $stores = DB::table('stores')
+            // ->select(
+            //     'stores.id as store_id',
+            //     'stores.name',
+            //     'stores.url_name',
+            //     'users.id as user_id',
+            //     'users.login_id',
+            //     'stores.client_id',
+            //     'stores.client_secret',
+            // )
+            // ->join('users','users.store_id','=','stores.id')
+            // ->where('users.role','owner')
+            // ->whereNull('stores.deleted_at')
+            // ->latest('stores.created_at')
+            // ->get();
+            return view('admin.log');
+        }
+        catch (\Exception $e) {
+            \Log::error('エラー機能:ログファイル一覧表示');
+            \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+            \Log::error('エラー内容:'.$e->getMessage());
+
+            $error_flushMsg = 'ログファイル一覧取得に失敗しました';
+
+            return view('admin.log', compact('error_flushMsg'));
+        }
+    }
+
+
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     // 店舗一覧表示
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_

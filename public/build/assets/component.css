@@ -3,22 +3,22 @@ body {
   font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
 }
 
-.line_register nav {
+.line_entry nav {
   padding: 1rem;
   padding-right: 0;
 }
-.line_register nav h2 {
+.line_entry nav h2 {
   font-size: 4.2vw;
   word-wrap: break-word;
   margin-bottom: 0;
   font-weight: normal;
 }
-.line_register nav .btn {
+.line_entry nav .btn {
   font-size: 5.2vw;
   font-weight: bold;
   border-radius: 10px;
 }
-.line_register .description {
+.line_entry .description {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 2.5rem;
@@ -30,12 +30,12 @@ body {
   vertical-align: middle;
   border-radius: 25px 0px 0px 25px; /*左側の角を丸く*/
 }
-.line_register .description:before {
+.line_entry .description:before {
   content: "●";
   color: white;
   margin-right: 8px;
 }
-.line_register h3 {
+.line_entry h3 {
   font-size: 1.2rem;
   font-weight: bolder;
   background: #f7f7f7;
@@ -46,65 +46,65 @@ body {
   clear: both;
   margin-bottom: 1rem;
 }
-.line_register img {
+.line_entry img {
   max-width: 70rem;
   border: 0.1rem solid #dadada;
 }
-.line_register p {
+.line_entry p {
   font-size: 1.2rem;
   line-height: 1.8;
 }
-.line_register p span {
+.line_entry p span {
   font-weight: bold;
   font-size: inherit;
   list-style-type: inherit;
   background: linear-gradient(transparent 0%, transparent 75%, #f89174 50%, #f89174 100%);
 }
-.line_register .section {
+.line_entry .section {
   margin-bottom: 6rem;
 }
-.line_register .section_last {
+.line_entry .section_last {
   margin-bottom: 2rem;
 }
 
 @media screen and (min-width: 1025px) {
-  .line_register {
+  .line_entry {
     width: 70vw;
     margin: 0 auto;
   }
-  .line_register nav {
+  .line_entry nav {
     padding: 1rem;
   }
-  .line_register nav h2 {
+  .line_entry nav h2 {
     font-size: 2.5vw;
   }
-  .line_register nav .btn {
+  .line_entry nav .btn {
     font-size: 1.3vw;
   }
-  .line_register .description {
+  .line_entry .description {
     font-size: 1.5rem;
   }
-  .line_register h3 {
+  .line_entry h3 {
     font-size: 1.8rem;
     border-left: solid #f89174 0.3rem;
     padding: 1rem 1rem;
     border-bottom: solid 0.3rem #dadada;
     margin-bottom: 1rem;
   }
-  .line_register img {
+  .line_entry img {
     max-width: 40rem;
     border: 0.1rem solid #dadada;
   }
-  .line_register p {
+  .line_entry p {
     font-size: 1.6rem;
   }
-  .line_register p span {
+  .line_entry p span {
     background: linear-gradient(transparent 0%, transparent 75%, #f89174 50%, #f89174 100%);
   }
-  .line_register .section {
+  .line_entry .section {
     margin-bottom: 8rem;
   }
-  .line_register .section_last {
+  .line_entry .section_last {
     margin-bottom: 4rem;
   }
 }

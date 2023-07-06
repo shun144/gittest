@@ -14,19 +14,7 @@ return [
   'user' => [
     'top' => 'storage\user',
     'image' => [
-      'register' => 'storage\user\image\register'
+      'entry' => 'storage\user\image\entry'
     ]
   ]
-
-
-
-
-    // 'image' => [
-    //     'owner' => [
-    //         'template' => 'storage\owner\template',
-    //     ],
-    //     'user' => [
-    //         'register' => 'storage\user\register'
-    //     ]
-    // ],
 ];
