@@ -7,60 +7,43 @@
 @stop
 
 @section('content')
-
-  {{-- <div class="card">
-    <div class="card-header">
+<div class="mx-auto pb-5" style="width:40rem">
+  <div class="card">
+    {{-- <div class="card-header">
       <a href="{{route('store.add.view')}}" class="btn btn-success">店舗追加</a>
-    </div>
+    </div> --}}
 
     <div class="card-body">
-      <table id="store_table" class="table table-striped table-bordered" style="table-layout:fixed;">
+      <table id="log_table" class="table table-striped table-bordered" style="table-layout:fixed;">
         <thead>
           <tr>
-            @foreach (array("操作","店舗名","公式LINE連携ページ","ログインID","LINEサービスID","LINEサービスパスワード") as $col)
+            @foreach (array("DL","ログファイル名") as $col)
             <th class="text-center">{{$col}}</th>
             @endforeach
           </tr>
         </thead>
         <tbody>
 
-          
-          @if (isset($stores))
-            @foreach ($stores as $store)
-            <tr>
+          @if (isset($logFiles))
+            @foreach ($logFiles as $logFile)
+            <tr>          
               <td>
                 <div class="row justify-content-around">
-                  <form action="{{route('store.del')}}" method="post" onSubmit="return confirmStoreDelete(event)">
-                    @csrf
-                    <button type="submit" class="btn btn_del">
-                      <input type="hidden" name="user_id" value={{$store->user_id}}>
-                      <input type="hidden" name="store_id" value={{$store->store_id}}>
-                      <input type="hidden" class="hid_store_name" value={{$store->name}}>
-                      <i class="fas fa-trash-alt text-muted"></i>
-                    </button>
-                  </form>
-
-                  <form action="{{route('store.edit.view')}}" method="get">
-                    <button type="submit" class="btn btn_edit">
-                      <input type="hidden" name="store_id" value={{$store->store_id}}>
-                      <i class="fas fa-edit text-muted"></i>
-                    </button>
-                  </form>
+                  <a class="fas fa-download text-muted" href="{{$logFile}}" download></a>
                 </div>
               </td>
-              <td class="omit_text">{{$store->name}}</td>
-              <td class="omit_text">{{url($store->url_name).'/register'}}</td>
-              <td>{{$store->login_id}}</td>
-              <td class="omit_text">{{$store->client_id}}</td>
-              <td class="omit_text">{{$store->client_secret}}</td>
+              <td class="omit_text">{{basename($logFile)}}</td>            
             </tr>
             @endforeach
           @endif
 
         </tbody>
+
       </table>
     </div>
-  </div> --}}
+  </div>
+</div>
+
 
  @stop
 
@@ -89,6 +72,27 @@
   @if (isset($error_flushMsg))
     $(function () {toastr.error('{{ $error_flushMsg }}');});
   @endif
+
+  $(function () {
+    $.extend( $.fn.dataTable.defaults, { 
+      language: {url: "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json" } 
+    }); 
+    $('#log_table').DataTable({
+      paging:true,
+      lengthChange:false,
+      searching:true,
+      ordering:true,
+      info:false,
+      autoWidth: false,
+      responsive:false,
+      columnDefs:[
+        { targets:0, width:50}
+      ],
+      // drawCallback: function(){
+      //   $(".dataTables_info").appendTo("#store_table_wrapper>.row:first-of-type>div:first-of-type");
+      // },
+    });
+  });
   </script>
 
 @stop

@@ -25,8 +25,15 @@ class AdminController extends Controller
     public function viewLog()
     {
         try {
-            \Log::info('test');
 
+            $path= public_path('logs');
+            $logFiles = \File::files($path);
+            $logFiles = str_replace(public_path(''), url(''),  $logFiles);
+            rsort($logFiles);
+
+            // dd($logFiles);
+
+            // dd(gettype($logFiles));
             // $stores = DB::table('stores')
             // ->select(
             //     'stores.id as store_id',
@@ -42,7 +49,7 @@ class AdminController extends Controller
             // ->whereNull('stores.deleted_at')
             // ->latest('stores.created_at')
             // ->get();
-            return view('admin.log');
+            return view('admin.log', compact('logFiles'));
         }
         catch (\Exception $e) {
             \Log::error('エラー機能:ログファイル一覧表示');

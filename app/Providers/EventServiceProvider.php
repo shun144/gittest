@@ -34,7 +34,7 @@ class EventServiceProvider extends ServiceProvider
             if (Gate::allows('isAdmin')){
                 $event->menu->add(
                     ['text' => '店舗情報一覧','url' => route('admin.store'), 'icon' => 'fas fa-fw fa-store',],
-                    ['text' => 'ログファイル一覧','url' => route('admin.log'), 'icon' => 'fas fa-fw fa-store',],
+                    ['text' => 'ログファイル一覧','url' => route('admin.log'), 'icon' => 'fas fa-fw fa-file',],
                 );
             }
             // 管理者以外メニュー

@@ -132,6 +132,10 @@ body {
   color: blue !important;
 }
 
+.btn_dl:hover i {
+  color: blue !important;
+}
+
 .omit_text {
   overflow: hidden;
   white-space: nowrap;
