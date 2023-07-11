@@ -25,6 +25,8 @@
                     </form>
 
                     <div class="mx-1">
+
+                        <div></div>
                         {{-- <div class="description">
                             公式LINE連携ページ
                         </div> --}}
