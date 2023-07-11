@@ -34,9 +34,12 @@
                             <div class="paragraph col-12">
                                 <div class="descript" data-no="01">
                                     <p>LINE連携ボタンをクリック。</p>
-                                    <button form='lineAuthForm' type="submit">LINE連携</button>
                                 </div>
+                                <button form='lineAuthForm' type="submit">LINE連携</button>
+                               
                             </div>
+                            
+                            
                             <div class="paragraph col-12">
                                 <div class="descript" data-no="02">
                                     <p>LINEのログイン画面が表示された場合はメールアドレスとパスワードを入力しログイン。
