@@ -43,7 +43,7 @@
                                     </p>
                                 </div>
                                 <div class="d-flex justify-content-center w-100">
-                                    <img class="card-img-top" src="{{ url(config('storage.user.image.entry').'/line_login.png')}}" alt="Card image cap">
+                                    <img class="card-img-top" src="{{ url(config('storage.user.image.entry').'/line_login_pick.png')}}" alt="Card image cap">
                                 </div>
                             </div>
                             <div class="paragraph col-12">
@@ -92,7 +92,7 @@
                                     <p>解除したいサービスの<span>解除ボタン</span>をクリック。</p>
                                 </div>
                                 <div class="d-flex justify-content-center w-100">
-                                    <img class="card-img-top" src="{{ url(config('storage.user.image.entry').'/lift.png')}}" alt="Card image cap">
+                                    <img class="card-img-top" src="{{ url(config('storage.user.image.entry').'/lift_bigger.png')}}" alt="Card image cap">
                                 </div>
                             </div>
                         </div>
