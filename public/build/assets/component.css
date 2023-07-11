@@ -1,70 +1,104 @@
-@charset "UTF-8";
+html {
+  font-size: 62.5%;
+}
+
 body {
-  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "meiryo", sans-serif;
 }
 
 .line_entry nav {
   padding: 1rem;
   padding-right: 0;
+  margin-bottom: 4vh;
+  background: linear-gradient(to right, rgba(2, 179, 179, 0.8), rgba(2, 179, 179, 0.8));
 }
 .line_entry nav h2 {
-  font-size: 4.2vw;
+  font-size: 3.5vw;
   word-wrap: break-word;
   margin-bottom: 0;
+  margin-left: 1.8vw;
   font-weight: normal;
+  color: #f7f7f7;
+  font-weight: bold;
 }
 .line_entry nav .btn {
   font-size: 5.2vw;
   font-weight: bold;
   border-radius: 10px;
 }
-.line_entry .description {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 2.5rem;
-  line-height: 1.8;
-  color: #505050; /*文字色*/
-  padding: 0.5em; /*文字周りの余白*/
-  display: inline-block; /*おまじない*/
-  background: #ffd2c6; /*背景色*/
-  vertical-align: middle;
-  border-radius: 25px 0px 0px 25px; /*左側の角を丸く*/
-}
-.line_entry .description:before {
-  content: "●";
-  color: white;
-  margin-right: 8px;
-}
-.line_entry h3 {
-  font-size: 1.2rem;
-  font-weight: bolder;
-  background: #f7f7f7;
-  border-left: solid #f89174 0.3rem;
-  padding: 1rem 1rem;
-  border-bottom: solid 0.3rem #dadada;
+.line_entry .section {
+  padding: 0 0 0.5rem;
+  margin: 0 0 6rem;
+  position: relative;
   width: 100%;
-  clear: both;
-  margin-bottom: 1rem;
+  border-bottom: 5px solid rgba(0, 0, 0, 0.05);
 }
-.line_entry img {
-  max-width: 70rem;
+.line_entry .section .paragraph {
+  margin-bottom: 9vh;
+}
+.line_entry .section .paragraph .descript {
+  margin-left: 10vw;
+  position: relative;
+}
+.line_entry .section .paragraph .descript::before {
+  content: attr(data-no);
+  position: absolute;
+  color: rgba(2, 179, 179, 0.8);
+  top: -5;
+  left: -35;
+  font-size: 2.2rem;
+}
+.line_entry .section .paragraph .descript button {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 500;
+  background-color: rgba(2, 179, 179, 0.8);
+  border-radius: 40vh;
+  width: 100%;
+  height: 7vh;
+  transition: all 0.3s;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+  position: relative;
+  top: 0;
+}
+.line_entry .section .paragraph .descript button:hover {
+  top: -6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+.line_entry .section h3 {
+  font-size: 2.4rem;
+  font-weight: bolder;
+  letter-spacing: 0.05em;
+  padding-bottom: 1rem;
+}
+.line_entry .section img {
+  max-width: 80vw;
   border: 0.1rem solid #dadada;
 }
-.line_entry p {
-  font-size: 1.2rem;
+.line_entry .section p {
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
   line-height: 1.8;
+  color: #5c5c5c;
+  margin-bottom: 1rem;
 }
-.line_entry p span {
+.line_entry .section p span {
   font-weight: bold;
   font-size: inherit;
   list-style-type: inherit;
-  background: linear-gradient(transparent 0%, transparent 75%, #f89174 50%, #f89174 100%);
-}
-.line_entry .section {
-  margin-bottom: 6rem;
+  color: inherit;
+  background: linear-gradient(transparent 0%, transparent 60%, rgba(252, 241, 90, 0.9254901961) 50%, rgba(252, 241, 90, 0.9254901961) 100%);
 }
 .line_entry .section_last {
-  margin-bottom: 2rem;
+  border-bottom: none;
+  margin-bottom: 0 !important;
 }
 
 @media screen and (min-width: 1025px) {
@@ -81,12 +115,9 @@ body {
   .line_entry nav .btn {
     font-size: 1.3vw;
   }
-  .line_entry .description {
-    font-size: 1.5rem;
-  }
   .line_entry h3 {
     font-size: 1.8rem;
-    border-left: solid #f89174 0.3rem;
+    border-left: solid rgba(2, 179, 179, 0.8) 0.3rem;
     padding: 1rem 1rem;
     border-bottom: solid 0.3rem #dadada;
     margin-bottom: 1rem;
@@ -99,7 +130,7 @@ body {
     font-size: 1.6rem;
   }
   .line_entry p span {
-    background: linear-gradient(transparent 0%, transparent 75%, #f89174 50%, #f89174 100%);
+    background: linear-gradient(transparent 0%, transparent 75%, rgba(2, 179, 179, 0.8) 50%, rgba(2, 179, 179, 0.8) 100%);
   }
   .line_entry .section {
     margin-bottom: 8rem;
