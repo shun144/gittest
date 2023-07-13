@@ -10,9 +10,6 @@
                     <h2 class="align-self-center">{{$store->name}}</h2>
                 </div>
                 
-                {{-- <div class="col-4 px-0 d-flex">
-                    <button form='lineAuthForm' type="submit" class="btn btn-success align-self-center ml-auto">LINE連携</button>
-                </div> --}}
             </div>
         </nav>
 
@@ -25,9 +22,6 @@
                     </form>
 
                     <div class="mx-1">
-                        {{-- <div class="description">
-                            公式LINE連携ページ
-                        </div> --}}
 
                         <div class="row section">
                             <h3>LINE連携方法</h3>
