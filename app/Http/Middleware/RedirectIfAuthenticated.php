@@ -36,30 +36,7 @@ class RedirectIfAuthenticated
           }
         }
 
-        // return redirect(route('owner.line_users'));
-        // return '/';
 
-
-        // foreach ($guards as $guard) {
-        //     if (Auth::guard($guard)->check()) {
-
-        //         $role = Auth::user()->role;
-        //         if ($role == 'admin')
-        //         {        
-        //           return redirect(route('admin.store'));
-        //         }
-        //         else
-        //         {
-        //           return redirect(route('owner.schedule'));
-        //         }
-        //     }
-        // }
-
-        // foreach ($guards as $guard) {
-        //     if (Auth::guard($guard)->check()) {
-        //         return redirect(RouteServiceProvider::HOME);
-        //     }
-        // }
 
         return $next($request);
     }
