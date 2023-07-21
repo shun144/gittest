@@ -72,6 +72,7 @@ body {
   font-weight: bolder;
   letter-spacing: 0.05em;
   padding-bottom: 1rem;
+  color: red;
 }
 .line_entry .section img {
   max-width: 80vw;
@@ -126,7 +127,7 @@ body {
     font-size: 4.4rem;
   }
   .line_entry .section img {
-    max-width: 50%;
+    max-width: 55%;
     border: 0.3rem solid #dadada;
   }
   .line_entry .section p {
