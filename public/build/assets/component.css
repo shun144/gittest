@@ -126,7 +126,7 @@ body {
     font-size: 4.4rem;
   }
   .line_entry .section img {
-    max-width: 48vw;
+    max-width: 50%;
     border: 0.3rem solid #dadada;
   }
   .line_entry .section p {
