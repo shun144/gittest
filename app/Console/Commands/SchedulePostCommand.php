@@ -37,9 +37,13 @@ class SchedulePostCommand extends Command
         $API = 'https://notify-api.line.me/api/notify';
         $now = Carbon::now();
 
+
+
         // 10分単位で切り捨て(15分→10分)
         $date_down = $now->subMinutes($now->minute % $sep_time);
         $date_down = date('Y-m-d H:i', strtotime($date_down));
+
+        Log::info($date_down.' ★★スケジュール配信 実行');
 
         try {
 

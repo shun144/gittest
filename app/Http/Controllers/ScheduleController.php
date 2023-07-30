@@ -43,8 +43,8 @@ class ScheduleController extends Controller
             }
             
             $inputs['img_path'] = $img_path;
-            
-            \Log::info('★★確認用'.$img_path);
+
+            // \Log::info('★★確認用'.$img_path);
 
             $history_id = DB::table('histories')
             ->insertGetId(
