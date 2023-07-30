@@ -140,8 +140,6 @@ class PostMessageJob implements ShouldQueue
 
 
             if ($img_path != '') {
-                \Log::info('★★確認用'.$img_path);
-
                 foreach($lines as $line)
                 {    
                     $res = $client->request('POST', $API, [
