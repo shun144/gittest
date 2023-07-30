@@ -87,8 +87,8 @@
   {{-- <script src="{{ asset('vendor/adminlte/plugins/jquery/jquery.min.js') }}"></script> --}}
   <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
 
-  {{-- <script src="{{ asset('build/assets/schedule.js')}}"></script> --}}
-  <script src="{{ asset('build/assets/schedule.min.js')}}"></script>
+  <script src="{{ asset('build/assets/schedule.js')}}"></script>
+  {{-- <script src="{{ asset('build/assets/schedule.min.js')}}"></script> --}}
   {{-- @vite(['resources/js/schedule.js']) --}}
   {{-- @vite(['resources/js/component.js']) --}}
   
