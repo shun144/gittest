@@ -1,7 +1,5 @@
 @extends('adminlte::page')
 
-{{-- @section('title', 'Dashboard') --}}
-
 @section('title', '配信')
 
 @section('content_header')

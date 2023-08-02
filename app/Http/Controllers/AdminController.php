@@ -219,6 +219,7 @@ class AdminController extends Controller
                     DB::table('users')
                     ->where('id', $post['user_id'])
                     ->update([
+                        'name' => $post['name'],
                         'login_id' => $post['login_id'],
                         'password' => Hash::make($post['login_password']),
                         'updated_at'=>$now,
@@ -227,6 +228,7 @@ class AdminController extends Controller
                     DB::table('users')
                     ->where('id', $post['user_id'])
                     ->update([
+                        'name' => $post['name'],
                         'login_id' => $post['login_id'],
                         'updated_at'=>$now,
                     ]);  

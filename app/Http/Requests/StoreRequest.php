@@ -52,14 +52,16 @@ class StoreRequest extends FormRequest
         
         switch($route){
             case 'store.add':
-                array_push($rules['name'], 'unique:stores');
+
+                // 店舗名は重複可に変更
+                // array_push($rules['name'], 'unique:stores');
                 array_push($rules['url_name'], 'unique:stores');
                 array_push($rules['login_id'], 'unique:users');              
                 array_push($rules['client_id'], 'unique:stores');
                 array_push($rules['client_secret'], 'unique:stores');
                 break;
             case 'store.edit':
-                array_push($rules['name'],Rule::unique('stores')->ignore($this->store_id));
+                // array_push($rules['name'],Rule::unique('stores')->ignore($this->store_id));
                 array_push($rules['url_name'],Rule::unique('stores')->ignore($this->store_id));
                 array_push($rules['login_id'],Rule::unique('users')->ignore($this->user_id));
                 if (!$this->request->has('is_change_password'))
