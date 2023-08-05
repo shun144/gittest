@@ -11,7 +11,7 @@ use App\Http\Middleware\ValidatePkMiddleware;
 
 // Auth::routes();
 Auth::routes([
-    'register' => false // ユーザ登録機能をオフに切替
+    'register' => false // ユーザ登録機能をオフ
 ]);
 
 Route::group(['middleware'=>['auth']], function() {

@@ -70,7 +70,6 @@ class StoreRequest extends FormRequest
                 }
                 array_push($rules['client_id'],Rule::unique('stores')->ignore($this->store_id));
                 array_push($rules['client_secret'],Rule::unique('stores')->ignore($this->store_id));
-
                 break;
         };
         return $rules;
