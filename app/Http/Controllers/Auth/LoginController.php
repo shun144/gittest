@@ -37,15 +37,19 @@ class LoginController extends Controller
       return 'login_id';
     }
 
-
     // 未ログインからのログイン後の遷移先を変更する
     public function redirectTo()
-    { 
+    {      
       if (Gate::allows('isAdmin')){
+        // \Log::info('adminでログイン');
+        // \Log::info(route('admin.store'));
         return route('admin.store');
       }      
       else {
+        // \Log::info('オーナーでログイン');
+        // \Log::info(route('owner.schedule'));
         return route('owner.schedule');
       }
     }
+
 }
