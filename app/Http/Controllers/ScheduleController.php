@@ -69,19 +69,12 @@ class ScheduleController extends Controller
         }
     }
 
-
-
-
-
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     // スケジュール取得
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function getSchedule(Request $request)
     {   
         try {
-
-            $this->getContent();
-
             $start_date = date('Y-m-d 00:00:00', $request->input('start_date') / 1000);
             $end_date = date('Y-m-d 23:59:59', $request->input('end_date') / 1000);
 
