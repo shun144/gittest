@@ -43,7 +43,10 @@ class Handler extends ExceptionHandler
             return redirect()->route('login');
         }
 
-        if ($e instanceof AuthenticationException)
+        
+
+        // if ($e instanceof AuthenticationException )
+        if ($e->getMessage() == 'Unauthenticated' )
         {
             \Log::info('★未認証エラー!');
             if (\Session::has('url.intended')){
