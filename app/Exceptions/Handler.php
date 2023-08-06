@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Session\TokenMismatchException;
-use Throwable;
+// use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -30,9 +30,9 @@ class Handler extends ExceptionHandler
     //     return parent::render($request, $e);
     // }
 
-    public function render($request, Throwable $e)
+    public function render($request, \Throwable $e)
     {
-        \Log::info($e);
+        // \Log::info($e);
         if ($e instanceof TokenMismatchException) {
 
             \Log::info('★トークンミスマッチ!');
@@ -42,6 +42,17 @@ class Handler extends ExceptionHandler
             }
             return redirect()->route('login');
         }
+
+        if ($e instanceof AuthenticationException)
+        {
+            \Log::info('★未認証エラー!');
+            if (\Session::has('url.intended')){
+                \Log::info('★');
+                \Session::forget('url.intended');
+            }
+            return redirect()->route('login');
+        }
+
         return parent::render($request, $e);
     }
 }
