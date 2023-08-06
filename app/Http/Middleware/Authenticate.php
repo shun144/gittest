@@ -12,7 +12,6 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
-
         // $request->expectsJson()：クライアントからJSONレスポンスを要求されているかどうかを判定
         return $request->expectsJson() ? null : route('login');
     

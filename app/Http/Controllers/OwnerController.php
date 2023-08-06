@@ -187,4 +187,39 @@ class OwnerController extends Controller
         }
     }
 
+    
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // LINE連携アクション設定一覧表示
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function viewAction()
+    {
+
+        return view('owner.action');
+        // try {
+        //     $store_id = Auth::user()->store_id;
+        //     $posts = DB::table('histories')
+        //     ->where('store_id', $store_id )
+        //     ->select(
+        //         'id',
+        //         'start_at',
+        //         // 'end_at',
+        //         'title',
+        //         'content',
+        //         'img_url',
+        //         'status',
+        //         'err_info'
+        //     )
+        //     ->latest('created_at')
+        //     ->get();
+
+        //     return view('owner.postHistory', compact('posts'));
+        // }
+        // catch (\Exception $e) {
+        //     \Log::error('エラー機能:配信履歴表示 【店舗ID:'.Auth::user()->store_id.'】');
+        //     \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+        //     \Log::error('エラー内容:'.$e->getMessage());
+            
+        //     return view('owner.postHistory');
+        // }
+    }
 }

@@ -20,7 +20,8 @@ Route::group(['middleware'=>['auth']], function() {
 
 
 // 管理者ページ
-Route::group(['prefix' => 'admin','middleware' => ['auth','can:isAdmin']], function () {
+// Route::group(['prefix' => 'admin','middleware' => ['auth','can:isAdmin']], function () {
+    Route::group(['prefix' => 'admin','middleware' => ['can:isAdmin']], function () {
     Route::get('/log-list', [AdminController::class, 'viewLog'])->name('admin.log');
     Route::get('/store', [AdminController::class, 'viewStore'])->name('admin.store');
     Route::get('/store-add', [AdminController::class, 'viewAddStore'])->name('store.add.view');
@@ -32,7 +33,8 @@ Route::group(['prefix' => 'admin','middleware' => ['auth','can:isAdmin']], funct
 
 
 // オーナーページ
-Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], function () {
+// Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], function () {
+    Route::group(['prefix' => 'dashboard', 'middleware'=>['can:isOwner']], function () {
     Route::get('/schedule', [OwnerController::class, 'viewSchedule'])->name('owner.schedule');
     
     Route::get('/line-users', [OwnerController::class, 'viewLineUsers'])->name('owner.line_users');
@@ -51,6 +53,8 @@ Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], fu
     Route::post('/schedule-add', [ScheduleController::class, 'insertSchedule'])->name('schedule.add');
     Route::post('/schedule-edit', [ScheduleController::class, 'updateSchedule'])->name('schedule.edit');
     Route::post('/schedule-del', [ScheduleController::class, 'deleteSchedule'])->name('schedule.del');
+
+    Route::get('/action', [OwnerController::class, 'viewAction'])->name('owner.action');
     
     Route::post('/post', [ScheduleController::class, 'postMessage'])->name('post');
 
