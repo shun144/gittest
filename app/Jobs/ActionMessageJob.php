@@ -75,7 +75,7 @@ class ActionMessageJob implements ShouldQueue
                 ]);
                 
                 $res_body = json_decode($res->getBody()); 
-                 \Log::info('画像ありres_body'.$res_body); 
+                //  \Log::info('画像ありres_body'.$res_body); 
                 // if ($res_body->status != 200){                    
                 //     $result = 'NG';
                 //     array_push($err_list, '['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                 
@@ -94,7 +94,7 @@ class ActionMessageJob implements ShouldQueue
                 ]);
 
                 $res_body = json_decode($res->getBody()); 
-                \Log::info('画像なしres_body'.$res_body); 
+                // \Log::info('画像なしres_body'.$res_body); 
                 
                 // $res_body = json_decode($res->getBody());  
                 // if ($res_body->status != 200){                    
