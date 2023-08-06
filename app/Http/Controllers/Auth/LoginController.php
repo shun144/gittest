@@ -41,13 +41,9 @@ class LoginController extends Controller
     public function redirectTo()
     {      
       if (Gate::allows('isAdmin')){
-        // \Log::info('adminでログイン');
-        // \Log::info(route('admin.store'));
         return route('admin.store');
       }      
       else {
-        // \Log::info('オーナーでログイン');
-        // \Log::info(route('owner.schedule'));
         return route('owner.schedule');
       }
     }
