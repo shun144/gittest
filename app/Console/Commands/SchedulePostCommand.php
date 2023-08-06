@@ -43,7 +43,7 @@ class SchedulePostCommand extends Command
         $date_down = $now->subMinutes($now->minute % $sep_time);
         $date_down = date('Y-m-d H:i', strtotime($date_down));
 
-        Log::info($date_down.' ★★スケジュール配信 実行');
+        // Log::info($date_down.' ★★スケジュール配信 実行');
 
         try {
 
