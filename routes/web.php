@@ -60,7 +60,6 @@ Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], fu
 
 // 一般利用者登録ページ
 Route::group(['prefix'=>'{url_name}'], function () {
-    // Route::get('/register', [LineNotifyController::class, 'register'])->name('line.register');
     Route::get('/entry', [LineNotifyController::class, 'entry'])->name('line.entry');
     Route::get('/auth', [LineNotifyController::class, 'viewLineAuth'])->name('line.auth');
     Route::post('/callback', [LineNotifyController::class, 'auth_callback']);

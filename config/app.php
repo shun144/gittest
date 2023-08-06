@@ -186,35 +186,9 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'SendMessage' => \App\Facades\FacadeSendMessage::class,
+        // 'FacadeClassA' => \App\Facades\FacadeClassA::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
-    // 'image' => [
-    //     'owner' => [
-    //         'template' => 'storage\owner\template',
-    //     ],
-    //     'user' => [
-    //         'register' => 'storage\user\register'
-    //     ]
-    // ],
-
-
-    // 'storage' => [
-    //     'schedule' => [
-    //         'image' => ''
-    //     ],
-    //     'register' => [
-    //         'image' =>'storage/register'
-    //     ]
-    // ],
-
-    
-    // 'access_storage' => [
-    //     'image' => 'storage/message/template'
-    // ],
-
-
-    // 'save_storage' => [
-    //     'image' => 'public/message/template'
-    // ],
 ];

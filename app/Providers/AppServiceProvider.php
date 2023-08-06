@@ -11,7 +11,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // app()->bind('classA', \App\Libs\ClassA::class);
+        app()->bind('sendMessage', \App\Libs\SendMessage::class);
     }
 
     /**

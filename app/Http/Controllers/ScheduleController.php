@@ -11,16 +11,16 @@ use App\Models\Message;
 use \GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Pool;
-// use GuzzleHttp\Psr7\Request;
 
 use \GuzzleHttp\Exception\ClientException;
-// use App\Models\Template;
 use App\Models\History;
 use App\Models\Image;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use App\Jobs\PostMessageJob;
 use Illuminate\Support\Facades\Artisan;
+
+
 
 class ScheduleController extends Controller
 {
@@ -32,6 +32,9 @@ class ScheduleController extends Controller
         try {
             $now = Carbon::now();
             $inputs = $request->only(['content']);
+            
+            \Log::info($inputs);
+            
             $inputs['title'] = $request->has('title') ? $request->only(['title']):'ー';
             $inputs['store_id'] = Auth::user()->store_id;
 
@@ -43,8 +46,6 @@ class ScheduleController extends Controller
             }
             
             $inputs['img_path'] = $img_path;
-
-            // \Log::info('★★確認用'.$img_path);
 
             $history_id = DB::table('histories')
             ->insertGetId(
@@ -69,12 +70,18 @@ class ScheduleController extends Controller
     }
 
 
+
+
+
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     // スケジュール取得
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function getSchedule(Request $request)
     {   
         try {
+
+            $this->getContent();
+
             $start_date = date('Y-m-d 00:00:00', $request->input('start_date') / 1000);
             $end_date = date('Y-m-d 23:59:59', $request->input('end_date') / 1000);
 

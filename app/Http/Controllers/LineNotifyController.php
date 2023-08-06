@@ -11,6 +11,7 @@ use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Jobs\ActionMessageJob;
 
 class LineNotifyController extends Controller
 {
@@ -114,17 +115,23 @@ class LineNotifyController extends Controller
                 'store_id' => $store->id,
                 'created_at' => $now
             ]);
+
+
+
+            $inputs = array(
+                'store_id'=>$store->id, 
+                'token'=>$access_token,
+                'content'=>'LINE連携テスト配信');
+            ActionMessageJob::dispatch($inputs);
+
+            
             return redirect(url($url_name . '/entry'))->with('success_flash_message', 'LINE連携が完了しました。');
-            // return redirect(url($url_name . '/register'))->with('success_flash_message', 'LINE連携が完了しました。');
         }
         catch (\Exception $e) {
             \Log::error('エラー機能: LineNotify CallBack遷移【URL:'.$redirect_url.'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
             return redirect(url($url_name . '/entry'))->with('error_flash_message', 'LINE連携が失敗しました。');
-            // return redirect(url($url_name . '/register'))->with('error_flash_message', 'LINE連携が失敗しました。');
         }
-
     }
-
 }

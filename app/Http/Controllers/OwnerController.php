@@ -20,7 +20,7 @@ use App\Models\Message;
 use App\Models\Image;
 use App\Models\History;
 use App\Models\Template;
-
+// use App\Facades\FacadeClassA; 
 
 class OwnerController extends Controller
 {
@@ -95,6 +95,11 @@ class OwnerController extends Controller
     public function viewSchedule()
     {
         try {
+
+            // $test = \SendMessage::send('shun!!');
+            // dd($test);
+
+
             $templates = DB::table('templates')
             ->whereNull('templates.deleted_at')
             ->join('messages','message_id','=','messages.id')
