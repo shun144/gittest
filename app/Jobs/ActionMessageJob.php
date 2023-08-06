@@ -41,7 +41,7 @@ class ActionMessageJob implements ShouldQueue
     {
         $store_id = $this->inputs['store_id'];
         $token = PHP_EOL . $this->inputs['token'];
-        $token = $this->inputs['token'];
+        // $token = $this->inputs['token'];
         $message = PHP_EOL . $this->inputs['content'];
         $img_path = '';
 
