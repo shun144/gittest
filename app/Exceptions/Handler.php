@@ -35,10 +35,10 @@ class Handler extends ExceptionHandler
         if ($e instanceof TokenMismatchException) {
 
             \Log::info('★トークンミスマッチ!');
-            if (\Session::has('url.intended')){
-                \Log::info('★');
-                \Session::forget('url.intended');
-            }  
+            // if (\Session::has('url.intended')){
+            //     \Log::info('★');
+            //     \Session::forget('url.intended');
+            // }  
 
 
             return redirect()->route('login');
