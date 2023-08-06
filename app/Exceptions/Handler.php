@@ -32,7 +32,7 @@ class Handler extends ExceptionHandler
 
     public function render($request, \Throwable $e)
     {
-        // \Log::info($e);
+        \Log::info($e->getMessage());
         if ($e instanceof TokenMismatchException) {
 
             \Log::info('★トークンミスマッチ!');
