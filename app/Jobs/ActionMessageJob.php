@@ -40,18 +40,12 @@ class ActionMessageJob implements ShouldQueue
     public function handle(): void
     {
         $store_id = $this->inputs['store_id'];
+        $token = PHP_EOL . $this->inputs['token'];
         $token = $this->inputs['token'];
         $message = PHP_EOL . $this->inputs['content'];
         $img_path = '';
 
-        \Log::info('store_id'.$store_id);
-        \Log::info('token'.$token);
-        \Log::info('message'.$message);
-
         try {
-
-            // $start_time = Carbon::now();
-
             $API = 'https://notify-api.line.me/api/notify';
 
             $client = new Client();
@@ -75,11 +69,11 @@ class ActionMessageJob implements ShouldQueue
                 ]);
                 
                 $res_body = json_decode($res->getBody()); 
-                //  \Log::info('画像ありres_body'.$res_body); 
-                // if ($res_body->status != 200){                    
-                //     $result = 'NG';
-                //     array_push($err_list, '['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                 
-                // }
+                if ($res_body->status != 200){  
+                    \Log::error('エラー機能:LINE連携時アクションメッセージ配信 【店舗ID:'.$store_id.'】');
+                    \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+                    \Log::error('エラー内容:'.'【リターンコード:'.$res_body->status.'】'.$res_body->message);          
+                }
             }
             else {
                 $res = $client->request('POST', $API, [
@@ -94,26 +88,12 @@ class ActionMessageJob implements ShouldQueue
                 ]);
 
                 $res_body = json_decode($res->getBody()); 
-                // \Log::info('画像なしres_body'.$res_body); 
-                
-                // $res_body = json_decode($res->getBody());  
-                // if ($res_body->status != 200){                    
-                //     $result = 'NG';
-                //     array_push($err_list, '['.$line->user_name.']'.$res_body->status.'::'.$res_body->message);                    
-                // }
-            }
-
-            // $end_time = Carbon::now();
-            // DB::table('histories')->where('id',$history_id )
-            // ->update(
-            //     [
-            //         'status'=> $result,
-            //         'end_at'=> $end_time,
-            //         'err_info' => empty($err_list) ? 'ー' : join('/', $err_list),
-            //         'updated_at'=> $end_time
-            //     ]);
-
-                
+                if ($res_body->status != 200){  
+                    \Log::error('エラー機能:LINE連携時アクションメッセージ配信 【店舗ID:'.$store_id.'】');
+                    \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+                    \Log::error('エラー内容:'.'【リターンコード:'.$res_body->status.'】'.$res_body->message);          
+                }
+            }      
         } 
         catch (\Exception $e) {
             \Log::error('エラー機能:LINE連携時アクションメッセージ配信 【店舗ID:'.$store_id.'】');

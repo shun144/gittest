@@ -124,7 +124,6 @@ class LineNotifyController extends Controller
                 'content'=>'LINE連携テスト配信');
             ActionMessageJob::dispatch($inputs);
 
-            \Log::info('★★test');
 
             return redirect(url($url_name . '/entry'))->with('success_flash_message', 'LINE連携が完了しました。');
         }
