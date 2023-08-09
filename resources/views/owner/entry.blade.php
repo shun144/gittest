@@ -126,8 +126,8 @@
 
 @section('adminlte_css')
     <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
-    {{-- <link rel="stylesheet" href="{{ asset('build/assets/component.css')}}"> --}}
-    <link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('build/assets/component.css')}}">
+    {{-- <link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}"> --}}
 @stop
 
 @section('adminlte_js')
