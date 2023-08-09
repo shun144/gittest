@@ -32,30 +32,30 @@ class Handler extends ExceptionHandler
 
     public function render($request, \Throwable $e)
     {
-        \Log::info($e->getMessage());
+        // \Log::info($e->getMessage());
         if ($e instanceof TokenMismatchException) {
 
-            \Log::info('★トークンミスマッチ!');
-            if (\Session::has('url.intended')){
-                \Log::info('★');
-                \Session::forget('url.intended');
-            }
+            // \Log::info('★トークンミスマッチ!');
+            // if (\Session::has('url.intended')){
+            //     \Log::info('★');
+            //     \Session::forget('url.intended');
+            // }
             return redirect()->route('login');
         }
 
         
 
-        // if ($e instanceof AuthenticationException )
-        if ($e->getMessage() == 'Unauthenticated.' )
-        {
-            \Log::info('★未認証エラー!');
-            // if (\Session::has('url.intended')){
-            //     \Log::info('★');
-            //     \Session::forget('url.intended');
-            // }
-            \Auth::logout();
-            // return redirect()->route('login');
-        }
+        // // if ($e instanceof AuthenticationException )
+        // if ($e->getMessage() == 'Unauthenticated.' )
+        // {
+        //     \Log::info('★未認証エラー!');
+        //     // if (\Session::has('url.intended')){
+        //     //     \Log::info('★');
+        //     //     \Session::forget('url.intended');
+        //     // }
+        //     \Auth::logout();
+        //     // return redirect()->route('login');
+        // }
 
         return parent::render($request, $e);
     }
