@@ -74,7 +74,7 @@ body {
   padding-bottom: 1rem;
 }
 .line_entry .section img {
-  max-width: 80vw;
+  max-width: 65vw;
   border: 0.1rem solid #dadada;
 }
 .line_entry .section p {
@@ -103,6 +103,9 @@ body {
   }
   .line_entry nav h2 {
     font-size: 2.4vw;
+  }
+  .line_entry .section .paragraph {
+    margin-bottom: 12vh;
   }
   .line_entry .section .paragraph .descript {
     margin-left: 7vw;
