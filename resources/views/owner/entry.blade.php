@@ -24,7 +24,7 @@
                     <div class="mx-1">
 
                         <div class="row section">
-                            <h3>LINE連携方法test</h3>
+                            <h3>LINE連携方法</h3>
                             <div class="paragraph col-12">
                                 <div class="descript" data-no="01">
                                     <p><span>LINE連携ボタン</span>をクリックします。</p>

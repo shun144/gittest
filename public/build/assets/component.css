@@ -18,7 +18,7 @@ body {
   margin-bottom: 0;
   margin-left: 1.8vw;
   font-weight: normal;
-  color: #f7f7f7;
+  color: red;
   font-weight: bold;
 }
 .line_entry .section {
@@ -29,7 +29,7 @@ body {
   border-bottom: 5px solid rgba(0, 0, 0, 0.05);
 }
 .line_entry .section .paragraph {
-  margin-bottom: 5vh;
+  margin-bottom: 2vh;
 }
 .line_entry .section .paragraph .descript {
   margin-left: 10vw;
