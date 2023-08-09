@@ -18,7 +18,7 @@ body {
   margin-bottom: 0;
   margin-left: 1.8vw;
   font-weight: normal;
-  color: red;
+  color: #f7f7f7;
   font-weight: bold;
 }
 .line_entry .section {
@@ -74,7 +74,7 @@ body {
   padding-bottom: 1rem;
 }
 .line_entry .section img {
-  max-width: 65vw;
+  max-width: 75vw;
   border: 0.1rem solid #dadada;
 }
 .line_entry .section p {
