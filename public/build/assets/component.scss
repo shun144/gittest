@@ -266,3 +266,12 @@ body {
 td {
 	vertical-align: middle !important;
 }
+
+.greeting {
+	.greetFormTextAreaRow{
+		height:55vh;
+		textarea {
+			height: 90%;
+		}
+	}
+}

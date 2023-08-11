@@ -46,6 +46,16 @@ return [
             'throw' => false,
         ],
 
+        'greeting' => [
+            'driver' => 'local',
+            // 'root' => public_path(config('storage.owner.image.template')),
+            // 'url' => env('APP_URL').config('storage.owner.image.template'),
+            'root' => public_path('storage/owner/image/greeting'),
+            'url' => env('APP_URL').'/storage/owner/image/greeting',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         // 'public' => [
         //     'driver' => 'local',
         //     // 'root' => storage_path('app/public'),

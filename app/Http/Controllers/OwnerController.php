@@ -95,11 +95,6 @@ class OwnerController extends Controller
     public function viewSchedule()
     {
         try {
-
-            // $test = \SendMessage::send('shun!!');
-            // dd($test);
-
-
             $templates = DB::table('templates')
             ->whereNull('templates.deleted_at')
             ->join('messages','message_id','=','messages.id')
@@ -189,37 +184,148 @@ class OwnerController extends Controller
 
     
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-    // LINE連携アクション設定一覧表示
+    // あいさつメッセージ画面表示
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-    public function viewAction()
+    public function viewGreeting()
     {
+        try {
+            $user = Auth::user();
+            $post = DB::table('greetings')
+            ->where('greetings.store_id',$user->store_id)
+            ->join('messages','message_id','=','messages.id')
+            ->leftJoin('images','images.message_id','=','messages.id')
+            ->select(
+                'messages.content as content',
+                'images.org_name as org_name',
+                'images.save_name as save_name'
+                )
+            ->first();
 
-        return view('owner.action');
-        // try {
-        //     $store_id = Auth::user()->store_id;
-        //     $posts = DB::table('histories')
-        //     ->where('store_id', $store_id )
-        //     ->select(
-        //         'id',
-        //         'start_at',
-        //         // 'end_at',
-        //         'title',
-        //         'content',
-        //         'img_url',
-        //         'status',
-        //         'err_info'
-        //     )
-        //     ->latest('created_at')
-        //     ->get();
+            // 画像URLプロパティ追加
+            if (!empty($post)){
+                if ($post->save_name != Null){
+                    $post->img_url = Storage::disk('greeting')->url($post->save_name);
+                    $post->has_file = '1';
+                }
+                else {
+                    $post->img_url = Null;
+                    $post->has_file = '0';
+                }
+            }
+            return view('owner.greeting', compact('post'));
+        }
+        catch (\Exception $e) {
+            \Log::error('エラー機能:あいさつメッセージ画面表示 【店舗ID:'.Auth::user()->store_id.'】');
+            \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+            \Log::error('エラー内容:'.$e->getMessage());
+        }
+    }
 
-        //     return view('owner.postHistory', compact('posts'));
-        // }
-        // catch (\Exception $e) {
-        //     \Log::error('エラー機能:配信履歴表示 【店舗ID:'.Auth::user()->store_id.'】');
-        //     \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
-        //     \Log::error('エラー内容:'.$e->getMessage());
-            
-        //     return view('owner.postHistory');
-        // }
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // LINE連携時あいさつメッセージ更新
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function updateLinkGreeting(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $post = $request->only(['content','has_file']);
+            $images = $request->file('imagefile');
+            $now = Carbon::now();
+        
+            $greet = DB::table('greetings')
+            ->where('store_id',$user->store_id)
+            ->first();
+
+            if (empty($greet)) {
+                // 新規作成
+                DB::transaction(function () use($user, $post, $images, $now){
+                    $msg_id = Message::insertGetId(
+                        [
+                            'user_id' => $user->id,
+                            'store_id' => $user->store_id,
+                            'title'=> 'LINE連携時あいさつメッセージ',
+                            'title_color' => '#E60012',
+                            'content'=> $post['content'],
+                            'created_at'=> $now,
+                            'updated_at'=> $now
+                        ]
+                    );
+
+                    DB::table('greetings')->insert(
+                        [
+                            'category'=> 'LINK',
+                            'store_id'=> $user->store_id,
+                            'message_id' => $msg_id,
+                            'created_at'=>$now,
+                            'updated_at'=>$now,
+                    ]);
+
+                    if($images)
+                    {
+                        $img = $images[0];
+                        $save_name = Storage::disk('greeting')->put('', $img);
+                        $org_name = $img->getClientOriginalName();                         
+                        Image::insert([
+                            'message_id' => $msg_id, 
+                            'save_name' => $save_name, 
+                            'org_name' => $org_name,
+                            'created_at'=> $now,
+                        ]);
+                    }
+                });
+            }
+            else {
+                // 更新
+                DB::transaction(function() use($greet, $user, $post, $images, $now){
+                    DB::table('messages')
+                    ->where('id', $greet->message_id)
+                    ->update([
+                        'content' => $post['content'],
+                        'updated_at' => $now
+                    ]);
+    
+                    DB::table('greetings')
+                    ->where('id', $greet->id)
+                    ->update([
+                        'updated_at' => $now
+                    ]);
+    
+                    $dt_images = DB::table('images')->where('message_id', $greet->message_id);
+                
+                    // ファイル保持フラグあり
+                    if ($post['has_file'] == '1'){
+                        
+                        if ($images) {
+                            $dt_images->delete();
+    
+                            foreach ($images as $img){
+                                $save_name = Storage::disk('greeting')->put('', $img);
+                                $org_name = $img->getClientOriginalName();             
+    
+                                DB::table('images')->insert([
+                                    'message_id' => $greet->message_id,
+                                    'save_name' => $save_name,
+                                    'org_name' => $org_name,
+                                    'created_at' => $now
+                                ]);
+                            }
+                        }
+                    // ファイル保持フラグなし
+                    } else {    
+                        // 既に登録されている画像が存在すれば削除
+                        if ($dt_images->count())
+                        {
+                            $dt_images->delete();
+                        }
+                    }
+                });
+            }
+        }
+        catch (\Exception $e) {
+            \Log::error('エラー機能:LINE連携時あいさつメッセージ更新【店舗ID:'.Auth::user()->store_id.'】');
+            \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+            \Log::error('エラー内容:'.$e->getMessage());
+            return redirect(route('owner.greeting'))->with('error_flushMsg','あいさつメッセージ更新に失敗しました');
+        }
     }
 }

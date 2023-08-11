@@ -116,13 +116,33 @@ class LineNotifyController extends Controller
                 'created_at' => $now
             ]);
 
+            $greet = DB::table('greetings')
+            ->where('greetings.store_id',$user->store_id)
+            ->whereNull('greetings.deleted_at')
+            ->join('messages','message_id','=','messages.id')
+            ->leftJoin('images','images.message_id','=','messages.id')
+            ->select(
+                'messages.content as content',
+                'images.org_name as org_name',
+                'images.save_name as save_name'
+                )
+            ->first();
 
+            if (!empty($greet)){
+                $inputs = array(
+                    'store_id'=>$store->id, 
+                    'token'=>$access_token,
+                    'content'=> $greet->content
+                );
+                ActionMessageJob::dispatch($inputs);         
+            }
 
-            $inputs = array(
-                'store_id'=>$store->id, 
-                'token'=>$access_token,
-                'content'=>'LINE連携テスト配信');
-            ActionMessageJob::dispatch($inputs);
+            // $inputs = array(
+            //     'store_id'=>$store->id, 
+            //     'token'=>$access_token,
+            //     'content'=> empty($greet) ? 
+            // );
+            // ActionMessageJob::dispatch($inputs);
 
 
             return redirect(url($url_name . '/entry'))->with('success_flash_message', 'LINE連携が完了しました。');

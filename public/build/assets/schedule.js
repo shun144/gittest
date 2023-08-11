@@ -202,7 +202,6 @@ function postImmediately(e){
   $.ajax({
     headers: {'X-CSRF-TOKEN': csrf_token},
     url: URL_MEDSSAGE_POST,
-    // url: '{{route('post')}}',
     method: 'POST',
     contentType: false,
     processData: false,

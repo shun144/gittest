@@ -3,8 +3,7 @@
   <div class="input-group">
     <div class="btn-group">
       <label>
-        <span class="btn btn-outline-primary">選択            
-          {{-- <input type="file"  multiple="multiple" class="form-control-file image_form" name="imagefile[]" accept="image/jpeg,image/png" aria-describedby="imgFileHelp"/> --}}
+        <span class="btn btn-outline-primary">選択
           <input type="file" style="display:none;" multiple="multiple" class="form-control-file image_form" name="imagefile[]" accept="image/jpeg,image/png" aria-describedby="imgFileHelp"/>
         </span>
       </label>

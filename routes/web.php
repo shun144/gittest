@@ -54,7 +54,8 @@ Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], fu
     Route::post('/schedule-edit', [ScheduleController::class, 'updateSchedule'])->name('schedule.edit');
     Route::post('/schedule-del', [ScheduleController::class, 'deleteSchedule'])->name('schedule.del');
 
-    Route::get('/action', [OwnerController::class, 'viewAction'])->name('owner.action');
+    Route::get('/greeting', [OwnerController::class, 'viewGreeting'])->name('owner.greeting');
+    Route::post('/greeting-link-edit', [OwnerController::class, 'updateLinkGreeting'])->name('greeting.link.edit');
     
     Route::post('/post', [ScheduleController::class, 'postMessage'])->name('post');
 

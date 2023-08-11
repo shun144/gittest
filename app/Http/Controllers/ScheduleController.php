@@ -415,8 +415,6 @@ class ScheduleController extends Controller
         $images = $request->file('imagefile');
         
         try {
-
-
             $now = Carbon::now();
             DB::transaction(function() use($post, $datatime, $images, $now){
                 DB::table('messages')

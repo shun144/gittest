@@ -8,6 +8,7 @@ return [
     'top' => 'storage\owner',
     'image' => [
       'template' => 'storage/owner/image/template',
+      'greeting' => 'storage/owner/image/greeting',
     ]
   ],
 
