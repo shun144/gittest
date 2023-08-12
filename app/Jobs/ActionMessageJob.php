@@ -44,9 +44,6 @@ class ActionMessageJob implements ShouldQueue
         $message = PHP_EOL . $this->inputs['content'];
         $img_path = $this->inputs['img_path'];
 
-        Storage::disk('greeting')->url($post->save_name);
-
-
         try {
             $API = 'https://notify-api.line.me/api/notify';
 
