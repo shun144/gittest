@@ -138,7 +138,7 @@ class LineNotifyController extends Controller
                     'store_id'=>$store->id, 
                     'token'=>$access_token,
                     'content'=> $greet->content,
-                    'img_path' => $greet->save_name == Null ? '' : Storage::disk('greeting')->url($greet->save_name)
+                    'img_path' => $greet->save_name == Null ? '' : \Storage::disk('greeting')->url($greet->save_name)
                 );
                 ActionMessageJob::dispatch($inputs);         
             }
