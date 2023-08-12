@@ -117,7 +117,7 @@ class LineNotifyController extends Controller
             ]);
 
             $greet = DB::table('greetings')
-            ->where('greetings.store_id',$user->store_id)
+            ->where('greetings.store_id',$store->id)
             ->whereNull('greetings.deleted_at')
             ->join('messages','message_id','=','messages.id')
             ->leftJoin('images','images.message_id','=','messages.id')
