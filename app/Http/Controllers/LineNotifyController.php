@@ -128,11 +128,17 @@ class LineNotifyController extends Controller
                 )
             ->first();
 
+            // $img_path
+            // if ($this->inputs['save_name'] != Null){
+            //     $img_path = $this->inputs['img_path'];
+            // }
+
             if (!empty($greet)){
                 $inputs = array(
                     'store_id'=>$store->id, 
                     'token'=>$access_token,
-                    'content'=> $greet->content
+                    'content'=> $greet->content,
+                    'img_path' => $greet->save_name == Null ? '' : Storage::disk('greeting')->url($greet->save_name)
                 );
                 ActionMessageJob::dispatch($inputs);         
             }
