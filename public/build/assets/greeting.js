@@ -17,13 +17,6 @@ function greetSave(e){
   const inputContent = $form.find('textarea.content_form')
   const contentFeedback = $form.find('.content_feedback')
 
-
-  // if (!inputContent.val()) {
-  //   contentFeedback.text('必須項目です');
-  //   inputContent.addClass("is-invalid");
-  //   return false
-  // }
-
   if (inputContent.val().length > 1000)
   {
     contentFeedback.text('入力可能文字数は1000文字です');
