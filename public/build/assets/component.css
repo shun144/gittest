@@ -193,9 +193,9 @@ td {
   vertical-align: middle !important;
 }
 
-.greeting .greetFormTextAreaRow {
+#greeting .greetFormTextAreaRow {
   height: 55vh;
 }
-.greeting .greetFormTextAreaRow textarea {
+#greeting .greetFormTextAreaRow textarea {
   height: 90%;
 }/*# sourceMappingURL=component.css.map */

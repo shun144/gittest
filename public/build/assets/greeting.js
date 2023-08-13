@@ -1,6 +1,54 @@
+const URL_ROOT = $(location).attr('origin');
+const URL_STORAGE = URL_ROOT + '/storage/owner/image/greeting';
+const URL_DASHBOARD = URL_ROOT + '/dashboard';
+const URL_MEDSSAGE_POST = URL_DASHBOARD + '/greeting-link-edit';
+
+function greetSave(e){
+  e.preventDefault();
+  const msg = 'あいさつメッセージを更新してよろしいですか?'
+  if(!window.confirm(msg))
+  {
+    return false;
+  }
+  const csrf_token = document.getElementById('greetSaveCsrfToken').value;
+  let $form = $('#form_greet_save');
+  let fd = new FormData($form.get(0));
+
+  const inputContent = $form.find('textarea.content_form')
+  const contentFeedback = $form.find('.content_feedback')
+
+
+  if (!inputContent.val()) {
+    contentFeedback.text('必須項目です');
+    inputContent.addClass("is-invalid");
+    return false
+  }
+
+  if (inputContent.val().length > 1000)
+  {
+    contentFeedback.text('入力可能文字数は1000文字です');
+    inputContent.addClass("is-invalid");
+    return false
+  }
+  $.ajax({
+    headers: {'X-CSRF-TOKEN': csrf_token},
+    url: URL_MEDSSAGE_POST,
+    method: 'POST',
+    contentType: false,
+    processData: false,
+    data: fd
+  }).done(function(res){
+    toastr.info('あいさつメッセージを更新しました');
+  }).fail(function(res){
+    toastr.error('あいさつメッセージ更新に失敗しました');
+    console.log(res);
+  })
+};
+
 $(document).on('change','.image_form', function(e){
   preview_image(e)
 });
+
 
 function preview_image(event)
 {
@@ -52,41 +100,3 @@ $(document).on('click','.btn_del_file', function(e){
   preview.empty();
   text_form.val(null);
 });
-
-
-// // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// // 保存
-// // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// $(document).on('click','.btnPostImi', function(e){
-//   e.preventDefault();
-//   validatePostMsgInput('#post_message', "#form_post_message")
-// })
-
-
-// // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// // 関数
-// // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// function validatePostMsgInput(modalId, submitId){
-//   const modal = $(modalId)
-//   const inputContent = modal.find('textarea.content_form')
-//   const contentFeedback = modal.find('.content_feedback')
-//   let is_err = false
-
-//   if (!inputContent.val()) {
-//     contentFeedback.text('必須項目です');
-//     inputContent.addClass("is-invalid");
-//     is_err = true
-//   }
-//   if (inputContent.val().length > 1000)
-//   {
-//     contentFeedback.text('入力可能文字数は1000文字です');
-//     inputContent.addClass("is-invalid");
-//     is_err = true
-//   }
-//   if (is_err) {
-//     return;
-//   }
-//   else {
-//     $(submitId).submit();
-//   }
-// };

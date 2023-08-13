@@ -8,7 +8,7 @@
 @stop
 
 @section('content')
-<div class="greeting">
+<div id="greeting">
 
     <div class="card mx-auto w-75">
         <div class="card-header">
@@ -68,37 +68,4 @@
 @section('js')
 <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
 <script src="{{ asset('build/assets/greeting.js')}}"></script>
-
-<script>
-const URL_ROOT = $(location).attr('origin');
-const URL_STORAGE = URL_ROOT + '/storage/owner/image/greeting';
-const URL_DASHBOARD = URL_ROOT + '/dashboard';
-const URL_MEDSSAGE_POST = URL_DASHBOARD + '/greeting-link-edit';
-
-function greetSave(e){
-  e.preventDefault();
-  const msg = 'あいさつメッセージを更新してよろしいですか?'
-  if(!window.confirm(msg))
-  {
-    return false;
-  }
-  const csrf_token = document.getElementById('greetSaveCsrfToken').value;
-  let $form = $('#form_greet_save');
-  let fd = new FormData($form.get(0));
-  $.ajax({
-    headers: {'X-CSRF-TOKEN': csrf_token},
-    url: URL_MEDSSAGE_POST,
-    method: 'POST',
-    contentType: false,
-    processData: false,
-    data: fd
-  }).done(function(res){
-    toastr.info('あいさつメッセージを更新しました');
-  }).fail(function(res){
-    toastr.error('あいさつメッセージ更新に失敗しました');
-    console.log(res);
-  })
-};
-</script>
-
 @stop
