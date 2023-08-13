@@ -18,11 +18,11 @@ function greetSave(e){
   const contentFeedback = $form.find('.content_feedback')
 
 
-  if (!inputContent.val()) {
-    contentFeedback.text('必須項目です');
-    inputContent.addClass("is-invalid");
-    return false
-  }
+  // if (!inputContent.val()) {
+  //   contentFeedback.text('必須項目です');
+  //   inputContent.addClass("is-invalid");
+  //   return false
+  // }
 
   if (inputContent.val().length > 1000)
   {
