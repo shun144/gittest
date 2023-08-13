@@ -67,7 +67,7 @@
 
 @section('js')
 <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
-<script src="{{ asset('build/assets/component.js')}}"></script>
+<script src="{{ asset('build/assets/greeting.js')}}"></script>
 
 <script>
 const URL_ROOT = $(location).attr('origin');
