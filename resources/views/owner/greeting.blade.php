@@ -67,5 +67,5 @@
 
 @section('js')
 <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
-{{-- <script src="{{ asset('build/assets/greeting.js')}}"></script> --}}
+<script src="{{ asset('build/assets/greeting.js')}}"></script>
 @stop
