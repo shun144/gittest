@@ -30,6 +30,7 @@ function greetSave(e){
     inputContent.addClass("is-invalid");
     return false
   }
+  
   $.ajax({
     headers: {'X-CSRF-TOKEN': csrf_token},
     url: URL_MEDSSAGE_POST,
@@ -39,8 +40,10 @@ function greetSave(e){
     data: fd
   }).done(function(res){
     toastr.info('あいさつメッセージを更新しました');
+    inputContent.removeClass("is-invalid");
   }).fail(function(res){
     toastr.error('あいさつメッセージ更新に失敗しました');
+    inputContent.removeClass("is-invalid");
     console.log(res);
   })
 };
