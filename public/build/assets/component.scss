@@ -46,6 +46,9 @@ body {
 			font-weight: bold;
 		}
 	}
+	.card-body {
+		padding:0.5rem;
+	}
 	
 	.section {
 		padding: 0 0 0.5rem;
@@ -55,7 +58,7 @@ body {
 		border-bottom: 5px solid rgba(0,0,0,.05);
 
 		.paragraph {
-			margin-bottom: 2vh;
+			margin-bottom: 2.5vh;
 
 			.descript {
 				margin-left:10vw;
@@ -66,12 +69,13 @@ body {
 					position: absolute;
 					color: $main_color;
 					top: -5;
-					left: -50;
-					font-size: 1.8rem;
+					left: -34;
+					font-size: 1.5rem;
 				}
 
 				p {
-					font-size: 1.2rem;
+					font-size: 0.9rem;
+					margin-bottom: 1vh;
 				}
 			}
 
@@ -113,7 +117,7 @@ body {
 		}
 		
 		img {
-			max-width:80%;			
+			max-width:70%;			
 			// max-width:80%;
 
 			border:0.1rem solid #dadada;
