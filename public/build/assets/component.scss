@@ -22,9 +22,6 @@ $main_color: #02b3b3cc;
 $accent_color: #fcf15aec;
 
 
-// html {
-// 	font-size: 62.5%;
-// }
 body {
 	font-family:'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'meiryo', sans-serif;
 }
@@ -113,7 +110,7 @@ body {
 			font-weight: bolder;
 			letter-spacing:0.05em;
 			padding-bottom: 1rem;
-			color: green;
+			// color: green;
 		}
 		
 		img {
@@ -150,82 +147,85 @@ body {
 
 
 
-
-
 // PC画面
 @include mq(pc) {
 	.line_entry {
-		width: 70vw;
-		margin: 0 auto;
 
 		nav {
+			margin-bottom: 2vh;
 			h2 {
-				font-size:2.4vw;
+				font-size:2vw;
 			}
-	
 		}
-		.section {
-			.paragraph {
 
-				margin-bottom: 12vh;
+		.card {
+			width: 70vw;
 
-				.descript {
-					margin-left:7vw;
-				
-					&::before{
-						content: attr(data-no);
-						position: absolute;
-						color: $main_color;
-						top: -10;
-						left: -60;
-						font-size: 4.2rem;
+			.section {
+				h3 {
+					font-size: 2.4vw;
+				}
+
+				.paragraph {
+					margin-bottom: 3vh;
+	
+					.descript {
+						margin-left:7vw;
+					
+						&::before{
+							content: attr(data-no);
+							position: absolute;
+							color: $main_color;
+							top: -10;
+							left: -60;
+							font-size: 2.2vw;
+						}
+
+						p {
+							font-size: 1.4vw;
+						}
+					}
+					button {
+						display: block;
+						margin: 0 auto 3vh;
+						font-size: 2.1vw;
+						width: 60%;
+						height: 10vh;
 					}
 				}
-				button {
-				 	// margin-top: 8vh;
-					// margin: 8vh auto 2vh;
-					display: block;
-					margin: 6vh auto 0;
-					font-size: 3.5rem;
-					width: 80%;
-					height: 10vh;
-					
+				img {
+					max-width:40%;
+					border:0.3rem solid #dadada;
+				}
+				p {
+					font-size: 2.8rem;
+					span {
+						background: linear-gradient(transparent 40%, transparent 70%, $accent_color 50%, $accent_color 100%);
+					}
 				}
 			}
-			h3 {
-				font-size: 4.4rem;
-			}
-			img {
-				max-width:55%;
-				border:0.3rem solid #dadada;
-			}
-			p {
-				font-size: 2.8rem;
-				span {
-					background: linear-gradient(transparent 60%, transparent 0%, $accent_color 50%, $accent_color 100%);
-				}
-			}
-		}
-
-
-		img {
-			max-width:40rem; 
-			border:0.1rem solid #dadada;
-		}
-		p {
-			font-size: 1.6rem;
 	
-			span {
-				background: linear-gradient(transparent 0%, transparent 15%, $main_color 10%, $main_color 100%);
-				// background: linear-gradient(transparent 0%, transparent 75%, #f89174 50%, #f89174 100%);
-			}
 		}
-		.section {
-			margin-bottom: 8rem;
-		}
-		.section_last {
-			margin-bottom: 4rem;
-		}
+
+
+		// img {
+		// 	max-width:40rem; 
+		// 	border:0.1rem solid #dadada;
+		// }
+		// p {
+		// 	font-size: 1.6rem;
+	
+		// 	span {
+		// 		background: linear-gradient(transparent 0%, transparent 15%, $main_color 10%, $main_color 100%);
+		// 		// background: linear-gradient(transparent 0%, transparent 75%, #f89174 50%, #f89174 100%);
+		// 	}
+		// }
+		// .section {
+		// 	margin-bottom: 8rem;
+		// }
+		// .section_last {
+		// 	margin-bottom: 4rem;
+		// }
 	}
 }
 
