@@ -56,6 +56,14 @@ return [
             'throw' => false,
         ],
 
+        'garbage' => [
+            'driver' => 'local',
+            'root' => storage_path('_garbage'),
+            // 'url' => env('APP_URL').'/storage/_garbage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         // 'public' => [
         //     'driver' => 'local',
         //     // 'root' => storage_path('app/public'),

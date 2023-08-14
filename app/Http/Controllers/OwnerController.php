@@ -277,6 +277,7 @@ class OwnerController extends Controller
                 });
             }
             else {
+
                 // 更新
                 DB::transaction(function() use($greet, $user, $post,  $images, $now){
                     DB::table('messages')
@@ -293,12 +294,18 @@ class OwnerController extends Controller
                     ]);
     
                     $dt_images = DB::table('images')->where('message_id', $greet->message_id);
-                
+
                     // ファイル保持フラグあり
                     if ($post['has_file'] == '1'){
                         
                         if ($images) {
-                            $dt_images->delete();
+                            if ($dt_images->count())
+                            {
+                                $old_file = Storage::disk('greeting')->path($dt_images->first()->save_name);
+                                $new_file = Storage::disk('garbage')->path($dt_images->first()->save_name);
+                                \File::move($old_file, $new_file);
+                                $dt_images->delete();
+                            }
     
                             foreach ($images as $img){
                                 $save_name = Storage::disk('greeting')->put('', $img);
@@ -313,10 +320,12 @@ class OwnerController extends Controller
                             }
                         }
                     // ファイル保持フラグなし
-                    } else {    
-                        // 既に登録されている画像が存在すれば削除
+                    } else {
                         if ($dt_images->count())
                         {
+                            $old_file = Storage::disk('greeting')->path($dt_images->first()->save_name);
+                            $new_file = Storage::disk('garbage')->path($dt_images->first()->save_name);
+                            \File::move($old_file, $new_file);
                             $dt_images->delete();
                         }
                     }

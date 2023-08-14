@@ -224,7 +224,13 @@ class ScheduleController extends Controller
                 if ($post['has_file'] == '1'){
                     
                     if ($images) {
-                        $dt_images->delete();
+                        if ($dt_images->count())
+                        {
+                            $old_file = Storage::disk('owner')->path($dt_images->first()->save_name);
+                            $new_file = Storage::disk('garbage')->path($dt_images->first()->save_name);
+                            \File::move($old_file, $new_file);
+                            $dt_images->delete();
+                        }
 
                         foreach ($images as $img){
                             $save_name = Storage::disk('owner')->put('', $img);
@@ -243,6 +249,9 @@ class ScheduleController extends Controller
                     // 既に登録されている画像レコードを削除
                     if ($dt_images->count())
                     {
+                        $old_file = Storage::disk('owner')->path($dt_images->first()->save_name);
+                        $new_file = Storage::disk('garbage')->path($dt_images->first()->save_name);
+                        \File::move($old_file, $new_file);
                         $dt_images->delete();
                     }
                 }
@@ -286,6 +295,15 @@ class ScheduleController extends Controller
                         'deleted_at' => $now
                     ]
                 );
+
+                $dt_images = DB::table('images')->where('message_id', $post['message_id']);
+                if ($dt_images->count())
+                {
+                    $old_file = Storage::disk('owner')->path($dt_images->first()->save_name);
+                    $new_file = Storage::disk('garbage')->path($dt_images->first()->save_name);
+                    \File::move($old_file, $new_file);
+                    $dt_images->delete();
+                }
             });
             
             return redirect(route('owner.schedule'))->with('del_template_success_flushMsg','定型メッセージの削除が完了しました');
@@ -439,7 +457,13 @@ class ScheduleController extends Controller
                 if ($post['has_file'] == '1'){
                     
                     if ($images) {
-                        $dt_images->delete();
+                        if ($dt_images->count())
+                        {
+                            $old_file = Storage::disk('owner')->path($dt_images->first()->save_name);
+                            $new_file = Storage::disk('garbage')->path($dt_images->first()->save_name);
+                            \File::move($old_file, $new_file);
+                            $dt_images->delete();
+                        }
                         foreach ($images as $img){
                             $save_name = Storage::disk('owner')->put('', $img);
                             $org_name = $img->getClientOriginalName();             
@@ -456,6 +480,9 @@ class ScheduleController extends Controller
                     // 既に登録されている画像レコードを削除
                     if ($dt_images->count())
                     {
+                        $old_file = Storage::disk('owner')->path($dt_images->first()->save_name);
+                        $new_file = Storage::disk('garbage')->path($dt_images->first()->save_name);
+                        \File::move($old_file, $new_file);
                         $dt_images->delete();
                     }
                 }
@@ -517,6 +544,14 @@ class ScheduleController extends Controller
                         'deleted_at' => $now
                     ]
                 );
+                $dt_images = DB::table('images')->where('message_id', $post['message_id']);
+                if ($dt_images->count())
+                {
+                    $old_file = Storage::disk('owner')->path($dt_images->first()->save_name);
+                    $new_file = Storage::disk('garbage')->path($dt_images->first()->save_name);
+                    \File::move($old_file, $new_file);
+                    $dt_images->delete();
+                }
             });
             return $post['message_id'];
 
