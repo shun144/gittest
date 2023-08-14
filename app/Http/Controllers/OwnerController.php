@@ -227,8 +227,10 @@ class OwnerController extends Controller
     public function updateLinkGreeting(Request $request)
     {
         try {
+
             $user = Auth::user();
             $post = $request->only(['content','has_file']);
+            // $content = empty($post['content']) ? '' :  $post['content'];
             $images = $request->file('imagefile');
             $now = Carbon::now();
         
@@ -276,7 +278,7 @@ class OwnerController extends Controller
             }
             else {
                 // 更新
-                DB::transaction(function() use($greet, $user, $post, $images, $now){
+                DB::transaction(function() use($greet, $user, $post,  $images, $now){
                     DB::table('messages')
                     ->where('id', $greet->message_id)
                     ->update([
@@ -320,12 +322,14 @@ class OwnerController extends Controller
                     }
                 });
             }
+            return response()->json(['status' => 'OK'], 200);
         }
         catch (\Exception $e) {
             \Log::error('エラー機能:LINE連携時あいさつメッセージ更新【店舗ID:'.Auth::user()->store_id.'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
-            return redirect(route('owner.greeting'))->with('error_flushMsg','あいさつメッセージ更新に失敗しました');
+            $data = ['error' => $e->getMessage()];
+            return response()->json($data, 500);
         }
     }
 }

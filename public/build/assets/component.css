@@ -1,7 +1,3 @@
-html {
-  font-size: 62.5%;
-}
-
 body {
   font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "meiryo", sans-serif;
 }
@@ -9,7 +5,7 @@ body {
 .line_entry nav {
   padding: 1rem;
   padding-right: 0;
-  margin-bottom: 4vh;
+  margin-bottom: 0;
   background: linear-gradient(to right, rgba(2, 179, 179, 0.8), rgba(2, 179, 179, 0.8));
 }
 .line_entry nav h2 {
@@ -23,7 +19,7 @@ body {
 }
 .line_entry .section {
   padding: 0 0 0.5rem;
-  margin: 0 0 6rem;
+  margin: 0 0 5vh;
   position: relative;
   width: 100%;
   border-bottom: 5px solid rgba(0, 0, 0, 0.05);
@@ -40,8 +36,11 @@ body {
   position: absolute;
   color: rgba(2, 179, 179, 0.8);
   top: -5;
-  left: -35;
-  font-size: 2.2rem;
+  left: -50;
+  font-size: 1.8rem;
+}
+.line_entry .section .paragraph .descript p {
+  font-size: 1.2rem;
 }
 .line_entry .section .paragraph button {
   padding: 0;
@@ -52,7 +51,7 @@ body {
   -webkit-appearance: none;
   cursor: pointer;
   color: #fff;
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: 500;
   background-color: rgba(2, 179, 179, 0.8);
   border-radius: 40vh;
@@ -68,7 +67,7 @@ body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 .line_entry .section h3 {
-  font-size: 2.4rem;
+  font-size: 2rem;
   font-weight: bolder;
   letter-spacing: 0.05em;
   padding-bottom: 1rem;

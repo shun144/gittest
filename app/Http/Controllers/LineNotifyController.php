@@ -116,6 +116,8 @@ class LineNotifyController extends Controller
                 'created_at' => $now
             ]);
 
+            // LINE連携時あいさつメッセージ
+
             $greet = DB::table('greetings')
             ->where('greetings.store_id',$store->id)
             ->whereNull('greetings.deleted_at')
@@ -128,11 +130,6 @@ class LineNotifyController extends Controller
                 )
             ->first();
 
-            // $img_path
-            // if ($this->inputs['save_name'] != Null){
-            //     $img_path = $this->inputs['img_path'];
-            // }
-
             if (!empty($greet)){
                 $inputs = array(
                     'store_id'=>$store->id, 
@@ -142,15 +139,6 @@ class LineNotifyController extends Controller
                 );
                 ActionMessageJob::dispatch($inputs);         
             }
-
-            // $inputs = array(
-            //     'store_id'=>$store->id, 
-            //     'token'=>$access_token,
-            //     'content'=> empty($greet) ? 
-            // );
-            // ActionMessageJob::dispatch($inputs);
-
-
             return redirect(url($url_name . '/entry'))->with('success_flash_message', 'LINE連携が完了しました。');
         }
         catch (\Exception $e) {

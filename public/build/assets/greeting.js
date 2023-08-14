@@ -17,12 +17,18 @@ function greetSave(e){
   const inputContent = $form.find('textarea.content_form')
   const contentFeedback = $form.find('.content_feedback')
 
-  // if (inputContent.val().length > 1000)
-  // {
-  //   contentFeedback.text('入力可能文字数は1000文字です');
-  //   inputContent.addClass("is-invalid");
-  //   return false
-  // }
+  if (!inputContent.val()) {
+    contentFeedback.text('必須項目です');
+    inputContent.addClass("is-invalid");
+    return false
+  }
+
+  if (inputContent.val().length > 1000)
+  {
+    contentFeedback.text('入力可能文字数は1000文字です');
+    inputContent.addClass("is-invalid");
+    return false
+  }
   
   $.ajax({
     headers: {'X-CSRF-TOKEN': csrf_token},
@@ -37,7 +43,7 @@ function greetSave(e){
   }).fail(function(res){
     toastr.error('あいさつメッセージ更新に失敗しました');
     inputContent.removeClass("is-invalid");
-    console.log(res);
+    console.log(res.responseJSON.error);
   })
 };
 
