@@ -139,7 +139,8 @@ class LineNotifyController extends Controller
                 );
                 ActionMessageJob::dispatch($inputs);         
             }
-            return redirect(url($url_name . '/entry'))->with('success_flash_message', 'LINE連携が完了しました。');
+            return redirect('https://line.me/R/ti/p/@linenotify');
+            // return redirect(url($url_name . '/entry'))->with('success_flash_message', 'LINE連携が完了しました。');
         }
         catch (\Exception $e) {
             \Log::error('エラー機能: LineNotify CallBack遷移【URL:'.$redirect_url.'】');
