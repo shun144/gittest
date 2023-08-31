@@ -96,8 +96,7 @@ $(function () {
     columnDefs:[
       { targets:0, width:35},
       { targets:1, width:40},
-      { targets:2, width:140},
-      // { targets:3, width:115},
+      { targets:2, width:180},
       { targets:3, width:130},
       { targets:5, width:40},
       { targets:6, width:200},
