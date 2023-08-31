@@ -33,7 +33,7 @@ class ScheduleController extends Controller
             $now = Carbon::now();
             $inputs = $request->only(['content']);
             
-            \Log::info($inputs);
+            // \Log::info($inputs);
             
             $inputs['title'] = $request->has('title') ? $request->only(['title']):'ー';
             $inputs['store_id'] = Auth::user()->store_id;
