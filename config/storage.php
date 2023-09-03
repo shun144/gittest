@@ -18,5 +18,4 @@ return [
       'entry' => 'storage\user\image\entry'
     ]
   ],
-  // 'garbage'  => 'storage\_garbage'
 ];
