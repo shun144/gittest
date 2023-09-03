@@ -171,6 +171,10 @@ body {
   color: blue !important;
 }
 
+.btn_show:hover i {
+  color: blue !important;
+}
+
 .btn_dl:hover i {
   color: blue !important;
 }
