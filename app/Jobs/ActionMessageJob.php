@@ -89,7 +89,6 @@ class ActionMessageJob implements ShouldQueue
                 $res_body = json_decode($res->getBody()); 
                 if ($res_body->status != 200){  
                     \Log::error('エラー機能:LINE連携時アクションメッセージ配信 【店舗ID:'.$store_id.'】');
-                    \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
                     \Log::error('エラー内容:'.'【リターンコード:'.$res_body->status.'】'.$res_body->message);          
                 }
             }      
