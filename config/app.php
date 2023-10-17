@@ -172,6 +172,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         // JeroenNoten\LaravelAdminLte\ServiceProvider::class,
+
+        // bulk update用パッケージ（https://github.com/mavinoo/laravelBatch）
+        Mavinoo\Batch\BatchServiceProvider::class,  
     ])->toArray(),
 
     /*

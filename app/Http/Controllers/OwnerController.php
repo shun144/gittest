@@ -20,7 +20,8 @@ use App\Models\Message;
 use App\Models\Image;
 use App\Models\History;
 use App\Models\Template;
-// use App\Facades\FacadeClassA; 
+use GuzzleHttp\Pool;
+use Mavinoo\Batch\BatchFacade as Batch;
 
 class OwnerController extends Controller
 {
@@ -140,7 +141,6 @@ class OwnerController extends Controller
             ->where('is_valid', true)
             ->count();
 
-            // $reg_url = url($url_name) . '/register';
             $reg_url = url($url_name) . '/entry';
             return view('owner.line_users', compact('lines', 'reg_url', 'valid_count'));
         }
@@ -179,6 +179,127 @@ class OwnerController extends Controller
             \Log::error('エラー内容:'.$e->getMessage());
 
             return redirect(route('owner.line_users'))->with('edit_lineuser_error_flushMsg','連携LINEユーザ更新に失敗しました');
+        }
+    }
+
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 退会済み友達更新
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function updateStatusLineUser(Request $request)
+    {
+        try {
+            
+            // タイムアウトしない(ini_set()は関数が実行されたスクリプト内「だけ」その設定を有効にする関数)
+            ini_set("max_execution_time",0);
+
+            $now = Carbon::now();
+            $API = 'https://notify-api.line.me/api/status';
+            $client = new Client();
+
+            $store_id = Auth::user()->store_id;
+
+            // 有効なLINEユーザのみ取得
+            $lines = DB::table('lines')
+            ->select('id','token')
+            ->whereNull('deleted_at')
+            ->where('store_id', $store_id)
+            ->where('is_valid', 1)
+            ->get();
+
+            // 有効なLINEユーザが0件のため処理終了
+            if ($lines->count() == 0){
+                return redirect(route('owner.line_users'))->with('edit_lineuser_success_flushMsg','有効なLINEユーザが0件のため更新せず終了しました');
+            }
+
+
+            // 非同期リクエストパラメータリスト作成
+            $requests_param = [];
+
+            // lineテーブルのIDをキーにしてリクエストパラメータリストを作成
+            foreach($lines as $line){
+                array_push($requests_param,
+                [
+                    'key' => $line->id,
+                    'params' =>  [
+                        'headers' => ['Authorization'=> 'Bearer '.$line->token, ],
+                        'http_errors' => false
+                    ]
+                ]);
+            }
+
+            // リクエストパラメータを元にリクエスト変数を作成
+            // yieldにすることでメモリリークを防ぐ
+            $requests = function ($requests_param) use ($client, $API) {
+                foreach ($requests_param as $param) {
+                    yield function() use ($client, $API, $param) {
+                        return $client->requestAsync('GET', $API, $param['params']);
+                    };
+                }
+            };
+
+            $contents = [];
+            $pool = new Pool($client, $requests($requests_param), [
+                // 最大同時実行数
+                'concurrency' => 50,
+
+                // レスポンスが正常だった場合（401などAPIの結果がエラーの場合でもこちらを通る）
+                'fulfilled' => function ($response, $index) use ($requests_param, &$contents) 
+                {
+                    $contents[$requests_param[$index]['key']] = [
+                        'line_id'          => $requests_param[$index]['key'],
+                        'html'             => $response->getBody()->getContents(),
+                        'status_code'      => $response->getStatusCode(),
+                        'response_header'  => $response->getHeaders()
+                    ];
+                },
+                // レスポンスが異常だった場合
+                'rejected' => function ($reason, $index) use ($requests_param, &$contents) 
+                {
+                    $contents[$requests_param[$index]['key']] = [
+                        'line_id'=> $requests_param[$index]['key'],
+                        'html'   => '',
+                        'reason' => $reason
+                    ];
+                },
+            ]);
+            $promise = $pool->promise();
+
+            // 全ての並列処理が終わるまで待機
+            $promise->wait();
+
+
+            $upd_user_list = array();
+            foreach($contents as $content){
+                // 退会済み(接続が切れている)ユーザのみ、状態を無効に更新する
+                if ($content['status_code'] != 200){
+                    array_push($upd_user_list, ['id' =>$content['line_id'], 'is_valid' => 0, 'updated_at' => $now]);
+                }
+            }
+
+            $lineInstance = new Line;
+            $index = 'id';
+
+            // 100件ずつBalk Update
+            foreach (array_chunk($upd_user_list, 100) as $chunk) {
+                Batch::update($lineInstance, $chunk, $index);
+            }
+            
+            // foreach($upd_user_list as $upd_user){
+            //     DB::table('lines')
+            //     ->where('id',$upd_user['id'])
+            //     ->update([
+            //         'is_valid' => $upd_user['is_valid'],
+            //         'updated_at' => $upd_user['updated_at']
+            //         ]
+            //     );          
+            // }
+            return redirect(route('owner.line_users'))->with('edit_lineuser_success_flushMsg','退会済み友達更新が完了しました');
+        }
+        catch (\Exception $e) {
+            \Log::error('エラー機能:退会済み友達更新 【店舗ID:'.Auth::user()->store_id.'】');
+            \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+            \Log::error('エラー内容:'.$e->getMessage());
+            return redirect(route('owner.line_users'))->with('edit_lineuser_error_flushMsg','退会済み友達更新に失敗しました');
         }
     }
 

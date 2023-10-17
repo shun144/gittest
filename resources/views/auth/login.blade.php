@@ -71,9 +71,28 @@
             @enderror
         </div>
 
+
+        {{-- ConditionCheck field --}}
+        <div id="input_terms_condition" class="input-group">
+            <label for="input_condition_check">
+                <input id="input_condition_check" type="checkbox" name="conditioncheck">        
+                利用規約に同意する
+            </label>
+                   
+            @error('conditioncheck')
+                <span class="invalid-feedback @error('conditioncheck')is_check_invalid @enderror" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+            @include('owner.modals.terms_condition')
+        </div>
+        <div class="terms_condition" data-toggle="modal" data-target="#modal_terms_condition">利用規約を見る</div>
+
+
         {{-- Login field --}}
         <div class="row">
             <div class="col-7">
+ 
                 {{-- <div class="icheck-primary" title="{{ __('adminlte::adminlte.remember_me_hint') }}">
                     <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
 
@@ -92,6 +111,7 @@
         </div>
 
     </form>
+
 @stop
 
 {{-- @section('auth_footer')
@@ -111,3 +131,18 @@
         </p>
     @endif
 @stop --}}
+
+@section('css')
+    <link rel="stylesheet" href="{{ asset('build/assets/login.css')}}">
+
+  {{-- <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.css') }}"> 
+  <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
+  <link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}"> --}}
+  {{-- @vite(['resources/sass/component.scss']) --}}
+@stop
+
+@section('js')
+    <script src="{{asset('vendor/adminlte/plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{asset('vendor/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ asset('vendor/adminlte/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+@stop

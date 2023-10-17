@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class LoginController extends Controller
@@ -36,6 +36,26 @@ class LoginController extends Controller
     {
       return 'login_id';
     }
+
+
+    // 認証方法の変更
+    // AuthenticatesUsersのvalidateLoginメソッドをオーバーライド
+    protected function validateLogin(Request $request)
+    {
+      // dd($request);
+      $request->validate([
+          $this->username() => 'required|string',
+          'password' => 'required|string',
+          'conditioncheck' => 'required'
+      ],
+      [
+        $this->username() => 'ログインIDは必須入力です。',
+        'password.required' => 'パスワードは必須入力です。',
+        'conditioncheck.required' => '利用規約の同意チェックは必須です。',
+      ]);
+    }
+
+
 
     // 未ログインからのログイン後の遷移先を変更する
     public function redirectTo()

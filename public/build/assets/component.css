@@ -1,3 +1,4 @@
+@charset "UTF-8";
 body {
   font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "meiryo", sans-serif;
 }
@@ -194,4 +195,25 @@ td {
 }
 #greeting .greetFormTextAreaRow textarea {
   height: 90%;
+}
+
+#line_user_status_loader {
+  display: none;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0px;
+  left: 0px;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 2000;
+}
+#line_user_status_loader::before {
+  content: "LINEユーザの状態更新中...";
+  color: red;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
 }/*# sourceMappingURL=component.css.map */

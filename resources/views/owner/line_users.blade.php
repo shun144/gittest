@@ -8,6 +8,8 @@
 
 @section('content')
 
+  <div id="line_user_status_loader"></div>
+
   <div class="mx-auto pb-5" style="width:70rem">
 
     <div class="mb-3 w-75">
@@ -22,9 +24,20 @@
       </div>
     </div>
 
+    <div class="mb-2">
+      <button form="formUpdLineUser" type="submit" class="btn btn-primary">退会済み友達更新</button>
+      <form id="formUpdLineUser" action="{{ route('line_users.upd.status') }}" method="get" onSubmit="return updateLineUserStatus(event)">@csrf</form>
+    </div>
+
+
+    {{-- <div class="mb-2">
+      <button form="formUpdLineUser" type="submit" class="btn btn-primary">LINEユーザの状態更新</button>
+      <form id="formUpdLineUser" action="{{ route('line_users.upd.status') }}" method="get">@csrf</form>
+    </div> --}}
 
     <div class="card">
       <div class="card-body">
+
         <div id="infotop"><span class="text-blue">有効LINEユーザ数</span>：{{isset($valid_count) ? number_format($valid_count):'0'}}人</div>
         <table id="line_user_table" class="table table-striped table-bordered" style="table-layout:fixed;">
           <thead>
@@ -74,7 +87,8 @@
 <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
-<link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}">
+{{-- <link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}"> --}}
+<link rel="stylesheet" href="{{ asset('build/assets/component.css')}}">
 {{-- @vite(['resources/sass/component.scss']) --}}
 @stop
 
@@ -84,12 +98,17 @@
 <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('plugins/toastr/js/2.1.4/toastr.min.js')}}"></script>
+<script src="{{ asset('build/assets/lineUser.js')}}"></script>
 {{-- <script src="{{ asset('vendor/popper/popper.min.js')}}"></script> --}}
 
 <script>
 
 @if (isset($get_lineuser_error_flushMsg))
   $(function () {toastr.error('{{ $get_lineuser_error_flushMsg }}');});
+@endif
+
+@if (session('edit_lineuser_success_flushMsg'))
+  $(function () {toastr.success('{{ session('edit_lineuser_success_flushMsg') }}');});
 @endif
 
 @if (session('edit_lineuser_error_flushMsg'))
@@ -117,6 +136,7 @@ function confirmEditLineUser(e){
 };
 
 
+
 $(function () {
   $.extend( $.fn.dataTable.defaults, { 
     language: {url: "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json" } 
@@ -139,6 +159,7 @@ $(function () {
     }
   });
 });
+
 
 </script>
 @stop

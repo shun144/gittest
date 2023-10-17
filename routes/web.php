@@ -39,6 +39,7 @@ Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], fu
     
     Route::get('/line-users', [OwnerController::class, 'viewLineUsers'])->name('owner.line_users');
     Route::post('/line-users-edit', [OwnerController::class, 'updateLineUser'])->name('line_users.edit');
+    Route::get('/line-users-upd-status', [OwnerController::class, 'updateStatusLineUser'])->name('line_users.upd.status');
 
     Route::get('/history', [OwnerController::class, 'viewPostHistory'])->name('owner.history');
     Route::get('/history-info', [OwnerController::class, 'viewPostHistoryInfo'])->name('owner.history.info');
