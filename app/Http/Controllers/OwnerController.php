@@ -272,7 +272,7 @@ class OwnerController extends Controller
             foreach($contents as $content){
                 // 退会済み(接続が切れている)ユーザのみ、状態を無効に更新する
                 if ($content['status_code'] != 200){
-                    array_push($upd_user_list, ['id' =>$content['line_id'], 'is_valid' => 0, 'updated_at' => $now]);
+                    array_push($upd_user_list, ['id' =>$content['line_id'], 'is_valid' => false, 'updated_at' => $now]);
                 }
             }
 

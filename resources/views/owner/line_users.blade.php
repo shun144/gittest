@@ -8,9 +8,16 @@
 
 @section('content')
 
-  <div id="line_user_status_loader"></div>
+  <div id="line_user_status_loader">
+    <div class="loading">
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+    </div>
+  </div>
 
-  <div class="mx-auto pb-5" style="width:70rem">
+  <div class="mx-auto pb-5" style="width:70rem;">
 
     <div class="mb-3 w-75">
       <div class="input-group">
@@ -73,22 +80,20 @@
               @endforeach
 
             @endif
-
-
-
           </tbody>
         </table>
       </div>
     </div>
   </div>  
+  
  @stop
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
-{{-- <link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}"> --}}
-<link rel="stylesheet" href="{{ asset('build/assets/component.css')}}">
+<link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}">
+{{-- <link rel="stylesheet" href="{{ asset('build/assets/component.css')}}"> --}}
 {{-- @vite(['resources/sass/component.scss']) --}}
 @stop
 

@@ -1,3 +1,6 @@
+#input_terms_condition .show {
+  padding-left: 0px !important;
+}
 #input_terms_condition label {
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -20,6 +23,7 @@
 .modal_dialog_fluid {
   max-width: 70%;
   min-width: 20%;
+  margin: 5vh auto;
 }
 
 #modal_terms_condition {
@@ -48,4 +52,10 @@
 }
 #modal_terms_condition .section .sec_header_3 {
   grid-template-columns: 25px 40px 48px 1fr;
+}
+
+@media screen and (min-width: 1025px) {
+  .modal_dialog_fluid {
+    max-width: 60%;
+  }
 }/*# sourceMappingURL=login.css.map */

@@ -1,4 +1,24 @@
+$breakpoint: (
+	// 766px以下(767より下)
+  sp: 'screen and (max-width: 767px)',
+	// 767px以上
+  tab: 'screen and (min-width: 767px)',
+	// 1025px以上
+  pc: 'screen and (min-width: 1025px)'
+);
+@mixin mq($bp) {
+  @media #{map-get($breakpoint, $bp)} {
+   @content;
+  }
+}
+
 #input_terms_condition {
+
+  .show {
+    padding-left: 0px !important;
+  }
+  
+
   label {
     user-select: none;
     cursor: pointer;
@@ -22,6 +42,7 @@
 .modal_dialog_fluid{
   max-width: 70%;
   min-width: 20%;
+  margin: 5vh auto
 }
 
 #modal_terms_condition{
@@ -57,5 +78,12 @@
     .sec_header_3{
       grid-template-columns: 25px 40px 48px 1fr;
     }
+  }
+}
+
+// PC画面
+@include mq(pc) {
+  .modal_dialog_fluid{
+    max-width: 60%;
   }
 }

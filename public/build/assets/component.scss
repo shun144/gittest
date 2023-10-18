@@ -266,24 +266,80 @@ td {
 	}
 }
 
+// #line_user_status_loader {
+//   display: none;
+//   position: fixed;
+//   width: 100vw;
+//   height: 100vh;
+//   top: 0px;
+//   left: 0px;
+//   background: rgba(255, 255, 255, 0.4);
+//   z-index: 99;
+
+// 	&::before {
+// 		content: "LINEユーザの状態更新中...";
+// 		color: red;
+// 		position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     -webkit-transform: translate(-50%, -50%);
+//     -ms-transform: translate(-50%, -50%);
+// 	}
+// }
+
+
 #line_user_status_loader {
-  display: none;
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: 100%;
   top: 0px;
   left: 0px;
-  background: rgba(255, 255, 255, 0.7);
-  z-index: 2000;
+	background: rgba(255, 255, 255, 0.9);
+	z-index: 99;
 
-	&::before {
-		content: "LINEユーザの状態更新中...";
-		color: red;
+	.loading {
 		position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
+		top: 40%;
+		left: 50%;
+
+		.loading-bar {
+			display: inline-block;
+			width: 4px;
+			height: 18px;
+			border-radius: 4px;
+			animation: loading 1s ease-in-out infinite;
+	
+			&:nth-child(1) {
+				background-color: #3498db;
+				animation-delay: 0;
+			}
+			&:nth-child(2) {
+				background-color: #c0392b;
+				animation-delay: 0.09s;
+			}
+			&:nth-child(3) {
+				background-color: #f1c40f;
+				animation-delay: .18s;
+			}
+			&:nth-child(4) {
+				background-color: #27ae60;
+				animation-delay: .27s;
+			}
+		}
 	}
+}
+
+
+@keyframes loading {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1, 2.2);
+  }
+  40% {
+    transform: scale(1);
+  }
 }
