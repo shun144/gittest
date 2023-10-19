@@ -85,8 +85,10 @@
                 </span>
             @enderror
             @include('owner.modals.terms_condition')
+            @include('owner.modals.privacy_policy')
         </div>
         <div class="terms_condition" data-toggle="modal" data-target="#modal_terms_condition">利用規約を見る</div>
+        <div class="privacy_policy" data-toggle="modal" data-target="#modal_privacy_policy">プライバシーポリシーを見る</div>
 
 
         {{-- Login field --}}

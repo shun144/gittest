@@ -58,4 +58,46 @@
   .modal_dialog_fluid {
     max-width: 60%;
   }
+}
+#modal_privacy_policy .show {
+  padding-left: 0px !important;
+}
+
+.privacy_policy {
+  cursor: pointer;
+  color: rgb(85, 85, 255);
+}
+
+.modal_dialog_fluid {
+  max-width: 70%;
+  min-width: 20%;
+  margin: 5vh auto;
+}
+
+#modal_privacy_policy {
+  color: black;
+}
+#modal_privacy_policy .header {
+  border-bottom: 2px solid #e9ecef;
+}
+#modal_privacy_policy .section {
+  margin-bottom: 5vh;
+}
+#modal_privacy_policy .section .sec_header {
+  margin-bottom: 1.1vh;
+  display: grid;
+  -moz-column-gap: 0.5vw;
+       column-gap: 0.5vw;
+}
+#modal_privacy_policy .section .sec_header .number::after {
+  content: ".";
+}
+#modal_privacy_policy .section .sec_header_1 {
+  grid-template-columns: 25px 1fr;
+}
+#modal_privacy_policy .section .sec_header_2 {
+  grid-template-columns: 25px 40px 1fr;
+}
+#modal_privacy_policy .section .sec_header_3 {
+  grid-template-columns: 25px 40px 48px 1fr;
 }/*# sourceMappingURL=login.css.map */

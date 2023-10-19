@@ -12,12 +12,13 @@ $breakpoint: (
   }
 }
 
+
+// 利用規約
 #input_terms_condition {
 
   .show {
     padding-left: 0px !important;
   }
-  
 
   label {
     user-select: none;
@@ -87,3 +88,70 @@ $breakpoint: (
     max-width: 60%;
   }
 }
+// 利用規約
+
+
+
+
+
+// プライバシーポリシー
+#modal_privacy_policy {
+
+  .show {
+    padding-left: 0px !important;
+  }
+}
+
+.privacy_policy {
+  cursor: pointer;
+  color:rgb(85, 85, 255);
+}
+
+.modal_dialog_fluid{
+  max-width: 70%;
+  min-width: 20%;
+  margin: 5vh auto
+}
+
+#modal_privacy_policy{
+  color:black;
+
+  .header {
+    border-bottom:2px solid #e9ecef
+  }
+
+  .section {
+    margin-bottom: 5vh;
+
+    .sec_header{
+      margin-bottom: 1.1vh;
+      display: grid;
+      column-gap: 0.5vw;
+
+      .number {
+        &::after{content: ".";}
+      }
+      // .descript {}      
+    }
+  
+    .sec_header_1{
+      // font-weight: 700;
+      grid-template-columns: 25px 1fr;
+    }
+
+    .sec_header_2{
+      grid-template-columns: 25px 40px 1fr;
+    }
+
+    .sec_header_3{
+      grid-template-columns: 25px 40px 48px 1fr;
+    }
+  }
+}
+
+// // PC画面
+// @include mq(pc) {
+//   .modal_dialog_fluid{
+//     max-width: 60%;
+//   }
+// }
