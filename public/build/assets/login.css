@@ -41,7 +41,7 @@
   font-size: 1.25rem;
 }
 #modal_terms_condition .header button span, #modal_privacy_policy .header button span {
-  font-size: 30px;
+  font-size: 40px;
 }
 #modal_terms_condition .content, #modal_privacy_policy .content {
   margin-top: 30px;
@@ -76,14 +76,6 @@
   color: #2b2b2b;
   font-size: 17px;
 }
-#modal_terms_condition .content .section ol .li_title, #modal_privacy_policy .content .section ol .li_title {
-  display: inline-block;
-  color: #070707;
-  margin-top: 10px;
-  margin-bottom: 0px;
-  font-size: 15px;
-  border-bottom: 1px solid rgba(2, 179, 179, 0.8);
-}
 
 @media screen and (min-width: 1025px) {
   #modal_terms_condition, #modal_privacy_policy {
@@ -96,9 +88,6 @@
   }
   #modal_terms_condition .header h4, #modal_privacy_policy .header h4 {
     font-size: 25px;
-  }
-  #modal_terms_condition .header button span, #modal_privacy_policy .header button span {
-    font-size: 40px;
   }
   #modal_terms_condition .content, #modal_privacy_policy .content {
     padding: 0px 60px;
