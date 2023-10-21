@@ -46,7 +46,7 @@
       <div class="card-body">
 
         <div id="infotop"><span class="text-blue">有効LINE友だち数</span>：{{isset($valid_count) ? number_format($valid_count):'0'}}人</div>
-        <div id="infotop"><span class="text-red">無効LINE友だち数</span>：{{isset($invalid_count) ? number_format($invalid_count):'0'}}人</div>
+        <div id="infotop"><span class="text-red">退会済みLINE友だち数</span>：{{isset($invalid_count) ? number_format($invalid_count):'0'}}人</div>
         <table id="line_user_table" class="table table-striped table-bordered" style="table-layout:fixed;">
           <thead>
             <tr>
