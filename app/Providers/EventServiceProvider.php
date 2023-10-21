@@ -41,9 +41,11 @@ class EventServiceProvider extends ServiceProvider
             else {
                 $event->menu->add(
                     ['text' => '配信', 'url' => route('owner.schedule'), 'icon' => 'fab fa-fw fa-line'],
-                    ['text' => '連携LINEユーザ一覧', 'url' => route('owner.line_users'), 'icon' => 'fas fa-fw fa-user'],
+                    ['text' => '連携LINE友だち一覧', 'url' => route('owner.line_users'), 'icon' => 'fas fa-fw fa-user'],
                     ['text' => '配信履歴一覧','url' => route('owner.history'),'icon' => 'fas fa-fw fa-history'],
-                    ['text' => 'あいさつメッセージ','url' => route('owner.greeting'),'icon' => 'fas fa-fw fa-hand-paper']
+                    ['text' => 'あいさつメッセージ','url' => route('owner.greeting'),'icon' => 'fas fa-fw fa-hand-paper'],
+
+                    // ['text' => 'グラフ','url' => route('owner.graph'),'icon' => 'fas fa-fw fa-hand-paper']
                 ); 
             }
         });

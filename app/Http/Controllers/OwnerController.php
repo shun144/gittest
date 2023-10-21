@@ -120,7 +120,7 @@ class OwnerController extends Controller
 
 
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-    // 連携LINEユーザ一覧表示
+    // 連携LINE友だち一覧表示
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function viewLineUsers()
     {
@@ -141,22 +141,28 @@ class OwnerController extends Controller
             ->where('is_valid', true)
             ->count();
 
+            $invalid_count = DB::table('lines')
+            ->whereNull('deleted_at')
+            ->where('store_id', $store_id)
+            ->where('is_valid', false)
+            ->count();
+
             $reg_url = url($url_name) . '/entry';
-            return view('owner.line_users', compact('lines', 'reg_url', 'valid_count'));
+            return view('owner.line_users', compact('lines', 'reg_url', 'valid_count', 'invalid_count'));
         }
         catch (\Exception $e) {
-            \Log::error('エラー機能:連携LINEユーザ一覧表示 【店舗ID:'.Auth::user()->store_id.'】');
+            \Log::error('エラー機能:連携LINE友だち一覧表示 【店舗ID:'.Auth::user()->store_id.'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
 
-            $get_lineuser_error_flushMsg = '連携LINEユーザ取得に失敗しました';
+            $get_lineuser_error_flushMsg = '連携LINE友だち一覧取得に失敗しました';
             return view('owner.line_users', compact('get_lineuser_error_flushMsg'));
         }
     }
 
 
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-    // 連携LINEユーザ更新
+    // 連携LINE友だち更新
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     public function updateLineUser(Request $request)
     {
@@ -174,11 +180,11 @@ class OwnerController extends Controller
             return redirect(route('owner.line_users'));
         }
         catch (\Exception $e) {
-            \Log::error('エラー機能:連携LINEユーザ更新 【店舗ID:'.Auth::user()->store_id.'/LINEユーザID:'.$post['line_user_id'].'】');
+            \Log::error('エラー機能:連携LINE友だち更新 【店舗ID:'.Auth::user()->store_id.'/LINEユーザID:'.$post['line_user_id'].'】');
             \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
             \Log::error('エラー内容:'.$e->getMessage());
 
-            return redirect(route('owner.line_users'))->with('edit_lineuser_error_flushMsg','連携LINEユーザ更新に失敗しました');
+            return redirect(route('owner.line_users'))->with('edit_lineuser_error_flushMsg','連携LINE友だち更新に失敗しました');
         }
     }
 
@@ -198,7 +204,7 @@ class OwnerController extends Controller
 
             $store_id = Auth::user()->store_id;
 
-            // 有効なLINEユーザのみ取得
+            // 有効なLINE友だちのみ取得
             $lines = DB::table('lines')
             ->select('id','token')
             ->whereNull('deleted_at')
@@ -206,9 +212,9 @@ class OwnerController extends Controller
             ->where('is_valid', 1)
             ->get();
 
-            // 有効なLINEユーザが0件のため処理終了
+            // 有効なLINE友だちが0件のため処理終了
             if ($lines->count() == 0){
-                return redirect(route('owner.line_users'))->with('edit_lineuser_success_flushMsg','有効なLINEユーザが0件のため更新せず終了しました');
+                return redirect(route('owner.line_users'))->with('edit_lineuser_success_flushMsg','有効なLINE友だちが0件のため更新せず終了しました');
             }
 
 
@@ -270,7 +276,7 @@ class OwnerController extends Controller
 
             $upd_user_list = array();
             foreach($contents as $content){
-                // 退会済み(接続が切れている)ユーザのみ、状態を無効に更新する
+                // 退会済み(接続が切れている)友だちのみ、状態を無効に更新する
                 if ($content['status_code'] != 200){
                     array_push($upd_user_list, ['id' =>$content['line_id'], 'is_valid' => false, 'updated_at' => $now]);
                 }
@@ -460,6 +466,63 @@ class OwnerController extends Controller
             \Log::error('エラー内容:'.$e->getMessage());
             $data = ['error' => $e->getMessage()];
             return response()->json($data, 500);
+        }
+    }
+
+
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // グラフ画面表示
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function viewGraph()
+    {
+        try {
+
+            // $user = Auth::user();
+            // $post = DB::table('greetings')
+            // ->where('greetings.store_id',$user->store_id)
+            // ->join('messages','message_id','=','messages.id')
+            // ->leftJoin('images','images.message_id','=','messages.id')
+            // ->select(
+            //     'messages.content as content',
+            //     'images.org_name as org_name',
+            //     'images.save_name as save_name'
+            //     )
+            // ->first();
+
+            // // 画像URLプロパティ追加
+            // if (!empty($post)){
+            //     if ($post->save_name != Null){
+            //         $post->img_url = Storage::disk('greeting')->url($post->save_name);
+            //         $post->has_file = '1';
+            //     }
+            //     else {
+            //         $post->img_url = Null;
+            //         $post->has_file = '0';
+            //     }
+            // }
+            // return view('owner.greeting', compact('post'));
+
+            $targetDate = '2019-01-07';
+            for($i=0;$i<7;$i++){
+                echo date("Ymd",strtotime("+{$i} day",strtotime($targetDate)))."\n";
+            }
+
+
+            $week[] = 'hoge';
+            $i = 0;
+            while($i < 100000){
+                ++$i;
+            }
+
+            $data = ['1','2'];
+            return view('owner.graph',[
+                'data' => $data,
+              ]);
+        }
+        catch (\Exception $e) {
+            \Log::error('エラー機能:グラフ画面表示 【店舗ID:'.Auth::user()->store_id.'】');
+            \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+            \Log::error('エラー内容:'.$e->getMessage());
         }
     }
 }

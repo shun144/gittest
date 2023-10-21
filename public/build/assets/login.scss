@@ -12,10 +12,12 @@ $breakpoint: (
   }
 }
 
+$main_color: #02b3b3cc;
 
-// 利用規約
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// ログイン画面上の利用規約/プライバシーポリシー
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
 #input_terms_condition {
-
   .show {
     padding-left: 0px !important;
   }
@@ -29,129 +31,150 @@ $breakpoint: (
       cursor: pointer;
     }
   }
-
   .is_check_invalid {
     display: block;
   }  
 }
 
-.terms_condition {
+.terms_condition, .privacy_policy {
   cursor: pointer;
-  color:rgb(85, 85, 255);
+  // color:rgb(85, 85, 255);
+  color: $main_color;
+  font-weight: bold;
 }
 
-.modal_dialog_fluid{
-  max-width: 70%;
-  min-width: 20%;
-  margin: 5vh auto
-}
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// 利用規約 / プライバシーポリシー
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+#modal_terms_condition, #modal_privacy_policy{
+  color:#474747;
+  font-size: 14px;
+  font-weight: 500;
 
-#modal_terms_condition{
-  color:black;
-
-  .header {
-    border-bottom:2px solid #e9ecef
-  }
-
-  .section {
-    margin-bottom: 5vh;
-
-    .sec_header{
-      margin-bottom: 1.1vh;
-      display: grid;
-      column-gap: 0.5vw;
-
-      .number {
-        &::after{content: ".";}
-      }
-      // .descript {}      
-    }
-  
-    .sec_header_1{
-      // font-weight: 700;
-      grid-template-columns: 25px 1fr;
-    }
-
-    .sec_header_2{
-      grid-template-columns: 25px 40px 1fr;
-    }
-
-    .sec_header_3{
-      grid-template-columns: 25px 40px 48px 1fr;
-    }
-  }
-}
-
-// PC画面
-@include mq(pc) {
   .modal_dialog_fluid{
-    max-width: 60%;
+    width: 95%;
+    min-width: 95%;
+    margin: 1vh auto
   }
-}
-// 利用規約
-
-
-
-
-
-// プライバシーポリシー
-#modal_privacy_policy {
-
-  .show {
-    padding-left: 0px !important;
-  }
-}
-
-.privacy_policy {
-  cursor: pointer;
-  color:rgb(85, 85, 255);
-}
-
-.modal_dialog_fluid{
-  max-width: 70%;
-  min-width: 20%;
-  margin: 5vh auto
-}
-
-#modal_privacy_policy{
-  color:black;
-
-  .header {
-    border-bottom:2px solid #e9ecef
-  }
-
-  .section {
-    margin-bottom: 5vh;
-
-    .sec_header{
-      margin-bottom: 1.1vh;
-      display: grid;
-      column-gap: 0.5vw;
-
-      .number {
-        &::after{content: ".";}
-      }
-      // .descript {}      
-    }
   
-    .sec_header_1{
-      // font-weight: 700;
-      grid-template-columns: 25px 1fr;
+  .header {
+    background-color: white;
+    border-bottom:2px solid #e9ecef;
+    padding: 0.75rem;
+
+    h4 {  
+      margin: auto 0;
+      font-size: 1.25rem;
     }
 
-    .sec_header_2{
-      grid-template-columns: 25px 40px 1fr;
+    button{
+      span {
+        font-size: 30px;
+      }
+    }
+  }
+
+  .content {
+    margin-top: 30px;
+    line-height:1.8;
+    padding: 0px 30px;
+
+    p {
+      padding-bottom: 20px;
     }
 
-    .sec_header_3{
-      grid-template-columns: 25px 40px 48px 1fr;
+    .section {
+      margin-bottom: 40px;
+
+      .sec_title {
+        color:#7e7e7e;
+        font-size: 17px;
+        font-weight: bold;
+        padding-bottom: 9px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid $main_color;  
+      }
+      p {
+        padding-bottom: 0px;
+      }
+
+      ol {
+        list-style-type: none;
+        padding: 0;
+
+        li {
+          margin-bottom: 15px;
+          
+          span {
+            color:#2b2b2b;
+            font-size: 17px;
+          }
+        }
+        // .li_title {
+        //   display: inline-block;
+        //   color:#070707;
+        //   margin-top: 10px;
+        //   margin-bottom: 0px;
+        //   font-size: 15px;
+        //   border-bottom: 1px solid $main_color; 
+        // }
+      }
+
     }
   }
 }
 
-// // PC画面
-// @include mq(pc) {
-//   .modal_dialog_fluid{
-//     max-width: 60%;
-//   }
-// }
+
+
+
+// ****PC画面****
+@include mq(pc) {
+  #modal_terms_condition , #modal_privacy_policy{
+    font-size: 18px;
+
+    .modal_dialog_fluid{
+      width: 65%;
+      min-width: 65%;
+      margin: 2vh auto
+    }
+
+    .header {
+      h4 {
+        font-size: 25px;
+      }
+      button{
+        span {
+          font-size: 40px;
+        }
+      }
+    }
+
+    .content {
+      padding: 0px 60px;
+
+      .section {
+        .sec_title {
+          font-size: 18px;
+        }
+        ol {    
+          li {
+            span {
+              font-size: 18px;
+            }
+          }
+        }
+      }
+    }
+  }
+  }
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// 利用規約
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+
+
+
+
+
+
+
+

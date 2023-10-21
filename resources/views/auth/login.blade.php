@@ -135,8 +135,8 @@
 @stop --}}
 
 @section('css')
-    {{-- <link rel="stylesheet" href="{{ asset('build/assets/login.css')}}"> --}}
-    <link rel="stylesheet" href="{{ asset('build/assets/login.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('build/assets/login.css')}}">
+    {{-- <link rel="stylesheet" href="{{ asset('build/assets/login.min.css')}}"> --}}
 
   {{-- <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.css') }}"> 
   <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
@@ -148,4 +148,25 @@
     <script src="{{asset('vendor/adminlte/plugins/jquery/jquery.min.js')}}"></script>
     <script src="{{asset('vendor/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+
+    {{-- <script>
+    $(function () {
+        let $scrollBtn = $(".scroll-button");
+        $(window).scroll(function(){
+            console.log('test');
+            let scrollTop = $(window).scrollTop();
+            if(scrollTop > $(window).height()){
+                console.log($(window).height())
+                $scrollBtn.css("opacity", ".7");
+            }else{
+                $scrollBtn.css("opacity", "0");
+            }
+        });
+        $scrollBtn.click(function(){
+            $("html,body").animate({scrollTop: 0}, 500, "swing");
+        });
+    })
+    </script> --}}
+
+
 @stop

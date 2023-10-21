@@ -60,6 +60,7 @@ Route::group(['prefix' => 'dashboard', 'middleware'=>['auth','can:isOwner']], fu
     
     Route::post('/post', [ScheduleController::class, 'postMessage'])->name('post');
 
+    Route::get('/graph', [OwnerController::class, 'viewGraph'])->name('owner.graph');
     // Route::get('/testpost', [ScheduleController::class, 'testPost'])->name('testPost');
 });
 

@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title','連携LINEユーザ一覧')
+@section('title','連携LINE友だち一覧')
 
 @section('content_header')
-    <h1>連携LINEユーザ一覧</h1>
+    <h1>連携LINE友だち一覧</h1>
 @stop
 
 @section('content')
@@ -32,7 +32,7 @@
     </div>
 
     <div class="mb-2">
-      <button form="formUpdLineUser" type="submit" class="btn btn-primary">退会済み友達更新</button>
+      <button form="formUpdLineUser" type="submit" class="btn btn-primary">退会済み友だち更新</button>
       <form id="formUpdLineUser" action="{{ route('line_users.upd.status') }}" method="get" onSubmit="return updateLineUserStatus(event)">@csrf</form>
     </div>
 
@@ -45,7 +45,8 @@
     <div class="card">
       <div class="card-body">
 
-        <div id="infotop"><span class="text-blue">有効LINEユーザ数</span>：{{isset($valid_count) ? number_format($valid_count):'0'}}人</div>
+        <div id="infotop"><span class="text-blue">有効LINE友だち数</span>：{{isset($valid_count) ? number_format($valid_count):'0'}}人</div>
+        <div id="infotop"><span class="text-red">無効LINE友だち数</span>：{{isset($invalid_count) ? number_format($invalid_count):'0'}}人</div>
         <table id="line_user_table" class="table table-striped table-bordered" style="table-layout:fixed;">
           <thead>
             <tr>
@@ -106,7 +107,7 @@
 <script src="{{ asset('build/assets/lineUser.js')}}"></script>
 {{-- <script src="{{ asset('vendor/popper/popper.min.js')}}"></script> --}}
 
-<script>
+  <script>
 
 @if (isset($get_lineuser_error_flushMsg))
   $(function () {toastr.error('{{ $get_lineuser_error_flushMsg }}');});
