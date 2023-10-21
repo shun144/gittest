@@ -3,7 +3,7 @@
   <div class="modal-dialog modal_dialog_fluid">
     <div class="modal-content">
       <div class="modal-header header sticky-top">
-          <h4 class="modal-title">LINE予約配信システムプライバシーポリシー<br>（情報セキュリティーポリシー）</h4>
+          <h4 class="modal-title">LINE予約配信システム<br class="d-sm-none"/>プライバシーポリシー<br class="d-xl-none"/>（情報セキュリティーポリシー）</h4>
           <button type="button" class="btn close" aria-label="Close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
