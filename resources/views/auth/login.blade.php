@@ -87,14 +87,15 @@
             @include('owner.modals.terms_condition')
             @include('owner.modals.privacy_policy')
         </div>
-        <div class="terms_condition" data-toggle="modal" data-target="#modal_terms_condition">利用規約を見る</div>
-        <div class="privacy_policy" data-toggle="modal" data-target="#modal_privacy_policy">プライバシーポリシーを見る</div>
+        {{-- <div class="terms_condition mt-2  mb-2" data-toggle="modal" data-target="#modal_terms_condition">利用規約</div>
+        <div class="privacy_policy mb-2" data-toggle="modal" data-target="#modal_privacy_policy">プライバシーポリシー</div> --}}
 
 
         {{-- Login field --}}
-        <div class="row">
+        <div class="row mt-3">
             <div class="col-7">
- 
+                <div class="terms_condition mb-2" data-toggle="modal" data-target="#modal_terms_condition">利用規約</div>
+                <div class="privacy_policy" data-toggle="modal" data-target="#modal_privacy_policy">プライバシーポリシー</div>
                 {{-- <div class="icheck-primary" title="{{ __('adminlte::adminlte.remember_me_hint') }}">
                     <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
 
@@ -104,7 +105,7 @@
                 </div> --}}
             </div>
 
-            <div class="col-5">
+            <div class="col-5 align-self-end">
                 <button type=submit class="btn btn-block {{ config('adminlte.classes_auth_btn', 'btn-flat btn-primary') }}">
                     <span class="fas fa-sign-in-alt"></span>
                     {{ __('adminlte::adminlte.sign_in') }}
@@ -135,8 +136,8 @@
 @stop --}}
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('build/assets/login.css')}}">
-    {{-- <link rel="stylesheet" href="{{ asset('build/assets/login.min.css')}}"> --}}
+    {{-- <link rel="stylesheet" href="{{ asset('build/assets/login.css')}}"> --}}
+    <link rel="stylesheet" href="{{ asset('build/assets/login.min.css')}}">
 
   {{-- <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.css') }}"> 
   <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
