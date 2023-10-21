@@ -135,8 +135,8 @@
 @stop --}}
 
 @section('css')
-    {{-- <link rel="stylesheet" href="{{ asset('build/assets/login.css')}}"> --}}
-    <link rel="stylesheet" href="{{ asset('build/assets/login.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('build/assets/login.css')}}">
+    {{-- <link rel="stylesheet" href="{{ asset('build/assets/login.min.css')}}"> --}}
 
   {{-- <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.css') }}"> 
   <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
