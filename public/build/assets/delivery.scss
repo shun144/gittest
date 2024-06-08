@@ -1,0 +1,105 @@
+@use "mixin" as *;
+@use "variables" as *;
+@import "common";
+
+.delivery {
+	width: 70%;
+	margin: 0 auto;
+}
+
+@include mq(tab) {
+	.delivery {
+		width: 95%;
+	}
+}
+
+@include mq(sp) {
+	.delivery {
+		width: 100%;
+	}
+}
+
+
+.card-header  {
+	background-color: $main_color;
+}
+
+@include mq(sp) {
+	.card-header  {
+		padding: 0.5rem 0.8rem;
+	}
+}
+
+
+
+
+@include mq(sp) {
+	.card-body  {
+		padding: 0.5rem;
+	}
+}
+
+:root {
+	--btn-color:rgb(27, 160, 51);
+}
+
+.btnPostImi {
+	text-align: center;
+	vertical-align: middle;
+	text-decoration: none;
+	padding: 5px 20px;
+	background: var(--btn-color); 
+	color: #fff;
+	transition: 0.3s;
+
+	&:hover {
+		font-weight: bold;
+		color: var(--btn-color); 
+		background: #fff;
+	}
+}
+
+
+
+.form-group {
+	margin-bottom: 48px;
+
+	&:last-child {
+		margin-bottom: 0px;
+	}
+}
+
+label {
+	margin-bottom: 0px;
+	user-select: none;
+}
+small {
+	user-select: none;
+}
+
+textarea {
+	height: 30rem!important;
+}
+
+@include mq(sp) {
+	textarea {
+		height: 25rem!important;
+	}
+}
+
+.image_preview {
+	margin-top: 0.8rem;
+	margin-bottom: 0px;
+}
+
+img {
+	max-width:20%;
+	border:1px solid #dadada;
+}
+
+@include mq(sp) {
+	img  {
+		max-width:30%;
+	}
+}
+

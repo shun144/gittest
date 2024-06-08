@@ -1,0 +1,27 @@
+@use "mixin" as *;
+@use "variables" as *;
+@import "common";
+
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// 店舗情報一覧画面
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+.store {
+	width: 95%;
+	margin: 0.6rem auto;
+}
+
+
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// 店舗一覧テーブル
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+.store-table {
+  .op-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  form:first-child {
+    border-right: 1px dotted #666;
+  }
+}

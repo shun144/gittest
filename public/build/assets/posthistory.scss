@@ -1,0 +1,40 @@
+@use "mixin" as *;
+@use "variables" as *;
+@import "common";
+
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// 配信履歴一覧画面
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+.posthistory {
+	width: 98%;
+	margin: 0.6rem auto;
+}
+
+
+
+
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// 配信履歴一覧テーブル
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+@include mq(sp) {
+  th:nth-last-child(-n+2),
+  td:nth-last-child(-n+2) {
+    visibility: collapse;
+    display: none;
+  }
+}
+
+.ws-wrap{
+  white-space: normal !important;
+}
+
+
+.btn_show:hover i{
+  color: blue!important;
+}
+
+@include mq(sp) {
+	.btn_show i {
+		font-size: 0.8em;
+	}
+}

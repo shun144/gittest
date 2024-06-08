@@ -42,16 +42,15 @@ class LoginController extends Controller
     // AuthenticatesUsersのvalidateLoginメソッドをオーバーライド
     protected function validateLogin(Request $request)
     {
-      // dd($request);
       $request->validate([
           $this->username() => 'required|string',
           'password' => 'required|string',
-          'conditioncheck' => 'required'
+          // 'conditioncheck' => 'required'
       ],
       [
         $this->username() => 'ログインIDは必須入力です。',
         'password.required' => 'パスワードは必須入力です。',
-        'conditioncheck.required' => '利用規約の同意チェックは必須です。',
+        // 'conditioncheck.required' => '利用規約の同意チェックは必須です。',
       ]);
     }
 
@@ -64,7 +63,8 @@ class LoginController extends Controller
         return route('admin.store');
       }      
       else {
-        return route('owner.schedule');
+        return route('owner.delivery');
+        // return route('owner.schedule');
       }
     }
 

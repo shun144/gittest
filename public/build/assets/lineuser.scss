@@ -1,0 +1,118 @@
+@use "mixin" as *;
+@use "variables" as *;
+@import "common";
+
+
+
+
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// LINE連携一覧画面
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+.lineuser {
+	width: 70%;
+	margin: 0.6rem auto;
+}
+
+@include mq(tab) {
+  .lineuser {
+    width: 95%;
+  }
+}
+
+@include mq(sp) {
+  .lineuser {
+    width: 99%;
+  }
+}
+
+
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// LINE連携URL
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+.entry-url {
+  margin-bottom: 1.5rem;
+
+  .btn {
+    border-radius: 0px;
+    border-color: #cac9c9;
+  }
+
+  .form-control:focus {
+    color: #828282;
+    border-color: #ced4da;
+  }
+  
+  input {
+    border-radius: 0px;
+    color: #828282;
+    font-size: 1.2rem;
+  }
+}
+
+label {
+  margin-bottom: 0px;
+  color: #666;
+}
+
+
+.taikai-check {
+  margin-bottom: 1.4rem;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+@include mq(tab) {
+	.taikai-check {
+    margin-bottom: 0.7rem;
+	}
+}
+
+
+
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// 退会確認ボタン
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+.btn-taikai {
+  --btn-color:rgb(255, 71, 71);
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  width: 10%;
+  padding: 10px 5px;
+  font-weight: bold;
+  border: 2px solid var(--btn-color);
+  background: var(--btn-color);
+  color: #fff;
+  transition: 0.5s;
+  opacity: 0.9;
+  letter-spacing: 0.1rem;
+  &:hover {
+    color: var(--btn-color);
+    background: #fff;
+  }
+}
+
+@include mq(tab) {
+	.btn-taikai {
+    width: 20%;
+		font-size: 1rem;
+	}
+}
+
+@include mq(sp) {
+	.btn-taikai {
+    width: 30%;
+    padding: 10px 4px;
+		font-size: 0.9rem;
+	}
+}
+
+
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// ローダー
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+#line_user_status_loader {
+  @include loader;
+}
+

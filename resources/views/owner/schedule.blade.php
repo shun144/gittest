@@ -1,67 +1,36 @@
 @extends('adminlte::page')
 
-@section('title', '配信')
+@section('title', 'スケジュール配信')
 
 @section('content_header')
+  <div class="d-flex">
     <h1>配信</h1>
+    <button class="btn btn-success ml-5" data-toggle="modal" data-target="#post_message">
+      即時配信
+    </button>
+  </div>
 @stop
 
 @section('content')
 
-<div class="card">
-  <div class="card-header">
-    <button class="btn btn-success" data-toggle="modal" data-target="#post_message">
-      即時配信
-    </button>
+<div class="row">
+  <div class="col-md-12">
   </div>
+  <div class="col-md-12">
 
-
-  <div class="card-body">
-    <div class="row">
-      <div class="col-md-3">        
-        <div class="sticky-top mb-3">
-          <div class="card">
-
-            <div class="card-header">
-              <div class="d-flex justify-content-between">
-                <h5 class="d-flex align-items-center mb-0">定型メッセージ</h5>
-                <button class="btn btn-success" data-toggle="modal" data-target="#add_template">
-                  作成
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body">
-
-              <div id="external-events" style="max-height:50rem; overflow-x:hidden;">
-
-                @if (isset($templates))
-
-                  @foreach ($templates as $item)
-                  <div class="external-event" data-msgid="{{ $item->id }}" style="color:white; background-color:{{$item->title_color}}">
-                    {{$item->title}}
-                  </div>
-                  @endforeach
-                @endif
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <div class="col-md-9">
+    <div class="card">
+      <div class="card-body p-0">
         <div class="card card-primary">
-          <div class="card-body p-0">
-            <div id="calendarToken" style="display:none">{{ csrf_token()}}</div>
-            <div id="calendar"></div>
-          </div>
+          <div id="calendarToken" style="display:none">{{ csrf_token()}}</div>
+          <div id="calendar"></div>
         </div>
       </div>
-    </div>    
+    </div>
+
+    
   </div>
-
 </div>
-
+    
   @include('owner.modals.post_message')
   @include('owner.modals.add_template')
   @include('owner.modals.edit_template')
@@ -75,6 +44,7 @@
   <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/fullcalendar/main.min.css') }}"> 
   <link rel="stylesheet" href="{{ asset('plugins/toastr/css/2.1.4/toastr.min.css')}}">
   <link rel="stylesheet" href="{{ asset('build/assets/component.min.css')}}">
+  <link rel="stylesheet" href="{{ asset('build/assets/schedule.css')}}">
   {{-- @vite(['resources/sass/component.scss']) --}}
 @stop
 

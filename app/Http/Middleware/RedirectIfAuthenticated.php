@@ -31,7 +31,8 @@ class RedirectIfAuthenticated
               }
               else
               {
-                return redirect(route('owner.schedule'));
+                return redirect(route('owner.delivery'));
+                // return redirect(route('owner.schedule'));
               }
           }
         }

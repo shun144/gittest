@@ -1,169 +1,70 @@
-$breakpoint: (
-	// 766px以下(767より下)
-  sp: 'screen and (max-width: 767px)',
-	// 767px以上
-  tab: 'screen and (min-width: 767px)',
-	// 1025px以上
-  pc: 'screen and (min-width: 1025px)'
-);
-@mixin mq($bp) {
-  @media #{map-get($breakpoint, $bp)} {
-   @content;
+@use "mixin" as *;
+@use "variables" as *;
+
+.login-page {
+  justify-content: start;
+  height: 80vh;
+  padding-top: 20vh;
+}
+
+.login-box {
+  width: 450px;
+}
+
+@include mq(sp) {
+	.login-box {
+    width: 400px;
+	}
+}
+
+.card {
+  box-shadow: none;
+}
+
+.card-primary.card-outline {
+  border-top: none !important;
+}
+
+.login-card-body {
+  background-color: #e9ecef;
+}
+
+.input-group{
+  flex-direction: column;
+  margin-bottom: 40px;
+}
+
+input {
+  height: 48px !important;
+
+  &::placeholder {
+    color: rgb(195, 195, 195)!important;
+    font-size: 14px!important;
+    letter-spacing: 2.5 !important;
   }
 }
 
-$main_color: #02b3b3cc;
-
-// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// ログイン画面上の利用規約/プライバシーポリシー
-// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-#input_terms_condition {
-  .show {
-    padding-left: 0px !important;
-  }
-
-  label {
-    user-select: none;
-    cursor: pointer;
-    margin-bottom: 0;
-
-    input{
-      cursor: pointer;
-    }
-  }
-  .is_check_invalid {
-    display: block;
-  }  
+.form-control {
+  width: 100%!important;
+  border: none!important;
+  border-radius: 0px!important;
 }
 
-.terms_condition, .privacy_policy {
-  cursor: pointer;
-  // color:rgb(85, 85, 255);
-  color: $main_color;
-  font-weight: bold;
+button {
+  margin-top: 28px;
+	text-align: center;
+	vertical-align: middle;
+	text-decoration: none;
+	width: 100%;
+	padding: 10px 10px;
+	font-weight: bold;
+	border: 2px solid $main_color;
+	background: $main_color;
+	color: #fff;
+	transition: 0.5s;
+	opacity: 0.9;
+	&:hover {
+		color: $main_color;
+		background: #fff;
+	}
 }
-
-// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// 利用規約 / プライバシーポリシー
-// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-#modal_terms_condition, #modal_privacy_policy{
-  color:#474747;
-  font-size: 14px;
-  font-weight: 500;
-
-  .modal_dialog_fluid{
-    width: 95%;
-    min-width: 95%;
-    margin: 1vh auto
-  }
-  
-  .header {
-    background-color: white;
-    border-bottom:2px solid #e9ecef;
-    padding: 0.75rem;
-
-    h4 {  
-      margin: auto 0;
-      font-size: 1.25rem;
-    }
-
-    button{
-      span {
-        font-size: 40px;
-      }
-    }
-  }
-
-  .content {
-    margin-top: 30px;
-    line-height:1.8;
-    padding: 0px 30px;
-
-    p {
-      padding-bottom: 20px;
-    }
-
-    .section {
-      margin-bottom: 40px;
-
-      .sec_title {
-        color:#7e7e7e;
-        font-size: 17px;
-        font-weight: bold;
-        padding-bottom: 9px;
-        margin-bottom: 25px;
-        border-bottom: 1px solid $main_color;  
-      }
-      p {
-        padding-bottom: 0px;
-      }
-
-      ol {
-        list-style-type: none;
-        padding: 0;
-
-        li {
-          margin-bottom: 15px;
-          
-          span {
-            color:#2b2b2b;
-            font-size: 17px;
-          }
-        }
-      }
-    }
-  }
-}
-
-
-// ****PC画面****
-@include mq(pc) {
-  #modal_terms_condition , #modal_privacy_policy{
-    font-size: 18px;
-
-    .modal_dialog_fluid{
-      width: 65%;
-      min-width: 65%;
-      margin: 2vh auto
-    }
-
-    .header {
-      h4 {
-        font-size: 25px;
-      }
-      // button{
-      //   span {
-      //     font-size: 30px;
-      //   }
-      // }
-    }
-
-    .content {
-      padding: 0px 60px;
-
-      .section {
-        .sec_title {
-          font-size: 18px;
-        }
-        ol {    
-          li {
-            span {
-              font-size: 18px;
-            }
-          }
-        }
-      }
-    }
-  }
-  }
-// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-// 利用規約
-// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
-
-
-
-
-
-
-
-

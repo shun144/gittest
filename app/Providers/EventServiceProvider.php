@@ -40,12 +40,13 @@ class EventServiceProvider extends ServiceProvider
             // 管理者以外メニュー
             else {
                 $event->menu->add(
-                    ['text' => '配信', 'url' => route('owner.schedule'), 'icon' => 'fab fa-fw fa-line'],
-                    ['text' => '連携LINE友だち一覧', 'url' => route('owner.line_users'), 'icon' => 'fas fa-fw fa-user'],
+                    ['text' => '配信', 'url' => route('owner.delivery'), 'icon' => 'fab fa-fw fa-line'],
+                    // ['text' => 'スケジュール配信', 'url' => route('owner.schedule'), 'icon' => 'fab fa-fw fa-line'],
+                    ['text' => '連携LINEユーザ一覧', 'url' => route('owner.line_users'), 'icon' => 'fas fa-fw fa-user'],
                     ['text' => '配信履歴一覧','url' => route('owner.history'),'icon' => 'fas fa-fw fa-history'],
-                    ['text' => 'あいさつメッセージ','url' => route('owner.greeting'),'icon' => 'fas fa-fw fa-hand-paper'],
-
-                    // ['text' => 'グラフ','url' => route('owner.graph'),'icon' => 'fas fa-fw fa-hand-paper']
+                    // ['text' => 'あいさつメッセージ','url' => route('owner.greeting'),'icon' => 'fas fa-fw fa-hand-paper'],
+                    // ['text' => 'グラフ','url' => route('owner.graph'),'icon' => 'fas fa-fw fa-chart-line'],
+                    // ['text' => '動画管理','url' => route('owner.movie'),'icon' => 'fas fa-fw fa-video'],
                 ); 
             }
         });

@@ -1,0 +1,69 @@
+@use "mixin" as *;
+@use "variables" as *;
+
+h2 {
+	margin-bottom: 0;
+	font-size: 1.4em;
+	font-weight: 600;
+	color: #636363b8;
+	letter-spacing:0.1em;
+}
+
+@include mq(tab) {
+	h2 {
+		font-size: 1.2em;
+		letter-spacing:0.4em;
+	}
+}
+
+
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+// テーブル
+// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+table {
+	th {
+		vertical-align: middle !important;
+	}
+
+	thead {
+    background-color: $main_color;
+    color: #fff;
+  }  
+
+	td.omit_text {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		vertical-align:middle;
+		font-size: 1.1rem;
+	}
+}
+
+
+
+@include mq(sp) {
+	table {
+    span,td.omit_text {
+      font-size: 0.8rem;
+    }
+
+    th {
+      padding: 0.5rem 0.2rem;
+			font-size: 0.75rem;
+    }
+    
+    td.omit_text, button {
+      padding: 0.4rem 0.2rem;
+    }
+
+    form {
+      text-align: center;
+    }
+	}
+
+  .dataTables_info,.dataTables_filter,
+	.paginate_button {
+    font-size: 0.8rem;
+  }
+}
+

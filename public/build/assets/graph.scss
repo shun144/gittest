@@ -1,0 +1,45 @@
+$breakpoint: (
+	// 766px以下(767より下)
+  sp: 'screen and (max-width: 767px)',
+	// 767px以上
+  tab: 'screen and (min-width: 767px)',
+	// 1025px以上
+  pc: 'screen and (min-width: 1025px)'
+);
+@mixin mq($bp) {
+  @media #{map-get($breakpoint, $bp)} {
+   @content;
+  }
+}
+
+$main_color: #02b3b3cc;
+
+.people_num{
+  font-size: 24px;
+  &::after{
+    content: "人";
+    font-size: 13px;
+  }
+}
+
+.diff_val{
+  &::before{
+    content: "(";
+    // color: black;
+  }
+  &::after{
+    content: ")";
+    // color: black;
+  }
+}
+
+.select_point {
+  cursor: pointer;
+}
+
+// #line-char {
+//   min-height: 250px;
+//   height: 250px; 
+//   max-height: 250px; 
+//   max-width: 100%;
+// }

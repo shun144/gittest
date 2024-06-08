@@ -1,0 +1,95 @@
+@keyframes loading {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1, 2.2);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+@keyframes loading {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1, 2.2);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+h2 {
+  margin-bottom: 0;
+  font-size: 1.4em;
+  font-weight: 600;
+  color: rgba(99, 99, 99, 0.7215686275);
+  letter-spacing: 0.1em;
+}
+
+@media screen and (max-width: 768px) {
+  h2 {
+    font-size: 1.2em;
+    letter-spacing: 0.4em;
+  }
+}
+table th {
+  vertical-align: middle !important;
+}
+table thead {
+  background-color: #394656;
+  color: #fff;
+}
+table td.omit_text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  font-size: 1.1rem;
+}
+
+@media screen and (max-width: 480px) {
+  table span, table td.omit_text {
+    font-size: 0.8rem;
+  }
+  table th {
+    padding: 0.5rem 0.2rem;
+    font-size: 0.75rem;
+  }
+  table td.omit_text, table button {
+    padding: 0.4rem 0.2rem;
+  }
+  table form {
+    text-align: center;
+  }
+  .dataTables_info, .dataTables_filter,
+  .paginate_button {
+    font-size: 0.8rem;
+  }
+}
+.posthistory {
+  width: 98%;
+  margin: 0.6rem auto;
+}
+
+@media screen and (max-width: 480px) {
+  th:nth-last-child(-n+2),
+  td:nth-last-child(-n+2) {
+    visibility: collapse;
+    display: none;
+  }
+}
+.ws-wrap {
+  white-space: normal !important;
+}
+
+.btn_show:hover i {
+  color: blue !important;
+}
+
+@media screen and (max-width: 480px) {
+  .btn_show i {
+    font-size: 0.8em;
+  }
+}/*# sourceMappingURL=posthistory.css.map */

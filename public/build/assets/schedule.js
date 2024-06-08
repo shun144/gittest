@@ -1,6 +1,6 @@
-let Calendar = FullCalendar.Calendar;
+// let Calendar = FullCalendar.Calendar;
 let Draggable = FullCalendar.Draggable;
-let containerEl = document.getElementById('external-events');
+// let containerEl = document.getElementById('external-events');
 let checkbox = document.getElementById('drop-remove');
 let calendarEl = document.getElementById('calendar');
 let viewMonth = null
@@ -380,57 +380,45 @@ $('.external-event').click(function() {
   modal_edit_template.modal('show');
 })
 
-// function test(){
-//   console.log('テスト実行');
-//   new Draggable(containerEl, {
-//     itemSelector: '.external-event',
-//     eventData: function(eventEl) {
-//       return {
-//         id:eventEl.dataset.msgid,
-//         title: eventEl.innerText,
-//         backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-//         borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-//         textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
-//       };
-//     }
-//   });
+
+// new Draggable(containerEl, {
+//   itemSelector: '.external-event',
+//   eventData: function(eventEl) {
+//     return {
+//       id:eventEl.dataset.msgid,
+//       title: eventEl.innerText,
+//       backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
+//       borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
+//       textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
+//     };
+//   }
+// });
+
+// // 外部イベント初期化処理
+// function ini_events(ele) {
+//   ele.each(function () {
+//     $(this).draggable({
+//       scroll: true,
+//       helper: 'clone',
+//       zIndex: 999,
+//       revert: true,
+//       revertDuration: 0
+//     })
+//   })
 // }
+// ini_events($('#external-events div.external-event'));
 
-// test()
 
-new Draggable(containerEl, {
-  itemSelector: '.external-event',
-  eventData: function(eventEl) {
-    return {
-      id:eventEl.dataset.msgid,
-      title: eventEl.innerText,
-      backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-      borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-      textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
-    };
-  }
-});
 
-function ini_events(ele) {
-  ele.each(function () {
-    $(this).draggable({
-      scroll: true,
-      helper: 'clone',
-      zIndex: 999,
-      revert: true,
-      revertDuration: 0
-    })
-  })
-}
-
-ini_events($('#external-events div.external-event'));
-
-let calendar = new Calendar(calendarEl, {
+let calendar = new FullCalendar.Calendar(calendarEl, {
   timeZone: 'local',
   headerToolbar: {
-    left  : 'prev,next today',
+    left: '',
     center: 'title',
-    right : 'dayGridMonth'
+    right: 'prev today next'
+    // left  : 'prev,next today',
+    // center: 'title',
+    // right : 'dayGridMonth'
   },
   themeSystem: 'bootstrap',
   locale: 'ja',
@@ -446,14 +434,13 @@ let calendar = new Calendar(calendarEl, {
       $.ajax({
         headers: {'X-CSRF-TOKEN': $('#calendarToken').text()},
         url: URL_SCHEDULE_GET,
-        // url: '{{route('schedule.get')}}',
         method: 'POST',
         data:{
           start_date: info.start.valueOf(),
           end_date: info.end.valueOf(),
         }
       })
-      .done(function (data) {
+      .done((data) =>{
         calendar.removeAllEvents();
         calendar.setOption('events', data);
       });

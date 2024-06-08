@@ -25,6 +25,14 @@ use Mavinoo\Batch\BatchFacade as Batch;
 
 class OwnerController extends Controller
 {
+
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 配信画面表示
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function viewDelivery(){
+        return view('owner.delivery');
+    }
+
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
     // 配信履歴一覧表示
     // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
@@ -38,7 +46,7 @@ class OwnerController extends Controller
                 'id',
                 'start_at',
                 // 'end_at',
-                'title',
+                // 'title',
                 'content',
                 'img_url',
                 'status',
@@ -72,7 +80,7 @@ class OwnerController extends Controller
             ->select(
                 'start_at',
                 // 'end_at',
-                'title',
+                // 'title',
                 'content',
                 'img_url',
                 'status',
@@ -476,48 +484,98 @@ class OwnerController extends Controller
     public function viewGraph()
     {
         try {
+            
+            $friend_today = 20;
+            $friend_1_ago = 15;
+            $friend_7_ago = 21;
+            $friend_30_ago = 7;            
+            $diff_1_ago = $friend_today - $friend_1_ago;
+            $diff_7_ago = $friend_today - $friend_7_ago;
+            $diff_30_ago = $friend_today - $friend_30_ago;
 
-            // $user = Auth::user();
-            // $post = DB::table('greetings')
-            // ->where('greetings.store_id',$user->store_id)
-            // ->join('messages','message_id','=','messages.id')
-            // ->leftJoin('images','images.message_id','=','messages.id')
-            // ->select(
-            //     'messages.content as content',
-            //     'images.org_name as org_name',
-            //     'images.save_name as save_name'
-            //     )
-            // ->first();
+            $cancell_today = 2;
+            $cancell_1_ago = 1;
+            $cancell_7_ago = 4;
+            $cancell_30_ago = 0;            
+            $diff_cancell_1_ago = $cancell_today - $cancell_1_ago;
+            $diff_cancell_7_ago = $cancell_today - $cancell_7_ago;
+            $diff_cancell_30_ago = $cancell_today - $cancell_30_ago;
 
-            // // 画像URLプロパティ追加
-            // if (!empty($post)){
-            //     if ($post->save_name != Null){
-            //         $post->img_url = Storage::disk('greeting')->url($post->save_name);
-            //         $post->has_file = '1';
-            //     }
-            //     else {
-            //         $post->img_url = Null;
-            //         $post->has_file = '0';
-            //     }
-            // }
-            // return view('owner.greeting', compact('post'));
 
-            $targetDate = '2019-01-07';
-            for($i=0;$i<7;$i++){
-                echo date("Ymd",strtotime("+{$i} day",strtotime($targetDate)))."\n";
+
+            $today = date("Y-m-d");
+            $friend_graph_label = [];
+            for($i=6; $i>=0; $i--){
+                $friend_graph_label[] = date("m/d", strtotime("-{$i} day",strtotime($today)));
             }
 
+            $friend_graph_data = [];
+            for($i=0; $i<=7; $i++){
+                $friend_graph_data[] = rand(0, 100);
+            } 
+            
 
-            $week[] = 'hoge';
-            $i = 0;
-            while($i < 100000){
-                ++$i;
-            }
+            $store_id = Auth::user()->store_id;
+            $subQuery = DB::table('lines')
+            ->select(
+                'user_name',
+                'is_valid',
+                DB::raw('DATE_FORMAT(created_at, \'%Y/%m/%d\') as created_date'),
+                DB::raw('DATE_FORMAT(updated_at, \'%Y/%m/%d\') as updated_date'),
+            )
+            ->where('store_id',':store_id')
+            ->toSql();
 
-            $data = ['1','2'];
-            return view('owner.graph',[
-                'data' => $data,
-              ]);
+
+            $add_friends = DB::table(DB::raw('('.$subQuery .') AS add_table'))
+            ->setBindings([':store_id'=>$store_id])
+            ->groupby('created_date')
+            ->select(
+                'created_date as action_date',
+                DB::raw("COUNT(*) AS add_count"),
+                DB::raw("0 AS cancell_count")
+            );
+
+            $cancell_friends = DB::table(DB::raw('('.$subQuery .') AS cancell_table'))
+            ->setBindings([':store_id'=>$store_id])
+            ->groupby('updated_date')
+            ->select(
+                'updated_date as action_date',
+                DB::raw("0 AS add_count"),
+                DB::raw("COUNT(*) AS cancell_count")
+                )
+            ->where('is_valid',false);
+
+            $posts = DB::query()->fromSub($add_friends->union($cancell_friends), 'union')
+                ->select(
+                    'action_date',
+                    DB::raw("SUM(add_count) AS add_cnt"),
+                    DB::raw("SUM(cancell_count) AS cancell_cnt"),
+                    )
+                ->groupBy('action_date')
+                ->orderBy('action_date', 'desc')
+                ->get();
+
+            return view('owner.graph', compact(
+                'friend_today',
+                'friend_1_ago',
+                'friend_7_ago',
+                'friend_30_ago',
+                'diff_1_ago',
+                'diff_7_ago',
+                'diff_30_ago',
+                'friend_graph_label',
+                'friend_graph_data',
+                'cancell_today',
+                'cancell_1_ago',
+                'cancell_7_ago',
+                'cancell_30_ago',
+                'diff_cancell_1_ago',
+                'diff_cancell_7_ago',
+                'diff_cancell_30_ago',
+                'posts'
+            ));
+
         }
         catch (\Exception $e) {
             \Log::error('エラー機能:グラフ画面表示 【店舗ID:'.Auth::user()->store_id.'】');
@@ -525,4 +583,83 @@ class OwnerController extends Controller
             \Log::error('エラー内容:'.$e->getMessage());
         }
     }
+
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 友だちグラフ切替
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function changeFriendGraph(Request $request)
+    {
+        try {
+
+            // $days = $request->only(['days']);
+            $days = (int)$request->input('days');
+            $from_day = $days-1;
+            $today = date("Y-m-d");
+
+
+            $friend_graph_label = [];
+            for($i=$from_day; $i>=0; $i--){
+                $friend_graph_label[] = date("m/d", strtotime("-{$i} day",strtotime($today)));
+            }
+
+            $friend_graph_data = [];
+            for($i=0; $i<=$days; $i++){
+                $friend_graph_data[] = rand(0, 100);
+            }           
+
+            $data = [
+                'status' => 'OK',
+                'friend_graph_label' => $friend_graph_label,
+                'friend_graph_data' => $friend_graph_data,
+            ];
+            return response()->json($data, 200);
+
+            // return response()->json(['status' => 'OK', 'days' => $days] , 200);
+        }
+        catch (\Exception $e) {
+            \Log::error('エラー機能:友だちグラフ切替【店舗ID:'.Auth::user()->store_id.'】');
+            \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+            \Log::error('エラー内容:'.$e->getMessage());
+            $data = ['error' => $e->getMessage()];
+            return response()->json($data, 500);
+        }
+    }
+
+
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 動画管理画面表示
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function viewMovie()
+    {
+        try {           
+            return view('owner.movie');
+
+        }
+        catch (\Exception $e) {
+            \Log::error('エラー機能:動画管理画面表示 【店舗ID:'.Auth::user()->store_id.'】');
+            \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+            \Log::error('エラー内容:'.$e->getMessage());
+        }
+    }
+
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    // 動画登録
+    // /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_
+    public function insertMovie(Request $request)
+    {
+        try {        
+
+            // dd($request);
+            return view('owner.movie');
+
+        }
+        catch (\Exception $e) {
+            \Log::error('エラー機能:動画管理画面表示 【店舗ID:'.Auth::user()->store_id.'】');
+            \Log::error('エラー箇所:'.$e->getFile().'【'.$e->getLine().'行目】');
+            \Log::error('エラー内容:'.$e->getMessage());
+        }
+    }
+
+
+    
 }

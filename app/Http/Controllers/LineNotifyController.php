@@ -54,6 +54,7 @@ class LineNotifyController extends Controller
         $redirect_url = url($post['url_name'] . '/callback');
 
         try {
+
             $uri = 'https://notify-bot.line.me/oauth/authorize?' .
                 'response_type=code' . '&' .
                 'client_id=' . $post['client_id'] . '&' .
@@ -61,6 +62,7 @@ class LineNotifyController extends Controller
                 'scope=notify' . '&' .
                 'state=' . csrf_token() . '&' .
                 'response_mode=form_post';
+
             return redirect($uri);
         }
         catch (\Exception $e) {

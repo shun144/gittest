@@ -15,7 +15,7 @@ return [
     */
 
     // 'title' => 'AdminLTE 3',
-    'title' => 'LINE予約配信システム',
+    'title' => 'LINE配信サービス',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -65,7 +65,7 @@ return [
     */
 
     // 'logo' => '<b>Admin</b>LTE',
-    'logo' => 'LINE予約配信システム',
+    'logo' => 'LINE配信サービス',
     'logo_img' => null,
     'logo_img_class' => null,
     'logo_img_xl' => null,

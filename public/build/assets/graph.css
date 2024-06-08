@@ -1,0 +1,19 @@
+@charset "UTF-8";
+.people_num {
+  font-size: 24px;
+}
+.people_num::after {
+  content: "人";
+  font-size: 13px;
+}
+
+.diff_val::before {
+  content: "(";
+}
+.diff_val::after {
+  content: ")";
+}
+
+.select_point {
+  cursor: pointer;
+}/*# sourceMappingURL=graph.css.map */
